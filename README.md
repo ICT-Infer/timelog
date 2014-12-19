@@ -30,7 +30,7 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
 ## Dependencies
 
-`dbm.h`
+`dbopen(3)` database access methods.
 
 ## Compiling timelog
 
@@ -41,6 +41,6 @@ No instructions yet.
 ### Debian
 
 ```
-sudo apt-get install gdbm-dev
+sudo apt-get install libdb-dev
 make
 ```
