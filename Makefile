@@ -1,5 +1,5 @@
-bin/tl: bin/
-	gcc -o bin/tl main.c -lgdbm -lgdbm_compat
+bin/tl: bin/ main.c
+	gcc -o bin/tl main.c -ldb
 
 bin/:
 	test -d bin/ || mkdir bin/
