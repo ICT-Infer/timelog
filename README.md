@@ -12,7 +12,7 @@ Log and report time
 
 `tl dump` -- Dump whole log to stdout. Useful if you ever want to migrate away.
 
-## Timestamp (<ts>) format
+## Timestamp (&lt;ts&gt;) format
 
 Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
@@ -20,7 +20,7 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
 `2014-12-19T20:23`
 
-## Timezone (<tz>)
+## Timezone (&lt;tz&gt;)
 
 `/usr/share/zoneinfo/` on Debian systems.
 
