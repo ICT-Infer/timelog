@@ -6,5 +6,5 @@
 
 int main (int argc, char *argv[])
 {
-  DB *db = dbopen(NULL, 0, 0, DB_HASH, NULL);
+  DB *db = dbopen(NULL, O_CREAT | O_RDWR, 0, DB_HASH, NULL);
 }
