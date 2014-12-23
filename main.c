@@ -6,5 +6,6 @@
 
 int main (int argc, char *argv[])
 {
-  DB *db = dbopen(NULL, O_CREAT | O_RDWR, 0, DB_HASH, NULL);
+  char* f = "tl_default.db";
+  DB *db = dbopen(f, O_CREAT | O_RDWR, 0, DB_HASH, NULL);
 }
