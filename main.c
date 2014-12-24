@@ -15,4 +15,5 @@ int main (int argc, char* argv[])
     fprintf(stderr, "dbopen failed.\n");
     exit(EXIT_FAILURE);
   }
+  exit(EXIT_SUCCESS);
 }
