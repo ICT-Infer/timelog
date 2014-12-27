@@ -4,9 +4,9 @@ Log and report time
 
 ## Usage
 
-`tl begin <location> <tz> [-c <comment>] [<ts>]` -- Begin interval.
+`tl begin <location> [-c <comment>] [<ts>]` -- Begin interval.
 
-`tl end <id> <location> <tz> [-c <comment>] [<ts>]` -- End interval.
+`tl end <id> <location> [-c <comment>] [<ts>]` -- End interval.
 
 `tl report [<timestamp begin>] [<timestamp end>]` -- Show report.
 
@@ -20,9 +20,9 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
 `2014-12-19T20:23`
 
-## Timezone (&lt;tz&gt;)
+## Timezone
 
-`/usr/share/zoneinfo/` on Debian systems.
+Retrieved from environment variable `TZ`.
 
 ### Example timezone
 
