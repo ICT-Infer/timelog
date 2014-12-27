@@ -7,3 +7,6 @@ bin/:
 clean:
 	rm bin/tl
 	rmdir bin/
+
+test: bin/tl
+	./test.sh
