@@ -24,6 +24,6 @@ fi
 
 echo "Ran $n_tests tests. $n_tests_passed passed. $n_tests_failed failed."
 
-if [ $n_tests_passed -lt $n_tests] ; then
+if [ $n_tests_passed -lt $n_tests ] ; then
   exit 1
 fi
