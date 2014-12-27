@@ -17,7 +17,6 @@ void usage(char* pname[])
 int main (int argc, char* argv[])
 {
   char** pname = &(argv[0]);
-
   if (argc < 2)
   {
     fprintf(stderr, "%s: No command provided.\n\n", *pname);
@@ -32,5 +31,20 @@ int main (int argc, char* argv[])
     fprintf(stderr, "dbopen failed.\n");
     exit(EXIT_FAILURE);
   }
+
+  char** cmd = &(argv[1]);
+  if (strcmp(cmd, "begin") == 0)
+  {
+  } else if (strcmp(cmd, "end") == 0)
+  {
+  } else if (strcmp(cmd, "report") == 0)
+  {
+  } else
+  {
+    fprintf(stderr, "%s: Unknown command %s.\n\n", *pname, *cmd);
+    usage(pname);
+    exit(EXIT_FAILURE);
+  }
+
   exit(EXIT_SUCCESS);
 }
