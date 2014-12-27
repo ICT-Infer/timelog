@@ -4,11 +4,13 @@ Time logging and reporting
 
 ## Usage
 
-`tl begin <location> [-c <comment>] [<ts>]` -- Begin interval.
+`tl create [-f <file.db>]` -- Create time log.
 
-`tl end <id> <location> [-c <comment>] [<ts>]` -- End interval.
+`tl begin <location> [-c <comment>] [<ts>] [-f <file.db>]` -- Begin interval.
 
-`tl report [<ts> [<ts>]]` -- Show report.
+`tl end <id> <location> [-c <comment>] [<ts>] [-f <file.db>]` -- End interval.
+
+`tl report [<ts> [<ts>]] [-f <file.db>]` -- Show report.
 
 ## Timestamp (&lt;ts&gt;) format
 
@@ -19,8 +21,6 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 `2014-12-19T20:23`
 
 ## Environment variables
-
-`TLDATABASE` -- Database file to use.
 
 `TZ` -- Time zone.
 
