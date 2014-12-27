@@ -36,7 +36,13 @@ int main (int argc, char* argv[])
     exit(EXIT_FAILURE);
   }
 
-  char* f = "tl_default.db";
+  char* f = getenv("TLDATABASE");
+  if (f == NULL)
+  {
+    f = "tl_default.db";
+  }
+  fprintf(stderr, "Using tl database %s.\n", f);
+
   DB* tl_db = dbopen(f, O_CREAT | O_RDWR, 0, DB_HASH, NULL);
   if (tl_db == NULL)
   {
