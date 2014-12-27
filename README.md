@@ -18,9 +18,11 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
 `2014-12-19T20:23`
 
-## Timezone
+## Environment variables
 
-Retrieved from environment variable `TZ`.
+`TLDATABASE` -- Database file to use.
+
+`TZ` -- Time zone.
 
 ### Example timezone
 
