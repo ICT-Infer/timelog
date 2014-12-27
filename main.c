@@ -42,7 +42,6 @@ int main (int argc, char* argv[])
   int cmd_argc = argc;
   if (argc > 3 && strcmp(argv[argc - 2], "-f") == 0)
   {
-    //strcpy(f, argv[argc - 1]);
     f = argv[argc - 1];
     cmd_argc -= 2;
   } else
