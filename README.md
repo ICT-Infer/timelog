@@ -8,7 +8,7 @@ Log and report time
 
 `tl end <id> <location> [-c <comment>] [<ts>]` -- End interval.
 
-`tl report [<ts>] [<ts>]` -- Show report.
+`tl report [<ts> [<ts>]]` -- Show report.
 
 `tl dump` -- Dump whole log to stdout. Useful if you ever want to migrate away.
 
