@@ -33,11 +33,11 @@ int main (int argc, char* argv[])
   }
 
   char** cmd = &(argv[1]);
-  if (strcmp(cmd, "begin") == 0)
+  if (strcmp(*cmd, "begin") == 0)
   {
-  } else if (strcmp(cmd, "end") == 0)
+  } else if (strcmp(*cmd, "end") == 0)
   {
-  } else if (strcmp(cmd, "report") == 0)
+  } else if (strcmp(*cmd, "report") == 0)
   {
   } else
   {
