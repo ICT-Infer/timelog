@@ -42,3 +42,9 @@ No instructions yet.
 sudo apt-get install libdb-dev
 make
 ```
+
+## Running tests
+
+```
+make test
+```
