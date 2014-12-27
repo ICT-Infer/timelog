@@ -1,6 +1,6 @@
-# timelog
+# tl
 
-Log and report time
+Time logging and reporting
 
 ## Usage
 
@@ -24,7 +24,7 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
 `TZ` -- Time zone.
 
-### Example timezone
+### Example time zone
 
 `Europe/Oslo`.
 
@@ -32,7 +32,7 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
 `dbopen(3)` database access methods.
 
-## Compiling timelog
+## Compiling
 
 ### FreeBSD
 
