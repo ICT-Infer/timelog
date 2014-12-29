@@ -21,6 +21,15 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
+./bin/tl create -f "$TLDATABASE" 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo 'Test: Create existing named tl database. Failed.' 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
 if [ ! -f "$TLDATABASE" ] ; then
   echo 'Test: Created named tl database file. Failed.' 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
