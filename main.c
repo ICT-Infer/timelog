@@ -22,7 +22,7 @@ char* tl_dbfile(char** f, const char* pname)
   {
     *f = (char*) malloc(14);
     strcpy(*f, "tl_default.db");
-    fprintf(stderr, "%s: Using tl database %s.\n", pname, *f);
+    fprintf(stderr, "%s: Using tl database `%s'.\n", pname, *f);
   }
 
   return *f;
