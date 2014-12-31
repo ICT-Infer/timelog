@@ -14,7 +14,7 @@ Time logging and reporting
 
 ## Timestamp (&lt;ts&gt;) format
 
-Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
+Subset of ISO 8601; `[<YYYY>-<MM>-<DD>]T<HH>:<MM>[:<ss>]`.
 
 ### Example timestamp
 
@@ -28,24 +28,11 @@ Subset of ISO 8601; `<YYYY>-<MM>-<DD>T<HH>:<MM>:<ss>`.
 
 `Europe/Oslo`.
 
-## Dependencies
+## Supported platforms
 
-`dbopen(3)` database access methods.
+Timelog is currently being developed on OpenBSD 5.4 i386.
 
 ## Compiling
-
-### FreeBSD
-
-No instructions yet.
-
-### Debian
-
-```
-sudo apt-get install libdb-dev
-make
-```
-
-## Running tests
 
 ```
 make test

@@ -1,9 +1,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
+#include <sys/param.h>
 
 #include <sys/types.h>
-#include <db_185.h>
+#include <db.h>
 #include <fcntl.h>
 #include <limits.h>
 
@@ -85,8 +86,9 @@ int main (int argc, char* argv[])
   int cmd_argc = argc;
   if (argc > 3 && strcmp(argv[argc - 2], "-f") == 0)
   {
-    f = (char*) malloc(strlen(argv[argc - 1]));
-    strcpy(f, argv[argc - 1]);
+    char fc[MAXPATHLEN];
+    strlcpy(fc, argv[argc - 1], sizeof(fc));
+    f = fc;
     cmd_argc -= 2;
   }
 
