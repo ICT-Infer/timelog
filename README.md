@@ -30,7 +30,7 @@ Similar to, but not quite, ISO 8601; `[<YYYY>-<MM>-<DD>]T<HH>:<MM>[:<ss>]`.
 
 ## Supported platforms
 
-Timelog is currently being developed on OpenBSD 5.4 i386.
+`tl` is currently being developed on OpenBSD 5.4 i386.
 
 ## Compiling
 
