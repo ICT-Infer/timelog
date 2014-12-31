@@ -8,6 +8,24 @@
 #include <fcntl.h>
 #include <limits.h>
 
+#include <sys/time.h>
+
+typedef struct _timedesc
+{
+  struct timeval ts;
+  char comment[160];
+  char locname[20];
+  double loclatdeg; /* Latitude in degrees. */
+  double loclongdeg; /* Longitude in degrees. */
+  double locuncertm; /* Uncertainty in meters. */
+} timedesc;
+
+typedef struct _tl_entry
+{
+  timedesc begin;
+  timedesc end;
+} tl_entry;
+
 void usage(const char* pname)
 {
   fprintf(stderr, "Usage:\n");
