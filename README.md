@@ -6,9 +6,9 @@ Time logging and reporting
 
 `tl create [-f <file.db>]` -- Create time log.
 
-`tl begin <location> [-c <comment>] [<ts>] [-f <file.db>]` -- Begin interval.
+`tl begin [-l <location>] [-c <comment>] [<ts>] [-f <file.db>]` -- Begin interval.
 
-`tl end <id> <location> [-c <comment>] [<ts>] [-f <file.db>]` -- End interval.
+`tl end <id> [-l <location>] [-c <comment>] [<ts>] [-f <file.db>]` -- End interval.
 
 `tl report [<ts> [<ts>]] [-f <file.db>]` -- Show report.
 
