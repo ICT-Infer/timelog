@@ -14,7 +14,7 @@ Time logging and reporting
 
 ## Timestamp (&lt;ts&gt;) format
 
-Subset of ISO 8601; `[<YYYY>-<MM>-<DD>]T<HH>:<MM>[:<ss>]`.
+Similar to, but not quite, ISO 8601; `[<YYYY>-<MM>-<DD>]T<HH>:<MM>[:<ss>]`.
 
 ### Example timestamp
 
