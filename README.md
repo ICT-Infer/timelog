@@ -18,7 +18,7 @@ Similar to, but not quite, ISO 8601; `[<YYYY>-<MM>-<DD>]T<HH>:<MM>[:<ss>]`.
 
 ### Example timestamp
 
-`2014-12-19T20:23`
+`2014-12-19T20:23`.
 
 ## Environment variables
 
