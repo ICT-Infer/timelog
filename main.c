@@ -117,7 +117,7 @@ int main (int argc, char* argv[])
       tl_report(cmd_argc, cmd_argv, f, pname);
     } else
     {
-      fprintf(stderr, "%s: Unknown command %s.\n\n", pname, cmd);
+      fprintf(stderr, "%s: Unknown command `%s'.\n\n", pname, cmd);
       usage(pname);
       exit(EXIT_FAILURE);
     }
