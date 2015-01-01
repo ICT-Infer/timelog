@@ -8,11 +8,11 @@
 #include <fcntl.h>
 #include <limits.h>
 
-#include <sys/time.h>
+#include <time.h>
 
 typedef struct _timedesc
 {
-  struct timeval ts;
+  time_t ts;
   char comment[160];
   char locname[20];
   double loclatdeg; /* Latitude in degrees. */
@@ -123,6 +123,16 @@ int main (int argc, char* argv[])
     }
     DB* tl_db = tl_dbcreate(f, pname);
   } else {
+    timedesc td;
+    time(&(td.ts));
+
+    /* TODO: TZ env var and sys tz. */
+
+    char buf[1024];
+    char format[] = "%Y-%m-%dT%H:%M:%S";
+    (void)strftime(buf, sizeof(buf), format, localtime(&(td.ts)));
+    fprintf(stderr, "%s: DEBUG: Timestamp `%s'.\n",
+      pname, buf);
 
     if (strcmp(cmd, "begin") == 0)
     {
