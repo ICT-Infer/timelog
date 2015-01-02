@@ -51,7 +51,7 @@ DB* tl_dbcreate(char* f, const char* pname)
 {
   tl_dbfile(&f, pname);
 
-  DB* tl_db = dbopen(f, O_CREAT | O_EXCL | O_RDWR, 00644, DB_HASH, NULL);
+  DB* tl_db = dbopen(f, O_CREAT | O_EXCL | O_RDWR | R_NOKEY, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
   {
     fprintf(stderr, "%s: Failed to create tl database `%s'.\n", pname, f);
@@ -65,7 +65,7 @@ DB* tl_dbopen(char* f, const char* pname)
 {
   tl_dbfile(&f, pname);
 
-  DB* tl_db = dbopen(f, O_RDWR, 00644, DB_HASH, NULL);
+  DB* tl_db = dbopen(f, O_RDWR | R_NOKEY, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
   {
     fprintf(stderr, "%s: Failed to open tl database `%s'.\n", pname, f);
