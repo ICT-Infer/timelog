@@ -4,83 +4,88 @@ n_tests=0
 n_tests_failed=0
 n_tests_passed=0
 
-TLDATABASE="tl_test.db"
+tempdir=$( mktemp -d )
 
-if [ -f "$TLDATABASE" ] ; then
-  echo "tl db file $TLDATABASE exists. Cannot run tests." 1>&2
+if [ $? -ne 0 ] ; then
+  echo "Failed to create temporary directory for tests." 1>&2
   exit 1
 fi
 
+origdir=$( pwd )
+cd "$tempdir"
+
 n_tests=$(( $n_tests + 1 ))
-./bin/tl create-db -f "$TLDATABASE" 2>/dev/null
+$origdir/bin/tl init 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo 'Test: Create named tl database. Failed.' 1>&2
+  echo "Test: \`tl init'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-./bin/tl create-db -f "$TLDATABASE" 2>/dev/null
+$origdir/bin/tl init 2>/dev/null
 if [ $? -eq 0 ] ; then
-  echo 'Test: Create existing named tl database. Failed.' 1>&2
+  echo "Test: \`tl init' where \`tl init' has been done. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-if [ ! -f "$TLDATABASE" ] ; then
-  echo 'Test: Created named tl database file. Failed.' 1>&2
+if [ ! -f tl.db ] ; then
+  echo "Test: File \`tl.db' created. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-./bin/tl 2>/dev/null
+if [ ! -f stack.db ] ; then
+  echo "Test: File \`stack.db' created. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl 2>/dev/null
 if [ $? -eq 0 ] ; then
-  echo 'Test: No command provided #1. Failed.' 1>&2
+  echo "Test: Run \`tl' without arguments. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-./bin/tl -f "$TLDATABASE" 2>/dev/null
+$origdir/bin/tl x 2>/dev/null
 if [ $? -eq 0 ] ; then
-  echo 'Test: No command provided #2. Failed.' 1>&2
+  echo "Test: \`tl x' -- Invalid command. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-./bin/tl x 2>/dev/null
-if [ $? -eq 0 ] ; then
-  echo 'Test: Invalid command #1. Failed.' 1>&2
-  n_tests_failed=$(( $n_tests_failed + 1 ))
-else
-  n_tests_passed=$(( $n_tests_passed + 1 ))
-fi
-
-n_tests=$(( $n_tests + 1 ))
-./bin/tl x -f "$TLDATABASE" 2>/dev/null
-if [ $? -eq 0 ] ; then
-  echo 'Test: Invalid command #2. Failed.' 1>&2
-  n_tests_failed=$(( $n_tests_failed + 1 ))
-else
-  n_tests_passed=$(( $n_tests_passed + 1 ))
-fi
-
-n_tests=$(( $n_tests + 1 ))
-rm "$TLDATABASE" 2>/dev/null
+rm stack.db 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo 'Test: Remove tl database file. Failed.' 1>&2
+  echo "Test: Remove \`stack.db'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
+
+n_tests=$(( $n_tests + 1 ))
+rm tl.db 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: Remove \`tl.db'. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+cd -
+rmdir "$tempdir"
 
 echo "Ran $n_tests tests. $n_tests_passed passed. $n_tests_failed failed."
 
