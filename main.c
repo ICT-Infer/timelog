@@ -30,16 +30,14 @@ void usage(const char* pname)
 {
   fprintf(stderr, "Usage:\n");
   fprintf(stderr, " %s create-db [-f <file.db>]\n", pname);
-  fprintf(stderr, " %s begin-entry [-l <location>] [-c <comment>] [<ts>] "
+  fprintf(stderr, " %s insert -b [-l <location>] [-c <comment>] -t [<ts>] "
     "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s end-entry <id> [-l <location>] [-c <comment>] [<ts>] "
-    "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s update-entry <id> "
-    "[begin [-l <location>] [-c <comment>] [<ts>]] "
-    "[end [-l <location>] [-c <comment>] [<ts>]] "
-    "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s remove-entry <id> [-f <file.db>]\n", pname);
-  fprintf(stderr, " %s print-report [<ts> [<ts>]] [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s update <id> "
+    "-b [-l <location>] [-c <comment>] [-t [<ts>]] [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s update <id> "
+    "-e [-l <location>] [-c <comment>] [-t [<ts>]] [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s delete <id> [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s show-report [<ts> [<ts>]] [-f <file.db>]\n", pname);
 }
 
 char* tl_dbfile(char** fp, const char* pname)
@@ -83,12 +81,7 @@ DB* tl_dbopen(char* f, const char* pname)
   return tl_db;
 }
 
-void tl_ebegin(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
-{
-  DB* tl_db = tl_dbopen(f, pname);
-}
-
-void tl_eend(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
+void tl_einsert(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
 {
   DB* tl_db = tl_dbopen(f, pname);
 }
@@ -98,7 +91,7 @@ void tl_eupdate(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
   DB* tl_db = tl_dbopen(f, pname);
 }
 
-void tl_eremove(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
+void tl_edelete(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
 {
   DB* tl_db = tl_dbopen(f, pname);
 }
@@ -155,23 +148,19 @@ int main (int argc, char* argv[])
     fprintf(stderr, "%s: DEBUG: Timestamp `%s'.\n",
       pname, buf);
 
-    if (strcmp(cmd, "begin-entry") == 0)
+    if (strcmp(cmd, "insert") == 0)
     {
-      tl_ebegin(cmd_argc, cmd_argv, f, pname);
+      tl_einsert(cmd_argc, cmd_argv, f, pname);
     }
-    else if (strcmp(cmd, "end-entry") == 0)
-    {
-      tl_eend(cmd_argc, cmd_argv, f, pname);
-    }
-    else if (strcmp(cmd, "update-entry") == 0)
+    else if (strcmp(cmd, "update") == 0)
     {
       tl_eupdate(cmd_argc, cmd_argv, f, pname);
     }
-    else if (strcmp(cmd, "remove-entry") == 0)
+    else if (strcmp(cmd, "delete") == 0)
     {
-      tl_eremove(cmd_argc, cmd_argv, f, pname);
+      tl_edelete(cmd_argc, cmd_argv, f, pname);
     }
-    else if (strcmp(cmd, "print-report") == 0)
+    else if (strcmp(cmd, "show-report") == 0)
     {
       tl_preport(cmd_argc, cmd_argv, f, pname);
     }

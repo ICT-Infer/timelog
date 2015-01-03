@@ -6,8 +6,8 @@ Time logging and reporting
 
 `tl` is a command-line utility for logging time and generating reports.
 
-`tl` supports a set of six commands; `tl create-db`, `tl begin-entry`,
-`end-entry`, `update-entry`, `remove-entry` and `print-report`.
+`tl` supports a set of five commands; `tl create-db`, `tl insert`,
+`update`, `delete` and `show-report`. (The commands are not SQL, though.)
 
 Please refer to the source code for details :)
 
