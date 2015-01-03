@@ -15,9 +15,6 @@ typedef struct _timedesc
   time_t ts;
   char comment[160];
   char locname[20];
-  double loclatdeg; /* Latitude in degrees. */
-  double loclongdeg; /* Longitude in degrees. */
-  double locuncertm; /* Uncertainty in meters. */
 } timedesc;
 
 typedef struct _tl_entry
