@@ -34,65 +34,29 @@ void usage(const char* pname)
   fprintf(stderr, " %s show-report\n", pname);
 }
 
-char* tl_dbfile(char** fp, const char* pname)
+void tl_init(const char* pname)
 {
-  if (*fp == NULL)
+  /* TODO: Directory `.tl/'. */
+
+  char f_tldb[] = "tl.db";
+  char f_stackdb[] = "stack.db";
+
+  DB* tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
+  if (tl_db == NULL)
   {
-    *fp = (char*) malloc(14);
-    strcpy(*fp, "tl_default.db");
-    fprintf(stderr, "%s: Using tl database `%s'.\n", pname, *fp);
+    fprintf(stderr, "%s: Failed to create tl db `%s'.\n", pname, f_tldb);
+    exit(EXIT_FAILURE);
   }
+  tl_db->close(tl_db);
 
-  return *fp;
-}
-
-DB* tl_dbcreate(char* f, const char* pname)
-{
-  tl_dbfile(&f, pname);
-
-  DB* tl_db = dbopen(f, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
+  DB* tl_stackdb = dbopen(f_stackdb, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
     00644, DB_RECNO, NULL);
-  if (tl_db == NULL)
+  if (tl_stackdb == NULL)
   {
-    fprintf(stderr, "%s: Failed to create tl database `%s'.\n", pname, f);
+    fprintf(stderr, "%s: Failed to create tl stack `%s'.\n", pname, f_stackdb);
     exit(EXIT_FAILURE);
   }
-
-  return tl_db;
-}
-
-DB* tl_dbopen(char* f, const char* pname)
-{
-  tl_dbfile(&f, pname);
-
-  DB* tl_db = dbopen(f, O_RDWR | R_NOKEY, 00644, DB_RECNO, NULL);
-  if (tl_db == NULL)
-  {
-    fprintf(stderr, "%s: Failed to open tl database `%s'.\n", pname, f);
-    exit(EXIT_FAILURE);
-  }
-
-  return tl_db;
-}
-
-void tl_einsert(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
-{
-  DB* tl_db = tl_dbopen(f, pname);
-}
-
-void tl_eupdate(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
-{
-  DB* tl_db = tl_dbopen(f, pname);
-}
-
-void tl_edelete(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
-{
-  DB* tl_db = tl_dbopen(f, pname);
-}
-
-void tl_preport(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
-{
-  DB* tl_db = tl_dbopen(f, pname);
+  tl_stackdb->close(tl_stackdb);
 }
 
 int main (int argc, char* argv[])
@@ -105,29 +69,20 @@ int main (int argc, char* argv[])
     exit(EXIT_FAILURE);
   }
 
-  char* f = NULL;
-  int cmd_argc = argc;
-  if (argc > 3 && strcmp(argv[argc - 2], "-f") == 0)
-  {
-    char fc[MAXPATHLEN];
-    strlcpy(fc, argv[argc - 1], sizeof(fc));
-    f = fc;
-    cmd_argc -= 2;
-  }
-
   char* cmd = argv[1];
-  cmd_argc -= 1;
+  int cmd_argc = argc - 1;
   char** cmd_argv = &(argv[1]);
-  if (strcmp(cmd, "create-db") == 0)
+
+  if (strcmp(cmd, "init") == 0)
   {
     if (cmd_argc > 1)
     {
-      fprintf(stderr, "%s: create-db: %d additional argument(s) passed. "
-        "First: `%s'.\n\n", pname, cmd_argc - 1, cmd_argv[1]);
+      fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+        "First: `%s'.\n\n", pname, cmd, cmd_argc - 1, cmd_argv[1]);
       usage(pname);
       exit(EXIT_FAILURE);
     }
-    DB* tl_db = tl_dbcreate(f, pname);
+    tl_init(pname);
   }
   else
   {
@@ -136,27 +91,33 @@ int main (int argc, char* argv[])
 
     /* TODO: TZ env var and sys tz. */
 
+    /*
     char buf[1024];
     char format[] = "%Y-%m-%dT%H:%M:%S";
     (void)strftime(buf, sizeof(buf), format, localtime(&(td.ts)));
     fprintf(stderr, "%s: DEBUG: Timestamp `%s'.\n",
       pname, buf);
+    */
 
-    if (strcmp(cmd, "insert") == 0)
+    if (strcmp(cmd, "push-point") == 0)
     {
-      tl_einsert(cmd_argc, cmd_argv, f, pname);
+      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
+      exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "update") == 0)
+    else if (strcmp(cmd, "cheat-dump-stack") == 0)
     {
-      tl_eupdate(cmd_argc, cmd_argv, f, pname);
+      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
+      exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "delete") == 0)
+    else if (strcmp(cmd, "pop-drop-point") == 0)
     {
-      tl_edelete(cmd_argc, cmd_argv, f, pname);
+      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
+      exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "show-report") == 0)
+    else if (strcmp(cmd, "pop-twice-merge-points-log") == 0)
     {
-      tl_preport(cmd_argc, cmd_argv, f, pname);
+      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
+      exit(EXIT_FAILURE);
     }
     else
     {
