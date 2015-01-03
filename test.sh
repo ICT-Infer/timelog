@@ -142,7 +142,7 @@ else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
-cd -
+cd "$origdir"
 rmdir "$tempdir"
 
 echo "Ran $n_tests tests. $n_tests_passed passed. $n_tests_failed failed."
