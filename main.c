@@ -26,17 +26,12 @@ typedef struct _tl_entry
 void usage(const char* pname)
 {
   fprintf(stderr, "Usage:\n");
-  fprintf(stderr, " %s create-db [-f <file.db>]\n", pname);
-  fprintf(stderr, " %s insert -b [-l <location>] [-c <comment>] -t [<ts>] "
-    "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s update <id> "
-    "-b [-l <location>] [-c <comment>] [-t [<ts>]] [-z [<tz>]] "
-    "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s update <id> "
-    "-e [-l <location>] [-c <comment>] [-t [<ts>]] [-z [<tz>]] "
-    "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s delete <id> [-f <file.db>]\n", pname);
-  fprintf(stderr, " %s show-report [<ts> [<ts>]] [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s init\n", pname);
+  fprintf(stderr, " %s push-point [-l <location>] [-m <message>] [-t <ts>]\n", pname);
+  fprintf(stderr, " %s cheat-dump-stack\n", pname);
+  fprintf(stderr, " %s pop-drop-point\n", pname);
+  fprintf(stderr, " %s pop-twice-merge-points-log\n", pname);
+  fprintf(stderr, " %s show-report\n", pname);
 }
 
 char* tl_dbfile(char** fp, const char* pname)
