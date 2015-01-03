@@ -119,6 +119,11 @@ int main (int argc, char* argv[])
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
+    else if (strcmp(cmd, "show-report") == 0)
+    {
+      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
+      exit(EXIT_FAILURE);
+    }
     else
     {
       fprintf(stderr, "%s: Unknown command `%s'.\n\n", pname, cmd);
