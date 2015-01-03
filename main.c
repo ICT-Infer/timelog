@@ -30,8 +30,10 @@ void usage(const char* pname)
 {
   fprintf(stderr, "Usage:\n");
   fprintf(stderr, " %s create [-f <file.db>]\n", pname);
-  fprintf(stderr, " %s begin <location> [-c <comment>] [<ts>] [-f <file.db>]\n", pname);
-  fprintf(stderr, " %s end <id> <location> [-c <comment>] [<ts>] [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s begin <location> [-c <comment>] [<ts>] "
+    "[-f <file.db>]\n", pname);
+  fprintf(stderr, " %s end <id> <location> [-c <comment>] [<ts>] "
+    "[-f <file.db>]\n", pname);
   fprintf(stderr, " %s report [<ts> [<ts>]] [-f <file.db>]\n", pname);
 }
 
@@ -51,7 +53,8 @@ DB* tl_dbcreate(char* f, const char* pname)
 {
   tl_dbfile(&f, pname);
 
-  DB* tl_db = dbopen(f, O_CREAT | O_EXCL | O_RDWR | R_NOKEY, 00644, DB_RECNO, NULL);
+  DB* tl_db = dbopen(f, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
+    00644, DB_RECNO, NULL);
   if (tl_db == NULL)
   {
     fprintf(stderr, "%s: Failed to create tl database `%s'.\n", pname, f);
@@ -117,7 +120,8 @@ int main (int argc, char* argv[])
   {
     if (cmd_argc > 1)
     {
-      fprintf(stderr, "%s: create: %d additional argument(s) passed. First: `%s'.\n\n", pname, cmd_argc - 1, cmd_argv[1]);
+      fprintf(stderr, "%s: create: %d additional argument(s) passed. "
+        "First: `%s'.\n\n", pname, cmd_argc - 1, cmd_argv[1]);
       usage(pname);
       exit(EXIT_FAILURE);
     }
