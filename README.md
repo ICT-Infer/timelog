@@ -9,7 +9,7 @@ Stack style time logging and reporting :D
 `tl` supports a set of seven commands; `tl init`, `tl push-point`,
 `tl cheat-dump-stack`, `tl pop-drop-point`, `tl pop-twice-merge-points-log`,
 `tl unlog-split-push-points` and `tl show-report`. Those are the descriptive
-names. Shorter aliases might be a good idea. You shell probably supports
+names. Shorter aliases might be a good idea. Your shell probably supports
 aliasing commands. Right?
 
 Please refer to the source code for details :)
