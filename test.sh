@@ -24,15 +24,6 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl init 2>/dev/null
-if [ $? -eq 0 ] ; then
-  echo "Test: \`tl init' where \`tl init' has been done. Failed." 1>&2
-  n_tests_failed=$(( $n_tests_failed + 1 ))
-else
-  n_tests_passed=$(( $n_tests_passed + 1 ))
-fi
-
-n_tests=$(( $n_tests + 1 ))
 if [ ! -f tl.db ] ; then
   echo "Test: File \`tl.db' created. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
@@ -43,6 +34,15 @@ fi
 n_tests=$(( $n_tests + 1 ))
 if [ ! -f stack.db ] ; then
   echo "Test: File \`stack.db' created. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl init 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo "Test: \`tl init' where \`tl init' has been done. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
@@ -61,6 +61,64 @@ n_tests=$(( $n_tests + 1 ))
 $origdir/bin/tl x 2>/dev/null
 if [ $? -eq 0 ] ; then
   echo "Test: \`tl x' -- Invalid command. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl push-point 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl push-point'. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl cheat-dump-stack 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl cheat-dump-stack'. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl pop-drop-point 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl pop-drop-point'. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl pop-twice-merge-points-log 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo -n "Test: \`tl pop-twice-merge-points-log' " 1>&2
+  echo "with less than two points on stack. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl push-point 2>/dev/null
+$origdir/bin/tl push-point 2>/dev/null
+$origdir/bin/tl pop-twice-merge-points-log 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo -n "Test: \`tl pop-twice-merge-points-log' " 1>&2
+  echo "with multiple points on stack. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl show-report >/dev/null 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl show-report' . Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
