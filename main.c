@@ -33,9 +33,11 @@ void usage(const char* pname)
   fprintf(stderr, " %s insert -b [-l <location>] [-c <comment>] -t [<ts>] "
     "[-f <file.db>]\n", pname);
   fprintf(stderr, " %s update <id> "
-    "-b [-l <location>] [-c <comment>] [-t [<ts>]] [-f <file.db>]\n", pname);
+    "-b [-l <location>] [-c <comment>] [-t [<ts>]] [-z <tz>] "
+    "[-f <file.db>]\n", pname);
   fprintf(stderr, " %s update <id> "
-    "-e [-l <location>] [-c <comment>] [-t [<ts>]] [-f <file.db>]\n", pname);
+    "-e [-l <location>] [-c <comment>] [-t [<ts>]] [-z <tz>] "
+    "[-f <file.db>]\n", pname);
   fprintf(stderr, " %s delete <id> [-f <file.db>]\n", pname);
   fprintf(stderr, " %s show-report [<ts> [<ts>]] [-f <file.db>]\n", pname);
 }
