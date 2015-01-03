@@ -1,6 +1,6 @@
 # tl (timelog)
 
-Stack style time logging and reporting :D
+Time logging and reporting using stacks and stuff :D
 
 ## Description
 
