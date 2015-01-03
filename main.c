@@ -29,24 +29,29 @@ typedef struct _tl_entry
 void usage(const char* pname)
 {
   fprintf(stderr, "Usage:\n");
-  fprintf(stderr, " %s create [-f <file.db>]\n", pname);
-  fprintf(stderr, " %s begin <location> [-c <comment>] [<ts>] "
+  fprintf(stderr, " %s create-db [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s begin-entry [-l <location>] [-c <comment>] [<ts>] "
     "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s end <id> <location> [-c <comment>] [<ts>] "
+  fprintf(stderr, " %s end-entry <id> [-l <location>] [-c <comment>] [<ts>] "
     "[-f <file.db>]\n", pname);
-  fprintf(stderr, " %s report [<ts> [<ts>]] [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s update-entry <id> "
+    "[begin [-l <location>] [-c <comment>] [<ts>]] "
+    "[end [-l <location>] [-c <comment>] [<ts>]] "
+    "[-f <file.db>]\n", pname);
+  fprintf(stderr, " %s remove-entry <id> [-f <file.db>]\n", pname);
+  fprintf(stderr, " %s print-report [<ts> [<ts>]] [-f <file.db>]\n", pname);
 }
 
-char* tl_dbfile(char** f, const char* pname)
+char* tl_dbfile(char** fp, const char* pname)
 {
-  if (*f == NULL)
+  if (*fp == NULL)
   {
-    *f = (char*) malloc(14);
-    strcpy(*f, "tl_default.db");
-    fprintf(stderr, "%s: Using tl database `%s'.\n", pname, *f);
+    *fp = (char*) malloc(14);
+    strcpy(*fp, "tl_default.db");
+    fprintf(stderr, "%s: Using tl database `%s'.\n", pname, *fp);
   }
 
-  return *f;
+  return *fp;
 }
 
 DB* tl_dbcreate(char* f, const char* pname)
@@ -78,17 +83,27 @@ DB* tl_dbopen(char* f, const char* pname)
   return tl_db;
 }
 
-void tl_begin(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
+void tl_ebegin(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
 {
   DB* tl_db = tl_dbopen(f, pname);
 }
 
-void tl_end(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
+void tl_eend(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
 {
   DB* tl_db = tl_dbopen(f, pname);
 }
 
-void tl_report(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
+void tl_eupdate(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
+{
+  DB* tl_db = tl_dbopen(f, pname);
+}
+
+void tl_eremove(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
+{
+  DB* tl_db = tl_dbopen(f, pname);
+}
+
+void tl_preport(int cmd_argc, char* cmd_argv[], char* f, const char* pname)
 {
   DB* tl_db = tl_dbopen(f, pname);
 }
@@ -116,17 +131,19 @@ int main (int argc, char* argv[])
   char* cmd = argv[1];
   cmd_argc -= 1;
   char** cmd_argv = &(argv[1]);
-  if (strcmp(cmd, "create") == 0)
+  if (strcmp(cmd, "create-db") == 0)
   {
     if (cmd_argc > 1)
     {
-      fprintf(stderr, "%s: create: %d additional argument(s) passed. "
+      fprintf(stderr, "%s: create-db: %d additional argument(s) passed. "
         "First: `%s'.\n\n", pname, cmd_argc - 1, cmd_argv[1]);
       usage(pname);
       exit(EXIT_FAILURE);
     }
     DB* tl_db = tl_dbcreate(f, pname);
-  } else {
+  }
+  else
+  {
     timedesc td;
     time(&(td.ts));
 
@@ -138,16 +155,27 @@ int main (int argc, char* argv[])
     fprintf(stderr, "%s: DEBUG: Timestamp `%s'.\n",
       pname, buf);
 
-    if (strcmp(cmd, "begin") == 0)
+    if (strcmp(cmd, "begin-entry") == 0)
     {
-      tl_begin(cmd_argc, cmd_argv, f, pname);
-    } else if (strcmp(cmd, "end") == 0)
+      tl_ebegin(cmd_argc, cmd_argv, f, pname);
+    }
+    else if (strcmp(cmd, "end-entry") == 0)
     {
-      tl_end(cmd_argc, cmd_argv, f, pname);
-    } else if (strcmp(cmd, "report") == 0)
+      tl_eend(cmd_argc, cmd_argv, f, pname);
+    }
+    else if (strcmp(cmd, "update-entry") == 0)
     {
-      tl_report(cmd_argc, cmd_argv, f, pname);
-    } else
+      tl_eupdate(cmd_argc, cmd_argv, f, pname);
+    }
+    else if (strcmp(cmd, "remove-entry") == 0)
+    {
+      tl_eremove(cmd_argc, cmd_argv, f, pname);
+    }
+    else if (strcmp(cmd, "print-report") == 0)
+    {
+      tl_preport(cmd_argc, cmd_argv, f, pname);
+    }
+    else
     {
       fprintf(stderr, "%s: Unknown command `%s'.\n\n", pname, cmd);
       usage(pname);

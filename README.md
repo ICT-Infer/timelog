@@ -1,32 +1,15 @@
-# tl
+# tl (timelog)
 
 Time logging and reporting
 
-## Usage
+## Description
 
-`tl create [-f <file.db>]` -- Create time log.
+`tl` is a command-line utility for logging time and generating reports.
 
-`tl begin [-l <location>] [-c <comment>] [<ts>] [-f <file.db>]` -- Begin interval.
+`tl` supports a set of six commands; `tl create-db`, `tl begin-entry`,
+`end-entry`, `update-entry`, `remove-entry` and `print-report`.
 
-`tl end <id> [-l <location>] [-c <comment>] [<ts>] [-f <file.db>]` -- End interval.
-
-`tl report [<ts> [<ts>]] [-f <file.db>]` -- Show report.
-
-## Timestamp (&lt;ts&gt;) format
-
-Similar to, but not quite, ISO 8601; `[<YYYY>-<MM>-<DD>]T<HH>:<MM>[:<ss>]`.
-
-### Example timestamp
-
-`2014-12-19T20:23`.
-
-## Environment variables
-
-`TZ` -- Time zone.
-
-### Example time zone
-
-`Europe/Oslo`.
+Please refer to the source code for details :)
 
 ## Supported platforms
 
