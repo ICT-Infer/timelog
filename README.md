@@ -21,7 +21,8 @@ The timestamp format of `tl push-point` is `[<YYYY>-<mm>-<dd>]T<HH>:<MM>:<SS>`.
 For more flexible input, pass your input through `date` like so:
 
 ```
-tl push-point -l "Home at Nesodden" -m "Resumed work with tl (how meta)." -t "$( date +"%Y-%m-%dT%H:%M:%S" --date='18:00 yesterday' )"
+tl push-point -l "Home at Nesodden" -m "Resumed work with tl (how meta)." \
+  -t "$( date +"%Y-%m-%dT%H:%M:%S" --date='18:00 yesterday' )"
 ```
 
 (Just be careful with time zones when passing time through `date` in this way.)
