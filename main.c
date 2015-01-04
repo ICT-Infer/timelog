@@ -13,7 +13,7 @@
 typedef struct _timedesc
 {
   time_t ts;
-  char comment[160];
+  char message[160];
   char locname[20];
 } timedesc;
 
