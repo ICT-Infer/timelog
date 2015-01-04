@@ -12,7 +12,24 @@ Time logging and reporting using stacks and stuff :D
 names. Shorter aliases might be a good idea. Your shell probably supports
 aliasing commands. Right?
 
-Please refer to the source code for details :)
+Please refer to the source code for further details beyond here noted ;)
+
+### Timestamp format
+
+The timestamp format of `tl push-point` is `[<YYYY>-<mm>-<dd>]T<HH>:<MM>:<SS>`.
+
+For more flexible input, pass your input through `date` like so:
+
+```
+tl push-point -l "Home at Nesodden" -m "Resumed work with tl (how meta)." -t "$( date +"%Y-%m-%dT%H:%M:%S" --date='18:00 yesterday' )"
+```
+
+(Just be careful with time zones when passing time through date in this way.)
+
+### Time zone
+
+The `TZ` environment variable will be used if set.
+Else, the system time zone will be used.
 
 ## Supported platforms
 
