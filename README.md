@@ -16,7 +16,8 @@ Please refer to the source code for further details beyond here noted ;)
 
 ### Timestamp format
 
-The timestamp format of `tl push-point` is `[<YYYY>-<mm>-<dd>]T<HH>:<MM>:<SS>`.
+The timestamp format of `tl push-point` is
+`[<YYYY>-<mm>-<dd>]T<HH>:<MM>[:<SS>]`.
 
 For more flexible input, pass your input through `date` like so:
 
