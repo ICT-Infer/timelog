@@ -29,8 +29,12 @@ tl push-point -l "Home at Nesodden" -m "Resumed work with tl (how meta)." \
 
 ### Time zone
 
-The `TZ` environment variable will be used if set.
-Else, the system time zone will be used.
+The `TZ` environment variable, if set, will be used by `tl push-point`.
+If the `TZ` environment variable is not set, `tl push-point` will use
+the system time zone.
+
+The time zone recorded by `tl push-point` will be used when presenting
+entries from the log.
 
 ## Supported platforms
 
