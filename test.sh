@@ -176,6 +176,9 @@ rmdir "$tempdir"
 
 echo "Ran $n_tests tests. $n_tests_passed passed. $n_tests_failed failed."
 
-if [ $n_tests_passed -lt $n_tests ] ; then
+if [ $(( $n_tests_passed + $n_tests_failed )) -ne $n_tests ] ; then
+  echo "Number of passed and failed mismatch total number of tests." 1>&2
   exit 1
 fi
+
+exit $n_tests_failed
