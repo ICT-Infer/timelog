@@ -32,7 +32,8 @@ tl push-point -l "Home at Nesodden" -m "Resumed work with tl (how meta)." \
 
 Timestamps are not good for much without a time zone.
 
-The `TZ` environment variable, if set, will be used by `tl push-point`.
+The `TZ` environment variable, if set and not empty,
+will be used by `tl push-point`.
 If the `TZ` environment variable is not set, `tl push-point` will use
 the system time zone.
 
