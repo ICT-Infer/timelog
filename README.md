@@ -34,8 +34,8 @@ Timestamps are not good for much without a time zone.
 
 The `TZ` environment variable, if set and not empty,
 will be used by `tl push-point`.
-If the `TZ` environment variable is not set, `tl push-point` will use
-the system time zone.
+If the `TZ` environment variable is not set or is empty,
+`tl push-point` will use the system time zone.
 
 The time zone recorded by `tl push-point` will be used when presenting
 entries from the log.
