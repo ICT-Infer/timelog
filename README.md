@@ -41,7 +41,7 @@ entries from the log.
 
 ## Supported platforms
 
-`tl` is currently being developed on OpenBSD 5.4 i386.
+`tl` is being developed on OpenBSD/i386.
 
 ## Compiling
 
