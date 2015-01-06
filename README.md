@@ -33,7 +33,7 @@ entries from the log.
 
 ## Supported platforms
 
-`tl` is being developed on OpenBSD/i386.
+`tl` is being developed on FreeBSD/armv6 and OpenBSD/i386.
 
 ## Compiling
 
