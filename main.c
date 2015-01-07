@@ -27,7 +27,7 @@ void usage(const char* pname)
 {
   fprintf(stderr, "Usage:\n");
   fprintf(stderr, " %s init\n", pname);
-  fprintf(stderr, " %s push-point [-l <location>] [-m <message>] [-t <ts>]\n", pname);
+  fprintf(stderr, " %s push-point [-l <loc>] [-m <msg>] [-t <ts>]\n", pname);
   fprintf(stderr, " %s cheat-dump-stack\n", pname);
   fprintf(stderr, " %s pop-drop-point\n", pname);
   fprintf(stderr, " %s pop-twice-merge-points-log\n", pname);
