@@ -1,6 +1,6 @@
 # tl (timelog)
 
-I guess you could call it *stack-oriented time tracking*.
+Stack-oriented time tracking.
 
 ## Description
 
