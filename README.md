@@ -10,7 +10,7 @@ I guess you could call it *stack-oriented time tracking*.
 `tl cheat-dump-stack`, `tl pop-drop-point`, `tl pop-twice-merge-points-log`,
 `tl unlog-split-push-points` and `tl show-report`. Those are the descriptive
 names. Shorter aliases might be a good idea. Your shell probably supports
-aliasing commands. Right?
+aliasing commands.
 
 ### Timestamp format
 
