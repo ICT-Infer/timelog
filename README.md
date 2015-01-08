@@ -12,8 +12,6 @@ I guess you could call it *stack-oriented time tracking*.
 names. Shorter aliases might be a good idea. Your shell probably supports
 aliasing commands. Right?
 
-Please refer to the source code for further details beyond here noted ;)
-
 ### Timestamp format
 
 The timestamp format of `tl push-point` is
