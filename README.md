@@ -1,6 +1,6 @@
 # tl (timelog)
 
-Time logging and reporting using stacks and stuff :D
+Digital timepiece for the planning, tracking and reporting of hours.
 
 ## Description
 
