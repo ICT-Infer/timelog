@@ -62,11 +62,26 @@ void tl_init(const char* pname)
   tl_stackdb->close(tl_stackdb);
 }
 
-timepoint* tptpopulate(timepoint* tpt, const char* msg, const char* loc,
-  const char* pname)
+timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
+  const char* ts, const char* pname)
 {
   bool errors = false;
-  time(&(tpt->ts));
+
+  if (ts != NULL)
+  {
+    fprintf(stderr, "%s: tptpopulate: Timestamp parsing not implemented.\n",
+      pname);
+    exit(EXIT_FAILURE);
+  }
+  else
+  {
+    time(&(tpt->ts));
+    char buf[1024];
+    char format[] = "%Y-%m-%dT%H:%M:%S";
+    (void)strftime(buf, sizeof(buf), format, localtime(&(tpt->ts)));
+    fprintf(stderr, "%s: Using current time `%s' for timestamp.\n",
+      pname, buf);
+  }
 
   if (msg != NULL)
   {
@@ -129,10 +144,79 @@ int main (int argc, char* argv[])
       timepoint tpt;
 
       /* TODO: Message and location. */
-      char* msg = NULL;
       char* loc = NULL;
+      char* msg = NULL;
+      char* ts = NULL;
 
-      timepoint* tpt_res = tptpopulate(&tpt, msg, loc, pname);
+      bool ap_loc = false;
+      bool ap_msg = false;
+      bool ap_ts = false;
+      int cmd_argc_parse = cmd_argc - 1;
+      char** cmd_argv_parse = &(cmd_argv[1]);
+      while (cmd_argc_parse > 0)
+      {
+        if (strcmp(cmd_argv_parse[0], "-l") == 0)
+        {
+          if (ap_loc)
+          {
+            fprintf(stderr, "%s: %s: Duplicate `-l'.\n", pname, cmd);
+            exit(EXIT_FAILURE);
+          }
+          if (cmd_argc_parse < 2 || strncmp(cmd_argv_parse[1], "-", 1) == 0)
+          {
+            fprintf(stderr, "%s: %s: `-l': Missing location.\n", pname, cmd);
+            exit(EXIT_FAILURE);
+          }
+          ap_loc = true;
+          loc = cmd_argv_parse[1];
+          cmd_argc_parse--;
+          cmd_argv_parse++;
+        }
+        else if (strcmp(cmd_argv_parse[0], "-m") == 0)
+        {
+          if (ap_msg)
+          {
+            fprintf(stderr, "%s: %s: Duplicate `-m'.\n", pname, cmd);
+            exit(EXIT_FAILURE);
+          }
+          if (cmd_argc_parse < 2 || strncmp(cmd_argv_parse[1], "-", 1) == 0)
+          {
+            fprintf(stderr, "%s: %s: `-m': Missing message.\n", pname, cmd);
+            exit(EXIT_FAILURE);
+          }
+          ap_msg = true;
+          msg = cmd_argv_parse[1];
+          cmd_argc_parse--;
+          cmd_argv_parse++;
+        }
+        else if (strcmp(cmd_argv_parse[0], "-t") == 0)
+        {
+          if (ap_ts)
+          {
+            fprintf(stderr, "%s: %s: Duplicate `-t'.\n", pname, cmd);
+            exit(EXIT_FAILURE);
+          }
+          if (cmd_argc_parse < 2 || strncmp(cmd_argv_parse[1], "-", 1) == 0)
+          {
+            fprintf(stderr, "%s: %s: `-t': Missing timestamp.\n", pname, cmd);
+            exit(EXIT_FAILURE);
+          }
+          ap_ts = true;
+          ts = cmd_argv_parse[1];
+          cmd_argc_parse--;
+          cmd_argv_parse++;
+        }
+        else
+        {
+          fprintf(stderr, "%s: %s: Invalid argument `%s'.\n",
+            pname, cmd, cmd_argv_parse[0]);
+          exit(EXIT_FAILURE);
+        }
+        cmd_argc_parse--;
+        cmd_argv_parse++;
+      }
+
+      timepoint* tpt_res = tptpopulate(&tpt, loc, msg, ts, pname);
 
       if (tpt_res == NULL)
       {
