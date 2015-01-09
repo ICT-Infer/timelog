@@ -24,7 +24,7 @@ If the `TZ` environment variable is not set or is empty,
 `tl timepoint` will use the system time zone.
 
 The time zone recorded by `tl timepoint` will be used when presenting
-entries from the log.
+timepoints (such as by `tl pending` and `tl report`).
 
 ## Supported platforms
 
