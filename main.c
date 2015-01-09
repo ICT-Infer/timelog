@@ -9,6 +9,7 @@
 #include <limits.h>
 
 #include <time.h>
+#include <stdbool.h>
 
 /* Point in time. */
 typedef struct _timepoint
@@ -60,22 +61,38 @@ void tl_init(const char* pname)
   tl_stackdb->close(tl_stackdb);
 }
 
-timepoint_t* timepoint(timepoint_t* tpt, char** msg, char** loc)
+timepoint_t* timepoint(timepoint_t* tpt, const char* msg, const char* loc,
+  const char* pname)
 {
+  bool errors = false;
   time(&(tpt->ts));
 
   if (msg != NULL)
   {
-    /* TODO */
+    size_t n_msg = strlcpy(tpt->msg, msg, sizeof(tpt->msg));
+    if (n_msg > sizeof(tpt->msg))
+    {
+      fprintf(stderr, "%s: timepoint: msg too long.\n", pname);
+      errors = true;
+    }
   }
 
   if (loc != NULL)
   {
-    /* TODO */
+    size_t n_loc = strlcpy(tpt->loc, loc, sizeof(tpt->loc));
+    if (n_loc > sizeof(tpt->loc))
+    {
+      fprintf(stderr, "%s: timepoint: loc too long.\n", pname);
+      errors = true;
+    }
   }
 
   /* TODO: TZ env var and sys tz. */
 
+  if (errors)
+  {
+    return NULL;
+  }
   return tpt;
 }
 
@@ -111,10 +128,10 @@ int main (int argc, char* argv[])
       timepoint_t tpt;
 
       /* TODO: Message and location. */
-      char** msg = NULL;
-      char** loc = NULL;
+      char* msg = NULL;
+      char* loc = NULL;
 
-      timepoint_t* tpt_res = timepoint(&tpt, msg, loc);
+      timepoint_t* tpt_res = timepoint(&tpt, msg, loc, pname);
 
       if (tpt_res == NULL)
       {
