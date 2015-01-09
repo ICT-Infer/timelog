@@ -32,8 +32,8 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-if [ ! -f stack.db ] ; then
-  echo "Test: File \`stack.db' created. Failed." 1>&2
+if [ ! -f tp.db ] ; then
+  echo "Test: File \`tp.db' created. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
@@ -154,9 +154,9 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-rm stack.db 2>/dev/null
+rm tp.db 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: Remove \`stack.db'. Failed." 1>&2
+  echo "Test: Remove \`tp.db'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
