@@ -17,13 +17,13 @@ typedef struct _timepoint
   time_t ts; /* Timestamp */
   char msg[160]; /* Message */
   char loc[20]; /* Name of location. */
-} timepoint_t;
+} timepoint;
 
 typedef struct _tl_entry
 {
-  timepoint_t begin;
-  timepoint_t end;
-} tl_entry_t;
+  timepoint begin;
+  timepoint end;
+} tl_entry;
 
 void usage(const char* pname)
 {
@@ -62,7 +62,7 @@ void tl_init(const char* pname)
   tl_stackdb->close(tl_stackdb);
 }
 
-timepoint_t* timepoint(timepoint_t* tpt, const char* msg, const char* loc,
+timepoint* tptpopulate(timepoint* tpt, const char* msg, const char* loc,
   const char* pname)
 {
   bool errors = false;
@@ -73,7 +73,7 @@ timepoint_t* timepoint(timepoint_t* tpt, const char* msg, const char* loc,
     size_t n_msg = strlcpy(tpt->msg, msg, sizeof(tpt->msg));
     if (n_msg > sizeof(tpt->msg))
     {
-      fprintf(stderr, "%s: timepoint: msg too long.\n", pname);
+      fprintf(stderr, "%s: tptpopulate: msg too long.\n", pname);
       errors = true;
     }
   }
@@ -83,7 +83,7 @@ timepoint_t* timepoint(timepoint_t* tpt, const char* msg, const char* loc,
     size_t n_loc = strlcpy(tpt->loc, loc, sizeof(tpt->loc));
     if (n_loc > sizeof(tpt->loc))
     {
-      fprintf(stderr, "%s: timepoint: loc too long.\n", pname);
+      fprintf(stderr, "%s: tptpopulate: loc too long.\n", pname);
       errors = true;
     }
   }
@@ -126,13 +126,13 @@ int main (int argc, char* argv[])
   {
     if (strcmp(cmd, "timepoint") == 0)
     {
-      timepoint_t tpt;
+      timepoint tpt;
 
       /* TODO: Message and location. */
       char* msg = NULL;
       char* loc = NULL;
 
-      timepoint_t* tpt_res = timepoint(&tpt, msg, loc, pname);
+      timepoint* tpt_res = tptpopulate(&tpt, msg, loc, pname);
 
       if (tpt_res == NULL)
       {
