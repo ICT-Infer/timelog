@@ -67,9 +67,9 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl push-point 2>/dev/null
+$origdir/bin/tl timepoint 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: \`tl push-point'. Failed." 1>&2
+  echo "Test: \`tl timepoint'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
@@ -104,8 +104,8 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl push-point 2>/dev/null
-$origdir/bin/tl push-point 2>/dev/null
+$origdir/bin/tl timepoint 2>/dev/null
+$origdir/bin/tl timepoint 2>/dev/null
 $origdir/bin/tl pop-twice-merge-points-log 2>/dev/null
 if [ $? -ne 0 ] ; then
   echo -n "Test: \`tl pop-twice-merge-points-log' " 1>&2
