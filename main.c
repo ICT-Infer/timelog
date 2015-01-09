@@ -30,11 +30,11 @@ void usage(const char* pname)
   fprintf(stderr, "Usage:\n");
   fprintf(stderr, " %s init\n", pname);
   fprintf(stderr, " %s timepoint [-l <loc>] [-m <msg>] [-t <ts>]\n", pname);
-  fprintf(stderr, " %s cheat-dump-stack\n", pname);
-  fprintf(stderr, " %s pop-drop-point\n", pname);
-  fprintf(stderr, " %s pop-twice-merge-points-log\n", pname);
-  fprintf(stderr, " %s unlog-split-push-points\n", pname);
-  fprintf(stderr, " %s show-report\n", pname);
+  fprintf(stderr, " %s pending\n", pname);
+  fprintf(stderr, " %s pop-drop\n", pname);
+  fprintf(stderr, " %s pop-merge\n", pname);
+  fprintf(stderr, " %s unlog [-d] <id>\n", pname);
+  fprintf(stderr, " %s report\n", pname);
 }
 
 void tl_init(const char* pname)
@@ -142,27 +142,27 @@ int main (int argc, char* argv[])
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "cheat-dump-stack") == 0)
+    else if (strcmp(cmd, "pending") == 0)
     {
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "pop-drop-point") == 0)
+    else if (strcmp(cmd, "pop-drop") == 0)
     {
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "pop-twice-merge-points-log") == 0)
+    else if (strcmp(cmd, "pop-merge") == 0)
     {
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "unlog-split-push-points") == 0)
+    else if (strcmp(cmd, "unlog") == 0)
     {
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "show-report") == 0)
+    else if (strcmp(cmd, "report") == 0)
     {
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);

@@ -76,27 +76,27 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl cheat-dump-stack 2>/dev/null
+$origdir/bin/tl pending 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: \`tl cheat-dump-stack'. Failed." 1>&2
+  echo "Test: \`tl pending'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl pop-drop-point 2>/dev/null
+$origdir/bin/tl pop-drop 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: \`tl pop-drop-point'. Failed." 1>&2
+  echo "Test: \`tl pop-drop'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl pop-twice-merge-points-log 2>/dev/null
+$origdir/bin/tl pop-merge 2>/dev/null
 if [ $? -eq 0 ] ; then
-  echo -n "Test: \`tl pop-twice-merge-points-log' " 1>&2
+  echo -n "Test: \`tl pop-merge' " 1>&2
   echo "with less than two points on stack. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
@@ -106,9 +106,9 @@ fi
 n_tests=$(( $n_tests + 1 ))
 $origdir/bin/tl timepoint 2>/dev/null
 $origdir/bin/tl timepoint 2>/dev/null
-$origdir/bin/tl pop-twice-merge-points-log 2>/dev/null
+$origdir/bin/tl pop-merge 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo -n "Test: \`tl pop-twice-merge-points-log' " 1>&2
+  echo -n "Test: \`tl pop-merge' " 1>&2
   echo "with multiple points on stack. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
@@ -116,9 +116,9 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl unlog-split-push-points 2 2>/dev/null
+$origdir/bin/tl unlog 2 2>/dev/null
 if [ $? -eq 0 ] ; then
-  echo -n "Test: \`tl unlog-split-push-points' second log entry " 1>&2
+  echo -n "Test: \`tl unlog' second log entry " 1>&2
   echo "with presumably only one entry in log. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
@@ -126,18 +126,18 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl unlog-split-push-points 1 2>/dev/null
+$origdir/bin/tl unlog 1 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: \`tl unlog-split-push-points' first log entry. Failed." 1>&2
+  echo "Test: \`tl unlog' first log entry. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl unlog-split-push-points 1 2>/dev/null
+$origdir/bin/tl unlog 1 2>/dev/null
 if [ $? -eq 0 ] ; then
-  echo -n "Test: \`tl unlog-split-push-points' " 1>&2
+  echo -n "Test: \`tl unlog' " 1>&2
   echo "first log entry again. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
@@ -145,9 +145,9 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl show-report >/dev/null 2>/dev/null
+$origdir/bin/tl report >/dev/null 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: \`tl show-report'. Failed." 1>&2
+  echo "Test: \`tl report'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
