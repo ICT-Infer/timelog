@@ -11,18 +11,18 @@
 #include <time.h>
 
 /* Point in time. */
-typedef struct _tpoint
+typedef struct _timepoint
 {
-  time_t ts;
-  char message[160];
-  char locname[20];
-} tpoint;
+  time_t ts; /* Timestamp */
+  char msg[160]; /* Message */
+  char loc[20]; /* Name of location. */
+} timepoint_t;
 
 typedef struct _tl_entry
 {
-  tpoint begin;
-  tpoint end;
-} tl_entry;
+  timepoint_t begin;
+  timepoint_t end;
+} tl_entry_t;
 
 void usage(const char* pname)
 {
@@ -54,10 +54,29 @@ void tl_init(const char* pname)
     00644, DB_RECNO, NULL);
   if (tl_stackdb == NULL)
   {
-    fprintf(stderr, "%s: Failed to create tl stack `%s'.\n", pname, f_stackdb);
+    fprintf(stderr, "%s: Failed to create stack db `%s'.\n", pname, f_stackdb);
     exit(EXIT_FAILURE);
   }
   tl_stackdb->close(tl_stackdb);
+}
+
+timepoint_t* timepoint(timepoint_t* tpt, char** msg, char** loc)
+{
+  time(&(tpt->ts));
+
+  if (msg != NULL)
+  {
+    /* TODO */
+  }
+
+  if (loc != NULL)
+  {
+    /* TODO */
+  }
+
+  /* TODO: TZ env var and sys tz. */
+
+  return tpt;
 }
 
 int main (int argc, char* argv[])
@@ -87,21 +106,21 @@ int main (int argc, char* argv[])
   }
   else
   {
-    tpoint tpt;
-    time(&(tpt.ts));
-
-    /* TODO: TZ env var and sys tz. */
-
-    /*
-    char buf[1024];
-    char format[] = "%Y-%m-%dT%H:%M:%S";
-    (void)strftime(buf, sizeof(buf), format, localtime(&(td.ts)));
-    fprintf(stderr, "%s: DEBUG: Timestamp `%s'.\n",
-      pname, buf);
-    */
-
     if (strcmp(cmd, "push-point") == 0)
     {
+      timepoint_t tpt;
+
+      /* TODO: Message and location. */
+      char** msg = NULL;
+      char** loc = NULL;
+
+      timepoint_t* tpt_res = timepoint(&tpt, msg, loc);
+
+      if (tpt_res == NULL)
+      {
+        exit(EXIT_FAILURE);
+      }
+
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
