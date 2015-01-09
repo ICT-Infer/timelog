@@ -33,6 +33,7 @@ void usage(const char* pname)
   fprintf(stderr, " %s cheat-dump-stack\n", pname);
   fprintf(stderr, " %s pop-drop-point\n", pname);
   fprintf(stderr, " %s pop-twice-merge-points-log\n", pname);
+  fprintf(stderr, " %s unlog-split-push-points\n", pname);
   fprintf(stderr, " %s show-report\n", pname);
 }
 
@@ -152,6 +153,11 @@ int main (int argc, char* argv[])
       exit(EXIT_FAILURE);
     }
     else if (strcmp(cmd, "pop-twice-merge-points-log") == 0)
+    {
+      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
+      exit(EXIT_FAILURE);
+    }
+    else if (strcmp(cmd, "unlog-split-push-points") == 0)
     {
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
