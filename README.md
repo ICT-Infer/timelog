@@ -7,7 +7,7 @@ Stack-oriented time tracking.
 `tl` is a command-line utility for logging time and generating reports.
 
 `tl` supports a set of seven commands; `tl init`, `tl timepoint`,
-`tl pending`, `tl pop-drop`, `tl pop-merge`, `tl unlog` and `tl report`.
+`tl pending`, `tl pop-drop`, `tl merge-add`, `tl unlog` and `tl report`.
 
 ### Timestamp format
 

@@ -32,7 +32,7 @@ void usage(const char* pname)
   fprintf(stderr, " %s timepoint [-l <loc>] [-m <msg>] [-t <ts>]\n", pname);
   fprintf(stderr, " %s pending\n", pname);
   fprintf(stderr, " %s pop-drop\n", pname);
-  fprintf(stderr, " %s pop-merge\n", pname);
+  fprintf(stderr, " %s merge-add\n", pname);
   fprintf(stderr, " %s unlog [-d] <id>\n", pname);
   fprintf(stderr, " %s report\n", pname);
 }
@@ -152,7 +152,7 @@ int main (int argc, char* argv[])
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
-    else if (strcmp(cmd, "pop-merge") == 0)
+    else if (strcmp(cmd, "merge-add") == 0)
     {
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
