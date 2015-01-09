@@ -10,17 +10,18 @@
 
 #include <time.h>
 
-typedef struct _timedesc
+/* Point in time. */
+typedef struct _tpoint
 {
   time_t ts;
   char message[160];
   char locname[20];
-} timedesc;
+} tpoint;
 
 typedef struct _tl_entry
 {
-  timedesc begin;
-  timedesc end;
+  tpoint begin;
+  tpoint end;
 } tl_entry;
 
 void usage(const char* pname)
@@ -86,8 +87,8 @@ int main (int argc, char* argv[])
   }
   else
   {
-    timedesc td;
-    time(&(td.ts));
+    tpoint tpt;
+    time(&(tpt.ts));
 
     /* TODO: TZ env var and sys tz. */
 
