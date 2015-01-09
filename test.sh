@@ -94,9 +94,9 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl pop-merge 2>/dev/null
+$origdir/bin/tl merge-add 2>/dev/null
 if [ $? -eq 0 ] ; then
-  echo -n "Test: \`tl pop-merge' " 1>&2
+  echo -n "Test: \`tl merge-add' " 1>&2
   echo "with less than two points on stack. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
@@ -106,9 +106,9 @@ fi
 n_tests=$(( $n_tests + 1 ))
 $origdir/bin/tl timepoint 2>/dev/null
 $origdir/bin/tl timepoint 2>/dev/null
-$origdir/bin/tl pop-merge 2>/dev/null
+$origdir/bin/tl merge-add 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo -n "Test: \`tl pop-merge' " 1>&2
+  echo -n "Test: \`tl merge-add' " 1>&2
   echo "with multiple points on stack. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
