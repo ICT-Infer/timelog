@@ -67,6 +67,8 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
 {
   bool errors = false;
 
+  /* TODO: TZ env var and sys tz. */
+
   if (ts != NULL)
   {
     fprintf(stderr, "%s: tptpopulate: Timestamp parsing not implemented.\n",
@@ -102,8 +104,6 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
       errors = true;
     }
   }
-
-  /* TODO: TZ env var and sys tz. */
 
   if (errors)
   {
