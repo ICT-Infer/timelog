@@ -5,7 +5,6 @@ n_tests_failed=0
 n_tests_passed=0
 
 tempdir=$( mktemp -d )
-
 if [ $? -ne 0 ] ; then
   echo "Failed to create temporary directory for tests." 1>&2
   exit 1
