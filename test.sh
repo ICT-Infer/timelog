@@ -111,8 +111,80 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-$origdir/bin/tl timepoint 2>/dev/null
-$origdir/bin/tl timepoint 2>/dev/null
+$origdir/bin/tl timepoint -l "xxxxxxxxxxxxxxxxxy" 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl timepoint -l <loc>' with valid length loc. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -l "xxxxxxxxxxxxxxxxxyz" 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo "Test: \`tl timepoint -l <loc>' with invalid length loc. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -m "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy" 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl timepoint -m <msg>' with valid length msg. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -m "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx\
+xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz" 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo "Test: \`tl timepoint -m <msg>' with invalid length msg. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -t "T22:22" 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl timepoint -t <ts>' with valid ts #1. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -t "2015-01-10T22:22" 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: \`tl timepoint -t <ts>' with valid ts #2. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -t "T22:22:00" 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo "Test: \`tl timepoint -t <ts>' with invalid ts #1. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -t "2015-01-10t22:22" 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo "Test: \`tl timepoint -t <ts>' with invalid ts #2. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
 $origdir/bin/tl merge-add 2>/dev/null
 if [ $? -ne 0 ] ; then
   echo -n "Test: \`tl merge-add' " 1>&2
