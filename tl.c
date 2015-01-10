@@ -109,6 +109,7 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
   }
   else
   {
+    /* TODO: Set seconds to :00. */
     time(&(tpt->ts));
     char buf[1024];
     char format[] = "%Y-%m-%dT%H:%M:%S";
