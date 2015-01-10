@@ -12,7 +12,7 @@ Stack-oriented time tracking.
 ### Timestamp format
 
 The timestamp format of `tl timepoint` is
-`[<YYYY>-<mm>-<dd>]T<HH>:<MM>[:<SS>]`. (Similar to, but not quite, ISO 8601.)
+`[<YYYY>-<mm>-<dd>]T<HH>:<MM>`. (Similar to, but not quite, ISO 8601.)
 
 ### Time zone
 
