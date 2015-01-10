@@ -15,8 +15,8 @@
 typedef struct _timepoint
 {
   time_t ts; /* Timestamp */
-  char msg[140]; /* Message */
-  char loc[20]; /* Name of location. */
+  char msg[100]; /* Message */
+  char loc[18]; /* Name of location. */
 } timepoint;
 
 typedef struct _tl_entry
