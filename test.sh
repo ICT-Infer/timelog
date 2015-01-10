@@ -23,16 +23,24 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-if [ ! -f tl.db ] ; then
-  echo "Test: File \`tl.db' created. Failed." 1>&2
+if [ ! -d .tl/ ] ; then
+  echo "Test: Directory \`.tl/' created. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-if [ ! -f tps.db ] ; then
-  echo "Test: File \`tps.db' created. Failed." 1>&2
+if [ ! -f .tl/tl.db ] ; then
+  echo "Test: File \`.tl/tl.db' created. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+if [ ! -f .tl/tps.db ] ; then
+  echo "Test: File \`.tl/tps.db' created. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
@@ -153,18 +161,27 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
-rm tps.db 2>/dev/null
+rm .tl/tps.db 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: Remove \`tps.db'. Failed." 1>&2
+  echo "Test: Remove \`.tl/tps.db'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
 fi
 
 n_tests=$(( $n_tests + 1 ))
-rm tl.db 2>/dev/null
+rm .tl/tl.db 2>/dev/null
 if [ $? -ne 0 ] ; then
-  echo "Test: Remove \`tl.db'. Failed." 1>&2
+  echo "Test: Remove \`.tl/tl.db'. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
+rmdir .tl/ 2>/dev/null
+if [ $? -ne 0 ] ; then
+  echo "Test: Remove directory \`.tl/'. Failed." 1>&2
   n_tests_failed=$(( $n_tests_failed + 1 ))
 else
   n_tests_passed=$(( $n_tests_passed + 1 ))
