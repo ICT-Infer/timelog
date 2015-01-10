@@ -42,7 +42,7 @@ void tl_init(const char* pname)
   /* TODO: Directory `.tl/'. */
 
   char f_tldb[] = "tl.db";
-  char f_stackdb[] = "tps.db";
+  char f_tpsdb[] = "tps.db";
 
   DB* tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
@@ -52,14 +52,14 @@ void tl_init(const char* pname)
   }
   tl_db->close(tl_db);
 
-  DB* tl_stackdb = dbopen(f_stackdb, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
+  DB* tl_tpsdb = dbopen(f_tpsdb, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
     00644, DB_RECNO, NULL);
-  if (tl_stackdb == NULL)
+  if (tl_tpsdb == NULL)
   {
-    fprintf(stderr, "%s: Failed to create stack db `%s'.\n", pname, f_stackdb);
+    fprintf(stderr, "%s: Failed to create stack db `%s'.\n", pname, f_tpsdb);
     exit(EXIT_FAILURE);
   }
-  tl_stackdb->close(tl_stackdb);
+  tl_tpsdb->close(tl_tpsdb);
 }
 
 timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
