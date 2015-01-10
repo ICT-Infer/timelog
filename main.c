@@ -3,6 +3,9 @@
 #include <string.h>
 #include <sys/param.h>
 
+#include <sys/stat.h>
+#include <unistd.h>
+
 #include <sys/types.h>
 #include <db.h>
 #include <fcntl.h>
@@ -39,10 +42,23 @@ void usage(const char* pname)
 
 void tl_init(const char* pname)
 {
-  /* TODO: Directory `.tl/'. */
+  const char f_tldir[] = ".tl/";
+  const char f_tldb[] = "tl.db";
+  const char f_tpsdb[] = "tps.db";
 
-  char f_tldb[] = "tl.db";
-  char f_tpsdb[] = "tps.db";
+  if (mkdir(f_tldir, 00755) != 0)
+  {
+    fprintf(stderr, "%s: Failed to create tl dir `%s'.\n", pname, f_tldir);
+    exit(EXIT_FAILURE);
+  }
+
+  /* TODO: Clean-up on failure. */
+
+  if (chdir(f_tldir) != 0)
+  {
+    fprintf(stderr, "%s: Failed to chdir into tl dir `%s'.\n", pname, f_tldir);
+    exit(EXIT_FAILURE);
+  }
 
   DB* tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
