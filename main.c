@@ -42,7 +42,7 @@ void tl_init(const char* pname)
   /* TODO: Directory `.tl/'. */
 
   char f_tldb[] = "tl.db";
-  char f_stackdb[] = "tp.db";
+  char f_stackdb[] = "tps.db";
 
   DB* tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
