@@ -1,5 +1,5 @@
-bin/tl: bin/ main.c
-	cc -o bin/tl main.c
+bin/tl: bin/ tl.c
+	cc -o bin/tl tl.c
 
 bin/:
 	test -d bin/ || mkdir bin/
