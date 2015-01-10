@@ -189,6 +189,10 @@ fi
 
 cd "$origdir"
 rmdir "$tempdir"
+if [ $? -ne 0 ] ; then
+  echo "Failed to remove temporary directory for tests." 1>&2
+  exit 1
+fi
 
 echo "Ran $n_tests tests. $n_tests_passed passed. $n_tests_failed failed."
 
