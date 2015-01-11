@@ -12,19 +12,22 @@ Stack-oriented time tracking.
 ### Timestamp format
 
 The timestamp format of `tl timepoint` is
-`[<YYYY>-<mm>-<dd>]T<HH>:<MM>`. (Similar to, but not quite, ISO 8601.)
+`[<YYYY>-<mm>-<dd>T]<HH>:<MM>`. (Similar to, but not quite, ISO 8601.)
 
 ### Time zone
 
 Timestamps are not good for much without a time zone.
 
-The `TZ` environment variable, if set and not empty,
-will be used by `tl timepoint`.
-If the `TZ` environment variable is not set or is empty,
-`tl timepoint` will use the system time zone.
+Time zone is included in the timestamp as provided by your OS.
 
 The time zone recorded by `tl timepoint` will be used when presenting
 timepoints (such as by `tl pending` and `tl report`).
+
+### Known issues
+
+Invalid day of month is accepted.
+
+Some OS', when faced with an invalid `$TZ` will silently ignore it and use UTC.
 
 ## Supported platforms
 

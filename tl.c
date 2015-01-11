@@ -33,7 +33,7 @@
 /* Point in time. */
 typedef struct _timepoint
 {
-  time_t ts; /* Timestamp */
+  struct tm ts; /* Timestamp */
   char msg[100]; /* Message */
   char loc[18]; /* Name of location. */
 } timepoint;
@@ -97,26 +97,54 @@ void tl_init(const char* pname)
 timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
   const char* ts, const char* pname)
 {
-  bool errors = false;
+  /*
+   * FIXME MAYBE: Some OS' accept an invalid TZ and silently use UTC.
+   *              Can we do something about that?
+   */
 
-  /* TODO: TZ env var and sys tz. */
-
+  /* Get current local time, set seconds to 0. */
+  time_t currtime;
+  (void)time(&currtime);
+  (void)localtime_r(&currtime, &(tpt->ts));
+  tpt->ts.tm_sec = 0;
+  /*
+   * If a timestamp was provided, overwrite with user-provided values.
+   * FIXME MAYBE: Some impossible dates are not caught.
+   */
   if (ts != NULL)
   {
-    fprintf(stderr, "%s: tptpopulate: Timestamp parsing not implemented.\n",
-      pname);
-    exit(EXIT_FAILURE);
+    if (!(strlen(ts) == 5
+      && sscanf(ts, "%2d:%2d",
+        &(tpt->ts.tm_hour), &(tpt->ts.tm_min)) == 2
+      && tpt->ts.tm_hour >= 0 && tpt->ts.tm_hour <= 23
+      && tpt->ts.tm_min >= 0 && tpt->ts.tm_hour <= 59))
+    {
+      if (strlen(ts) == 16
+        && sscanf(ts, "%4d-%2d-%2dT%2d:%2d",
+          &(tpt->ts.tm_year), &(tpt->ts.tm_mon), &(tpt->ts.tm_mday),
+          &(tpt->ts.tm_hour), &(tpt->ts.tm_min)) == 5
+        && tpt->ts.tm_year >= 1900 && tpt->ts.tm_year <= 9999
+        && tpt->ts.tm_mon >= 1 && tpt->ts.tm_mon <= 12
+        && tpt->ts.tm_hour >= 0 && tpt->ts.tm_hour <= 23
+        && tpt->ts.tm_min >= 0 && tpt->ts.tm_hour <= 59)
+      {
+        /* See ctime(3) */
+        tpt->ts.tm_year -= 1900;
+        tpt->ts.tm_mon -= 1;
+      }
+      else
+      {
+        fprintf(stderr, "%s: Invalid timestamp.\n", pname);
+        exit(EXIT_FAILURE);
+      }
+    }
   }
-  else
-  {
-    /* TODO: Set seconds to :00. */
-    time(&(tpt->ts));
-    char buf[1024];
-    char format[] = "%Y-%m-%dT%H:%M:%S";
-    (void)strftime(buf, sizeof(buf), format, localtime(&(tpt->ts)));
-    fprintf(stderr, "%s: Using current time `%s' for timestamp.\n",
-      pname, buf);
-  }
+  /* Tell the user what the full timestamp being stored is. */
+  char buf[1024];
+  char format[] = "%Y-%m-%dT%H:%M";
+  (void)strftime(buf, sizeof(buf), format, &(tpt->ts));
+  fprintf(stderr, "%s: Using datetime `%s' with time zone `%s' "
+    "for timestamp.\n", pname, buf, tpt->ts.tm_zone);
 
   if (msg != NULL)
   {
@@ -124,7 +152,7 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
     if (n_msg > sizeof(tpt->msg))
     {
       fprintf(stderr, "%s: tptpopulate: msg too long.\n", pname);
-      errors = true;
+      exit(EXIT_FAILURE);
     }
   }
 
@@ -134,14 +162,10 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
     if (n_loc > sizeof(tpt->loc))
     {
       fprintf(stderr, "%s: tptpopulate: loc too long.\n", pname);
-      errors = true;
+      exit(EXIT_FAILURE);
     }
   }
 
-  if (errors)
-  {
-    return NULL;
-  }
   return tpt;
 }
 
