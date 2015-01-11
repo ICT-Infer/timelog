@@ -25,9 +25,8 @@ timepoints (such as by `tl pending` and `tl report`).
 
 ### Known issues
 
-Invalid day of month is accepted.
-
-Some OS', when faced with an invalid `$TZ` will silently ignore it and use UTC.
+Some operating systems, when faced with an invalid `$TZ`, will
+silently ignore it and use UTC.
 
 ## Supported platforms
 

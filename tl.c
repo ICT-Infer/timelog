@@ -107,10 +107,8 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
   (void)time(&currtime);
   (void)localtime_r(&currtime, &(tpt->ts));
   tpt->ts.tm_sec = 0;
-  /*
-   * If a timestamp was provided, overwrite with user-provided values.
-   * FIXME MAYBE: Some impossible dates are not caught.
-   */
+  /* If a timestamp was provided, overwrite with user-provided values. */
+  bool docmpts = false;
   if (ts != NULL)
   {
     if (!(strlen(ts) == 5
@@ -122,15 +120,13 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
       if (strlen(ts) == 16
         && sscanf(ts, "%4d-%2d-%2dT%2d:%2d",
           &(tpt->ts.tm_year), &(tpt->ts.tm_mon), &(tpt->ts.tm_mday),
-          &(tpt->ts.tm_hour), &(tpt->ts.tm_min)) == 5
-        && tpt->ts.tm_year >= 1900 && tpt->ts.tm_year <= 9999
-        && tpt->ts.tm_mon >= 1 && tpt->ts.tm_mon <= 12
-        && tpt->ts.tm_hour >= 0 && tpt->ts.tm_hour <= 23
-        && tpt->ts.tm_min >= 0 && tpt->ts.tm_hour <= 59)
+          &(tpt->ts.tm_hour), &(tpt->ts.tm_min)) == 5)
       {
         /* See ctime(3) */
         tpt->ts.tm_year -= 1900;
         tpt->ts.tm_mon -= 1;
+
+        docmpts = true;
       }
       else
       {
@@ -142,7 +138,21 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
   /* Tell the user what the full timestamp being stored is. */
   char buf[1024];
   char format[] = "%Y-%m-%dT%H:%M";
-  (void)strftime(buf, sizeof(buf), format, &(tpt->ts));
+  /* If the user provided the date, we check it now. */
+  if (docmpts)
+  {
+    time_t cmp = mktime(&(tpt->ts));
+    (void)strftime(buf, sizeof(buf), format, localtime(&cmp));
+    if (strcmp(ts, buf) != 0)
+    {
+      fprintf(stderr, "%s: Invalid timestamp.\n", pname);
+      exit(EXIT_FAILURE);
+    }
+  }
+  else
+  {
+    (void)strftime(buf, sizeof(buf), format, &(tpt->ts));
+  }
   fprintf(stderr, "%s: Using datetime `%s' with time zone `%s' "
     "for timestamp.\n", pname, buf, tpt->ts.tm_zone);
 
