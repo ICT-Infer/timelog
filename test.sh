@@ -185,6 +185,15 @@ else
 fi
 
 n_tests=$(( $n_tests + 1 ))
+$origdir/bin/tl timepoint -t "2014-02-31T22:22" 2>/dev/null
+if [ $? -eq 0 ] ; then
+  echo "Test: \`tl timepoint -t <ts>' with invalid ts #3. Failed." 1>&2
+  n_tests_failed=$(( $n_tests_failed + 1 ))
+else
+  n_tests_passed=$(( $n_tests_passed + 1 ))
+fi
+
+n_tests=$(( $n_tests + 1 ))
 $origdir/bin/tl merge-add 2>/dev/null
 if [ $? -ne 0 ] ; then
   echo -n "Test: \`tl merge-add' " 1>&2
