@@ -249,7 +249,6 @@ int main (int argc, char* argv[])
     {
       timepoint tpt;
 
-      /* TODO: Message and location. */
       char* loc = NULL;
       char* msg = NULL;
       char* ts = NULL;
