@@ -34,6 +34,7 @@
 typedef struct _timepoint
 {
   struct tm ts; /* Timestamp */
+  char hts[16]; /* Human readable timestamp */
   char msg[100]; /* Message */
   char loc[18]; /* Name of location. */
 } timepoint;
@@ -134,7 +135,7 @@ int tl_init()
 }
 
 timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
-  const char* ts, const char* pname)
+  const char* ts)
 {
   /*
    * FIXME MAYBE: Some OS' accept an invalid TZ and silently use UTC.
@@ -169,39 +170,33 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
       }
       else
       {
-        fprintf(stderr, "%s: Invalid timestamp.\n", pname);
-        exit(EXIT_FAILURE);
+        return NULL;
       }
     }
   }
   /* Tell the user what the full timestamp being stored is. */
-  char buf[1024];
   char format[] = "%Y-%m-%dT%H:%M";
   /* If the user provided the date, we check it now. */
   if (docmpts)
   {
     time_t cmp = mktime(&(tpt->ts));
-    (void)strftime(buf, sizeof(buf), format, localtime(&cmp));
-    if (strcmp(ts, buf) != 0)
+    (void)strftime(tpt->hts, sizeof(tpt->hts), format, localtime(&cmp));
+    if (strcmp(ts, tpt->hts) != 0)
     {
-      fprintf(stderr, "%s: Invalid timestamp.\n", pname);
-      exit(EXIT_FAILURE);
+      return NULL;
     }
   }
   else
   {
-    (void)strftime(buf, sizeof(buf), format, &(tpt->ts));
+    (void)strftime(tpt->hts, sizeof(tpt->hts), format, &(tpt->ts));
   }
-  fprintf(stderr, "%s: Using datetime `%s' with time zone `%s' "
-    "for timestamp.\n", pname, buf, tpt->ts.tm_zone);
 
   if (msg != NULL)
   {
     size_t n_msg = strlcpy(tpt->msg, msg, sizeof(tpt->msg));
     if (n_msg > sizeof(tpt->msg))
     {
-      fprintf(stderr, "%s: tptpopulate: msg too long.\n", pname);
-      exit(EXIT_FAILURE);
+      return NULL;
     }
   }
 
@@ -210,8 +205,7 @@ timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
     size_t n_loc = strlcpy(tpt->loc, loc, sizeof(tpt->loc));
     if (n_loc > sizeof(tpt->loc))
     {
-      fprintf(stderr, "%s: tptpopulate: loc too long.\n", pname);
-      exit(EXIT_FAILURE);
+      return NULL;
     }
   }
 
@@ -328,12 +322,16 @@ int main (int argc, char* argv[])
         cmd_argv_parse++;
       }
 
-      timepoint* tpt_res = tptpopulate(&tpt, loc, msg, ts, pname);
+      timepoint* tpt_res = tptpopulate(&tpt, loc, msg, ts);
 
       if (tpt_res == NULL)
       {
+        /* TODO MAYBE: Indicate what went wrong and report to user. */
+        fprintf(stderr, "%s: %s: Failed.\n", pname, cmd);
         exit(EXIT_FAILURE);
       }
+      fprintf(stderr, "%s: Using datetime `%s' with time zone `%s' "
+        "for timestamp.\n", pname, tpt.hts, tpt.ts.tm_zone);
 
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
