@@ -125,7 +125,11 @@ int tl_init()
       case 4:
         return rem;
       default:
-        return -rem;
+        if (rem > 0)
+        {
+          return -rem;
+        }
+        return -5;
     }
 }
 
