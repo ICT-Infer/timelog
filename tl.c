@@ -56,6 +56,16 @@ void usage(const char* pname)
   fprintf(stderr, " %s report\n", pname);
 }
 
+/*
+ * Initialize time log directory and files.
+ * Returns zero on success.
+ *
+ * The absolute value of a non-zero return value
+ * indicates the stage of tl_init where failure occured.
+ *
+ * On failure, cleanup is attempted.  Should cleanup fail,
+ * the return value is sign-swapped, thus becoming negative.
+ */
 int tl_init()
 {
   const char f_tldir[] = ".tl/";
