@@ -56,42 +56,68 @@ void usage(const char* pname)
   fprintf(stderr, " %s report\n", pname);
 }
 
-void tl_init(const char* pname)
+int tl_init()
 {
   const char f_tldir[] = ".tl/";
   const char f_tldb[] = "tl.db";
   const char f_tpsdb[] = "tps.db";
 
+  int rem = 4; /* Stages remaining */
+
   if (mkdir(f_tldir, 00755) != 0)
   {
-    fprintf(stderr, "%s: Failed to create tl dir `%s'.\n", pname, f_tldir);
-    exit(EXIT_FAILURE);
+    goto cleanup;
   }
+  rem--;
 
-  /* TODO: Clean-up on failure. */
 
   if (chdir(f_tldir) != 0)
   {
-    fprintf(stderr, "%s: Failed to chdir into tl dir `%s'.\n", pname, f_tldir);
-    exit(EXIT_FAILURE);
+    goto cleanup;
   }
+  rem--;
 
   DB* tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
   {
-    fprintf(stderr, "%s: Failed to create tl db `%s'.\n", pname, f_tldb);
-    exit(EXIT_FAILURE);
+    goto cleanup;
   }
+  rem--;
   tl_db->close(tl_db);
 
   DB* tl_tpsdb = dbopen(f_tpsdb, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
     00644, DB_RECNO, NULL);
   if (tl_tpsdb == NULL)
   {
-    fprintf(stderr, "%s: Failed to create stack db `%s'.\n", pname, f_tpsdb);
-    exit(EXIT_FAILURE);
+    goto cleanup;
   }
+  rem--;
   tl_tpsdb->close(tl_tpsdb);
+
+  return 0;
+
+  cleanup:
+    switch (rem)
+    {
+      case 1:
+        if (unlink(f_tldb) != 0)
+        {
+          return -rem;
+        }
+        /*FALLTHROUGH */
+      case 2:
+        /*FALLTHROUGH */
+      case 3:
+        if (rmdir(f_tldir) != 0)
+        {
+          return -rem;
+        }
+        /*FALLTHROUGH */
+      case 4:
+        return rem;
+      default:
+        return -rem;
+    }
 }
 
 timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
@@ -202,7 +228,13 @@ int main (int argc, char* argv[])
       usage(pname);
       exit(EXIT_FAILURE);
     }
-    tl_init(pname);
+
+    int r_init = tl_init();
+    if (r_init != 0)
+    {
+      fprintf(stderr, "%s: %s: Failed. Error: `%d'.\n", pname, cmd, r_init);
+      exit(EXIT_FAILURE);
+    }
   }
   else
   {
