@@ -104,15 +104,15 @@ int tl_init()
         {
           return -rem;
         }
-        /*FALLTHROUGH */
+        /* FALLTHROUGH */
       case 2:
-        /*FALLTHROUGH */
+        /* FALLTHROUGH */
       case 3:
         if (rmdir(f_tldir) != 0)
         {
           return -rem;
         }
-        /*FALLTHROUGH */
+        /* FALLTHROUGH */
       case 4:
         return rem;
       default:
