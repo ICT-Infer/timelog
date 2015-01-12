@@ -70,7 +70,6 @@ int tl_init()
   }
   rem--;
 
-
   if (chdir(f_tldir) != 0)
   {
     goto cleanup;
