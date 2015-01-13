@@ -39,11 +39,11 @@ typedef struct _timepoint
   char loc[18]; /* Name of location. */
 } timepoint;
 
-typedef struct _tl_entry
+typedef struct _tlentry
 {
   timepoint begin;
   timepoint end;
-} tl_entry;
+} tlentry;
 
 void usage(const char* pname)
 {
@@ -71,7 +71,7 @@ int tl_init()
 {
   const char f_tldir[] = ".tl/";
   const char f_tldb[] = "tl.db";
-  const char f_tpsdb[] = "tps.db";
+  const char f_tps[] = "tps.db";
 
   int rem = 4; /* Stages remaining */
 
@@ -95,14 +95,14 @@ int tl_init()
   rem--;
   tl_db->close(tl_db);
 
-  DB* tl_tpsdb = dbopen(f_tpsdb, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
+  DB* tl_tps = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
     00644, DB_RECNO, NULL);
-  if (tl_tpsdb == NULL)
+  if (tl_tps == NULL)
   {
     goto cleanup;
   }
   rem--;
-  tl_tpsdb->close(tl_tpsdb);
+  tl_tps->close(tl_tps);
 
   return 0;
 
@@ -134,7 +134,7 @@ int tl_init()
     }
 }
 
-timepoint* tptpopulate(timepoint* tpt, const char* loc, const char* msg,
+timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   const char* ts)
 {
   /*
@@ -321,7 +321,7 @@ int main (int argc, char* argv[])
         cmd_argv_parse++;
       }
 
-      timepoint* tpt_res = tptpopulate(&tpt, loc, msg, ts);
+      timepoint* tpt_res = tl_timepoint(&tpt, loc, msg, ts);
 
       if (tpt_res == NULL)
       {
