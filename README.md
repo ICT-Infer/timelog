@@ -30,7 +30,7 @@ silently ignore it and use UTC.
 
 ## Supported platforms
 
-`tl` is being developed on FreeBSD/armv6 and OpenBSD/i386.
+`tl` is being developed on FreeBSD/armv6, FreeBSD/amd64 and OpenBSD/i386.
 
 ## Compiling
 
