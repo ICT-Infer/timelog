@@ -104,7 +104,7 @@ int tl_init()
   rem--;
   tl_tps->close(tl_tps);
 
-  return 0;
+  return rem;
 
   cleanup:
     switch (rem)
