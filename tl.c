@@ -64,7 +64,7 @@ void usage(const char* pname)
  * The absolute value of a non-zero return value
  * indicates the stage of tl_init where failure occured.
  *
- * On failure, cleanup is attempted.  Should cleanup fail,
+ * On failure, rollback is attempted.  Should rollback fail,
  * the return value is sign-swapped, thus becoming negative.
  */
 int tl_init()
@@ -77,20 +77,20 @@ int tl_init()
 
   if (mkdir(f_tldir, 00755) != 0)
   {
-    goto cleanup;
+    goto rollback;
   }
   rem--;
 
   if (chdir(f_tldir) != 0)
   {
-    goto cleanup;
+    goto rollback;
   }
   rem--;
 
   DB* tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
   {
-    goto cleanup;
+    goto rollback;
   }
   rem--;
   tl_db->close(tl_db);
@@ -99,14 +99,14 @@ int tl_init()
     00644, DB_RECNO, NULL);
   if (tl_tps == NULL)
   {
-    goto cleanup;
+    goto rollback;
   }
   rem--;
   tl_tps->close(tl_tps);
 
   return rem;
 
-  cleanup:
+  rollback:
     switch (rem)
     {
       case 1:
