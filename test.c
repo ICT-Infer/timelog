@@ -1,3 +1,4 @@
+#include <sys/param.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -8,9 +9,21 @@ int main()
   int nt_passed = 0; /* Number of tests passed. */
   int nt_failed = 0; /* Number of tests failed. */
 
+  char odir[MAXPATHLEN];
+  if (getcwd(odir, sizeof(odir)) == NULL)
+  {
+    fprintf(stderr, "`getcwd' failed.\n");
+    exit(EXIT_FAILURE);
+  }
+
   /* Temporary directory in which tests will be run. */
   char template[] = "/tmp/tl-XXXXXXXX";
   char* tmpdir = mkdtemp(template);
+  if (chdir(tmpdir) != 0)
+  {
+    fprintf(stderr, "`chdir' into temporary directory `%s' failed.\n", tmpdir);
+    exit(EXIT_FAILURE);
+  }
 
   /* TODO: Actual tests. */
 
