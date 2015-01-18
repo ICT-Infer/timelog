@@ -169,7 +169,8 @@ int main()
   tests[23].argv = argv_rep;
   tests[23].xsuccess = true;
 
-  for (int i = 0 ; i < sizeof(tests)/sizeof(tests[0]); i++)
+  int i;
+  for (i = 0 ; i < sizeof(tests)/sizeof(tests[0]); i++)
   {
     pid_t pid = fork();
     if (pid == 0)
