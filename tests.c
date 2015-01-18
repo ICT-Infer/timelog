@@ -2,6 +2,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 int main()
 {
@@ -13,6 +16,16 @@ int main()
   if (getcwd(odir, sizeof(odir)) == NULL)
   {
     fprintf(stderr, "`getcwd' failed.\n");
+    exit(EXIT_FAILURE);
+  }
+
+  char tlb[MAXPATHLEN];
+  struct stat stlb;
+  if (strlcpy(tlb, odir, sizeof(tlb)) > sizeof(tlb) ||
+    strlcat(tlb, "/bin/tl", sizeof(tlb)) > sizeof(tlb) ||
+    stat(tlb, &stlb) != 0)
+  {
+    fprintf(stderr, "Creation of path to `tl' binary failed.\n");
     exit(EXIT_FAILURE);
   }
 
