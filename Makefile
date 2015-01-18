@@ -7,6 +7,11 @@ bin/:
 clean:
 	rm bin/tl
 	rmdir bin/
+	rm tests
 
-test: bin/tl
-	./test.sh
+tests: tests.c
+	cc -o tests tests.c
+
+.PHONY: test
+test: tests bin/tl
+	./tests
