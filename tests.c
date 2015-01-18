@@ -170,7 +170,7 @@ int main()
   tests[23].xsuccess = true;
 
   int i;
-  for (i = 0 ; i < sizeof(tests)/sizeof(tests[0]); i++)
+  for (i = 0; i < sizeof(tests)/sizeof(tests[0]); i++)
   {
     pid_t pid = fork();
     if (pid == 0)
