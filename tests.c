@@ -191,7 +191,7 @@ int main()
     pid_t pid = fork();
     if (pid < 0)
     {
-      fprintf(stderr, "Failed to run test #%d.\n", i);
+      fprintf(stderr, "Failed to run test #%d.\n", i + 1);
       errors++;
     }
     else if (pid == 0)
