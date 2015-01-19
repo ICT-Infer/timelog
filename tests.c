@@ -189,7 +189,12 @@ int main()
   for (i = 0; i < sizeof(tests)/sizeof(tests[0]); i++)
   {
     pid_t pid = fork();
-    if (pid == 0)
+    if (pid < 0)
+    {
+      fprintf(stderr, "Failed to run test #%d.\n", i);
+      errors++;
+    }
+    else if (pid == 0)
     {
       fclose(stdin);
       fclose(stdout);
