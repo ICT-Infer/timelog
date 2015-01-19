@@ -95,8 +95,7 @@ int tl_init()
   rem--;
   tl_db->close(tl_db);
 
-  DB* tl_tps = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR | R_NOKEY,
-    00644, DB_RECNO, NULL);
+  DB* tl_tps = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_tps == NULL)
   {
     goto rollback_init;
