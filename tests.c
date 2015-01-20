@@ -26,9 +26,9 @@
 
 typedef struct _tltest
 {
+  bool xsuccess; /* Expecting success (true) or failure (false)? */
   char* desc; /* Description. */
   char** argv;
-  bool xsuccess; /* Expecting success (true) or failure (false)? */
 } tltest;
 
 int main()
@@ -63,127 +63,90 @@ int main()
     exit(EXIT_FAILURE);
   }
 
-  tltest tests[24];
+  tltest tests[] =
+  {
+    {true, "`tl init'",
+      (char *[]){tlb, "init", NULL}},
 
-  tests[0].desc = "`tl init'";
-  char* argv_init[3] = {tlb, "init", NULL};
-  tests[0].argv = argv_init;
-  tests[0].xsuccess = true;
+    {false, "`tl init' in directory with existing timelog",
+      (char *[]){tlb, "init", NULL}},
 
-  tests[1].desc = "`tl init' where `tl init' has been done";
-  tests[1].argv = argv_init; /* Reusing argv_init. */
-  tests[1].xsuccess = false;
+    {false, "`tl' without arguments",
+      (char *[]){tlb, NULL}},
 
-  tests[2].desc = "`tl' without arguments";
-  char* argv_noarg[2] = {tlb, NULL};
-  tests[2].argv = argv_noarg;
-  tests[2].xsuccess = false;
+    {false, "`tl x' (invalid command)",
+      (char *[]){tlb, "x", NULL}},
 
-  tests[3].desc = "`tl x' (invalid command)";
-  char* argv_inv[3] = {tlb, "x", NULL};
-  tests[3].argv = argv_inv;
-  tests[3].xsuccess = false;
+    {true, "`tl pending' with empty stack",
+      (char *[]){tlb, "pending", NULL}},
 
-  tests[4].desc = "`tl timepoint'";
-  char* argv_tp[3] = {tlb, "timepoint", NULL};
-  tests[4].argv = argv_tp;
-  tests[4].xsuccess = true;
+    {false, "`tl pop-drop' with empty stack",
+      (char *[]){tlb, "pop-drop", NULL}},
 
-  tests[5].desc = "`tl pending'";
-  char* argv_pend[3] = {tlb, "pending", NULL};
-  tests[5].argv = argv_pend;
-  tests[5].xsuccess = true;
+    {false, "`tl merge-add' with empty stack",
+      (char *[]){tlb, "merge-add", NULL}},
 
-  tests[6].desc = "`tl pop-drop'";
-  char* argv_pd[3] = {tlb, "pop-drop", NULL};
-  tests[6].argv = argv_pd;
-  tests[6].xsuccess = true;
+    {true, "`tl timepoint'",
+      (char *[]){tlb, "timepoint", NULL}},
 
-  tests[7].desc = "`tl pop-drop' with empty stack";
-  tests[7].argv = argv_pd; /* Reusing argv_pd. */
-  tests[7].xsuccess = false;
+    {true, "`tl pending' with one element on stack",
+      (char *[]){tlb, "pending", NULL}},
 
-  tests[8].desc = "`tl merge-add' with empty stack";
-  char* argv_tpma[3] = {tlb, "merge-add", NULL};
-  tests[8].argv = argv_tpma;
-  tests[8].xsuccess = false;
+    {true, "`tl pop-drop' with one element on stack",
+      (char *[]){tlb, "pop-drop", NULL}},
 
-  tests[9].desc = "`tl timepoint -l <loc>' with valid length loc";
-  char* argv_tpvl[5] = {tlb, "timepoint", "-l", "xxxxxxxxxxxxxxxxxy", NULL};
-  tests[9].argv = argv_tpvl;
-  tests[9].xsuccess = true;
+    {true, "`tl timepoint -l <loc>' with valid length loc",
+      (char *[]){tlb, "timepoint", "-l", "xxxxxxxxxxxxxxxxxy", NULL}},
 
-  tests[10].desc = "`tl timepoint -l <loc>' with invalid length loc";
-  char* argv_tpil[5] = {tlb, "timepoint", "-l", "xxxxxxxxxxxxxxxxxyz", NULL};
-  tests[10].argv = argv_tpil;
-  tests[10].xsuccess = false;
+    {false, "`tl timepoint -l <loc>' with invalid length loc",
+      (char *[]){tlb, "timepoint", "-l", "xxxxxxxxxxxxxxxxxyz", NULL}},
 
-  tests[11].desc = "`tl timepoint -m <msg>' with valid length msg";
-  char* argv_tpvm[5] = {tlb, "timepoint", "-m", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
-    NULL};
-  tests[11].argv = argv_tpvm;
-  tests[11].xsuccess = true;
+    {true, "`tl timepoint -m <msg>' with valid length msg",
+      (char *[]){tlb, "timepoint", "-m",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy", NULL}},
 
-  tests[12].desc = "`tl timepoint -m <msg>' with invalid length msg";
-  char* argv_tpim[5] = {tlb, "timepoint", "-m", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-    "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz",
-    NULL};
-  tests[12].argv = argv_tpim;
-  tests[12].xsuccess = false;
+    {false, "`tl timepoint -m <msg>' with invalid length msg",
+      (char *[]){tlb, "timepoint", "-m",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz", NULL}},
 
-  tests[13].desc = "`tl timepoint -t <ts>' with valid ts #1";
-  char* argv_tpvts1[5] = {tlb, "timepoint", "-t", "22:22", NULL};
-  tests[13].argv = argv_tpvts1;
-  tests[13].xsuccess = true;
+    {true, "`tl timepoint -t <ts>' with valid ts #1",
+      (char *[]){tlb, "timepoint", "-t", "22:22", NULL}},
 
-  tests[14].desc = "`tl timepoint -t <ts>' with valid ts #2";
-  char* argv_tpvts2[5] = {tlb, "timepoint", "-t", "2015-01-10T22:22", NULL};
-  tests[14].argv = argv_tpvts2;
-  tests[14].xsuccess = true;
+    {true, "`tl timepoint -t <ts>' with valid ts #2",
+      (char *[]){tlb, "timepoint", "-t", "2015-01-10T22:22", NULL}},
 
-  tests[15].desc = "`tl timepoint -t <ts>' with invalid ts #1";
-  char* argv_tpits1[5] = {tlb, "timepoint", "-t", "T22:22", NULL};
-  tests[15].argv = argv_tpits1;
-  tests[15].xsuccess = false;
+    {false, "`tl timepoint -t <ts>' with invalid ts #1",
+      (char *[]){tlb, "timepoint", "-t", "T22:22", NULL}},
 
-  tests[16].desc = "`tl timepoint -t <ts>' with invalid ts #2";
-  char* argv_tpits2[5] = {tlb, "timepoint", "-t", "22:22:00", NULL};
-  tests[16].argv = argv_tpits2;
-  tests[16].xsuccess = false;
+    {false, "`tl timepoint -t <ts>' with invalid ts #2",
+      (char *[]){tlb, "timepoint", "-t", "22:22:00", NULL}},
 
-  tests[17].desc = "`tl timepoint -t <ts>' with invalid ts #3";
-  char* argv_tpits3[5] = {tlb, "timepoint", "-t", "2015-01-10t22:22", NULL};
-  tests[17].argv = argv_tpits3;
-  tests[17].xsuccess = false;
+    {false, "`tl timepoint -t <ts>' with invalid ts #3",
+      (char *[]){tlb, "timepoint", "-t", "2015-01-10t22:22", NULL}},
 
-  tests[18].desc = "`tl timepoint -t <ts>' with invalid ts #4";
-  char* argv_tpits4[5] = {tlb, "timepoint", "-t", "2014-02-31T22:22", NULL};
-  tests[18].argv = argv_tpits4;
-  tests[18].xsuccess = false;
+    {false, "`tl timepoint -t <ts>' with invalid ts #4",
+      (char *[]){tlb, "timepoint", "-t", "2014-02-31T22:22", NULL}},
 
-  tests[19].desc = "`tl merge-add' with multiple points on stack";
-  tests[19].argv = argv_tpma; /* Reusing argv_tpma. */
-  tests[19].xsuccess = true;
+    {true, "`tl merge-add' with multiple points on stack",
+      (char *[]){tlb, "merge-add", NULL}},
 
-  tests[20].desc = "`tl unlog' 2nd log entry with only one entry in log";
-  char* argv_uls[4] = {tlb, "unlog", "2", NULL};
-  tests[20].argv = argv_uls;
-  tests[20].xsuccess = false;
+    {true, "`tl report' with one entry in log",
+      (char *[]){tlb, "report", NULL}},
 
-  tests[21].desc = "`tl unlog' 1st log entry";
-  char* argv_ulf[4] = {tlb, "unlog", "1", NULL};
-  tests[21].argv = argv_ulf;
-  tests[21].xsuccess = true;
+    {false, "`tl unlog' 2nd log entry with only one entry in log",
+      (char *[]){tlb, "unlog", "2", NULL}},
 
-  tests[22].desc = "`tl unlog' 1st log entry again";
-  tests[22].argv = argv_ulf; /* Reusing argv_ulf. */
-  tests[22].xsuccess = false;
+    {true, "`tl unlog' 1st log entry",
+      (char *[]){tlb, "unlog", "1", NULL}},
 
-  tests[23].desc = "`tl report'";
-  char* argv_rep[3] = {tlb, "report", NULL};
-  tests[23].argv = argv_rep;
-  tests[23].xsuccess = true;
+    {false, "`tl unlog' 1st log entry again",
+      (char *[]){tlb, "unlog", "1", NULL}},
+
+    {true, "`tl report' with empty log",
+      (char *[]){tlb, "report", NULL}}
+  };
 
   int i;
   for (i = 0; i < sizeof(tests)/sizeof(tests[0]); i++)
