@@ -96,20 +96,20 @@ int main()
       (char *[]){tlb, "pop-drop", NULL}},
 
     {true, "`tl timepoint -l <loc>' with valid length loc",
-      (char *[]){tlb, "timepoint", "-l", "xxxxxxxxxxxxxxxxxy", NULL}},
+      (char *[]){tlb, "timepoint", "-l",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy", NULL}},
 
     {false, "`tl timepoint -l <loc>' with invalid length loc",
-      (char *[]){tlb, "timepoint", "-l", "xxxxxxxxxxxxxxxxxyz", NULL}},
+      (char *[]){tlb, "timepoint", "-l",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz", NULL}},
 
     {true, "`tl timepoint -m <msg>' with valid length msg",
-      (char *[]){tlb, "timepoint", "-m",
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy", NULL}},
+      (char *[]){tlb, "timepoint", "-m", "xxxxxxxxxxxxxxxx"
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy", NULL}},
 
     {false, "`tl timepoint -m <msg>' with invalid length msg",
-      (char *[]){tlb, "timepoint", "-m",
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz", NULL}},
+      (char *[]){tlb, "timepoint", "-m", "xxxxxxxxxxxxxxxx"
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz", NULL}},
 
     {true, "`tl timepoint -t <ts>' with valid ts #1",
       (char *[]){tlb, "timepoint", "-t", "22:22", NULL}},
