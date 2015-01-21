@@ -33,10 +33,10 @@
 /* Point in time. */
 typedef struct _timepoint
 {
-  struct tm ts; /* Timestamp */
-  char hts[16]; /* Human readable timestamp */
-  char msg[100]; /* Message */
-  char loc[18]; /* Name of location. */
+  char loc[48]; /* Name of location. */
+  char msg[64]; /* Message. */
+  char hts[16]; /* Human readable timestamp of local time at location. */
+  struct tm ts; /* Timestamp. */
 } timepoint;
 
 typedef struct _tlentry
