@@ -173,7 +173,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
       }
     }
   }
-  /* Tell the user what the full timestamp being stored is. */
+
   char format[] = "%Y-%m-%dT%H:%M";
   /* If the user provided the date, we check it now. */
   if (docmpts)
