@@ -1,5 +1,5 @@
 bin/tl: bin/ tl.c
-	cc -o bin/tl tl.c
+	cc -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c
 
 bin/:
 	test -d bin/ || mkdir bin/

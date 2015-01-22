@@ -70,6 +70,8 @@ int tl_init()
   const char f_tldir[] = ".tl/";
   const char f_tldb[] = "tl.db";
   const char f_tps[] = "tps.db";
+  DB* tl_db;
+  DB* tl_tps;
 
   int rem = 4; /* Stages remaining */
 
@@ -85,7 +87,7 @@ int tl_init()
   }
   rem--;
 
-  DB* tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
+  tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_db == NULL)
   {
     goto rollback_init;
@@ -93,7 +95,7 @@ int tl_init()
   rem--;
   tl_db->close(tl_db);
 
-  DB* tl_tps = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
+  tl_tps = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
   if (tl_tps == NULL)
   {
     goto rollback_init;
@@ -138,14 +140,16 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
    * FIXME MAYBE: Some OS' accept an invalid TZ and silently use UTC.
    *              Can we do something about that?
    */
+  time_t currtime;
+  bool docmpts;
+  char format[] = "%Y-%m-%dT%H:%M";
 
   /* Get current local time, set seconds to 0. */
-  time_t currtime;
   (void)time(&currtime);
   (void)localtime_r(&currtime, &(tpt->ts));
   tpt->ts.tm_sec = 0;
   /* If a timestamp was provided, overwrite with user-provided values. */
-  bool docmpts = false;
+  docmpts = false;
   if (ts != NULL)
   {
     if (!(strlen(ts) == 5
@@ -172,7 +176,6 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
     }
   }
 
-  char format[] = "%Y-%m-%dT%H:%M";
   /* If the user provided the date, we check it now. */
   if (docmpts)
   {
@@ -212,6 +215,12 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 int main (int argc, char* argv[])
 {
   char* pname = argv[0];
+  int r_init;
+  char* cmd;
+  int cmd_argc;
+  char** cmd_argv;
+  timepoint* tpt_res;
+
   if (argc < 2)
   {
     fprintf(stderr, "%s: No command provided.\n\n", pname);
@@ -219,9 +228,9 @@ int main (int argc, char* argv[])
     exit(EXIT_FAILURE);
   }
 
-  char* cmd = argv[1];
-  int cmd_argc = argc - 1;
-  char** cmd_argv = &(argv[1]);
+  cmd = argv[1];
+  cmd_argc = argc - 1;
+  cmd_argv = &(argv[1]);
 
   if (strcmp(cmd, "init") == 0)
   {
@@ -233,7 +242,7 @@ int main (int argc, char* argv[])
       exit(EXIT_FAILURE);
     }
 
-    int r_init = tl_init();
+    r_init = tl_init();
     if (r_init != 0)
     {
       fprintf(stderr, "%s: %s: Failed. Error: `%d'.\n", pname, cmd, r_init);
@@ -318,7 +327,7 @@ int main (int argc, char* argv[])
         cmd_argv_parse++;
       }
 
-      timepoint* tpt_res = tl_timepoint(&tpt, loc, msg, ts);
+      tpt_res = tl_timepoint(&tpt, loc, msg, ts);
 
       if (tpt_res == NULL)
       {
