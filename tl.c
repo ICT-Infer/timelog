@@ -14,20 +14,18 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
-#include <stdlib.h>
-#include <stdio.h>
-#include <string.h>
-
 #include <sys/stat.h>
-#include <unistd.h>
-
 #include <sys/types.h>
+
 #include <db.h>
 #include <fcntl.h>
 #include <limits.h>
-
-#include <time.h>
 #include <stdbool.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
+#include <time.h>
+#include <unistd.h>
 
 /* Point in time. */
 typedef struct _timepoint
