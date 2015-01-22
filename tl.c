@@ -141,15 +141,15 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
    *              Can we do something about that?
    */
   time_t currtime;
-  bool docmpts;
-  char format[] = "%Y-%m-%dT%H:%M";
+  bool docmpts = false; /* Flag used to indicate when ts should be compared. */
+  char format[] = "%Y-%m-%dT%H:%M"; /* Fmt of the human readable timestamp. */
 
   /* Get current local time, set seconds to 0. */
   (void)time(&currtime);
   (void)localtime_r(&currtime, &(tpt->ts));
   tpt->ts.tm_sec = 0;
+
   /* If a timestamp was provided, overwrite with user-provided values. */
-  docmpts = false;
   if (ts != NULL)
   {
     if (!(strlen(ts) == 5
