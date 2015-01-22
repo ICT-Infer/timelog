@@ -124,6 +124,7 @@ rollback_init:
       /* FALLTHROUGH */
     case 4:
       return rem;
+      break;
     default:
       if (rem > 0)
       {
