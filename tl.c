@@ -103,32 +103,32 @@ int tl_init()
 
   return rem;
 
-  rollback_init:
-    switch (rem)
-    {
-      case 1:
-        if (unlink(f_tldb) != 0)
-        {
-          return -rem;
-        }
-        /* FALLTHROUGH */
-      case 2:
-        /* FALLTHROUGH */
-      case 3:
-        if (rmdir(f_tldir) != 0)
-        {
-          return -rem;
-        }
-        /* FALLTHROUGH */
-      case 4:
-        return rem;
-      default:
-        if (rem > 0)
-        {
-          return -rem;
-        }
-        return -5;
-    }
+rollback_init:
+  switch (rem)
+  {
+    case 1:
+      if (unlink(f_tldb) != 0)
+      {
+        return -rem;
+      }
+      /* FALLTHROUGH */
+    case 2:
+      /* FALLTHROUGH */
+    case 3:
+      if (rmdir(f_tldir) != 0)
+      {
+        return -rem;
+      }
+      /* FALLTHROUGH */
+    case 4:
+      return rem;
+    default:
+      if (rem > 0)
+      {
+        return -rem;
+      }
+      return -5;
+  }
 }
 
 timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
