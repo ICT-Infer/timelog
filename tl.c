@@ -194,8 +194,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 
   if (msg != NULL)
   {
-    size_t n_msg = strlcpy(tpt->msg, msg, sizeof(tpt->msg));
-    if (n_msg > sizeof(tpt->msg))
+    if (strlcpy(tpt->msg, msg, sizeof(tpt->msg)) > sizeof(tpt->msg))
     {
       return NULL;
     }
@@ -203,8 +202,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 
   if (loc != NULL)
   {
-    size_t n_loc = strlcpy(tpt->loc, loc, sizeof(tpt->loc));
-    if (n_loc > sizeof(tpt->loc))
+    if (strlcpy(tpt->loc, loc, sizeof(tpt->loc)) > sizeof(tpt->loc))
     {
       return NULL;
     }
