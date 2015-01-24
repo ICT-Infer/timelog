@@ -287,18 +287,19 @@ timepoint* tl_popdrop (timepoint* tpt)
   key.data = &kval;
 
   tps_db->seq(tps_db, &key, &data, R_CURSOR);
-  if (tps_db->del(tps_db, &key, R_CURSOR) != 0)
-  {
-    tps_db->close(tps_db);
-    return NULL;
-  }
-  tps_db->close(tps_db);
 
   if (data.size != sizeof(*tpt))
   {
     return NULL;
   }
   memcpy(tpt, data.data, sizeof(*tpt));
+
+  if (tps_db->del(tps_db, &key, R_CURSOR) != 0)
+  {
+    tps_db->close(tps_db);
+    return NULL;
+  }
+  tps_db->close(tps_db);
 
   return tpt;
 }
