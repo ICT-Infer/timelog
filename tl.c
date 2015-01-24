@@ -440,6 +440,15 @@ int main (int argc, char* argv[])
     else if (strcmp(cmd, "pop-drop") == 0)
     {
       timepoint tpt;
+
+      if (cmd_argc > 1)
+      {
+        fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+          "First: `%s'.\n\n", pname, cmd, cmd_argc - 1, cmd_argv[1]);
+        usage(pname);
+        exit(EXIT_FAILURE);
+      }
+
       if (tl_popdrop(&tpt) == NULL)
       {
         exit(EXIT_FAILURE);
