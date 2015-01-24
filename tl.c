@@ -254,7 +254,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   return tpt;
 }
 
-int tl_popdrop ()
+timepoint* tl_popdrop (timepoint* tpt)
 {
   const char f_tldir[] = ".tl/";
   const char f_tps[] = "tps.db";
@@ -264,34 +264,43 @@ int tl_popdrop ()
   recno_t kval;
   DBT key;
   DBT data;
-  int r_del; /* Return value from call to del. */
 
   if (chdir(f_tldir) != 0)
   {
-    return 1;
+    return NULL;
   }
 
   tps_db = dbopen(f_tps, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
   if (tps_db == NULL)
   {
-    return 2;
+    return NULL;
   }
 
   if (stat(f_tps, &st_tps) != 0)
   {
     tps_db->close(tps_db);
-    return 3;
+    return NULL;
   }
 
-  kval = (st_tps.st_size/sizeof(timepoint));
+  kval = (st_tps.st_size/sizeof(*tpt));
   key.size = sizeof(&kval);
   key.data = &kval;
 
   tps_db->seq(tps_db, &key, &data, R_CURSOR);
-  r_del = tps_db->del(tps_db, &key, R_CURSOR);
+  if (tps_db->del(tps_db, &key, R_CURSOR) != 0)
+  {
+    tps_db->close(tps_db);
+    return NULL;
+  }
   tps_db->close(tps_db);
 
-  return r_del;
+  if (data.size != sizeof(*tpt))
+  {
+    return NULL;
+  }
+  memcpy(tpt, data.data, sizeof(*tpt));
+
+  return tpt;
 }
 
 int main (int argc, char* argv[])
@@ -429,7 +438,8 @@ int main (int argc, char* argv[])
     }
     else if (strcmp(cmd, "pop-drop") == 0)
     {
-      if (tl_popdrop() != 0)
+      timepoint tpt;
+      if (tl_popdrop(&tpt) == NULL)
       {
         exit(EXIT_FAILURE);
       }
