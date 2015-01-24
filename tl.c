@@ -242,13 +242,13 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
     return NULL;
   }
 
-  kval = (st_tps.st_size/sizeof(*tpt));
+  kval = (st_tps.st_size/sizeof(*tpt)) + 1;
   key.size = sizeof(&kval);
   key.data = &kval;
   data.size = sizeof(*tpt);
   data.data = tpt;
 
-  tps_db->put(tps_db, &key, &data, R_IAFTER);
+  tps_db->put(tps_db, &key, &data, R_SETCURSOR);
   tps_db->close(tps_db);
 
   return tpt;
