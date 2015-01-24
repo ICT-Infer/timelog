@@ -146,7 +146,6 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   const char f_tps[] = "tps.db";
   DB* tps_db;
 
-  /*RECNOINFO info;*/
   struct stat st_tps;
   recno_t kval;
   DBT key;
