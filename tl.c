@@ -254,6 +254,46 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   return tpt;
 }
 
+int tl_popdrop ()
+{
+  const char f_tldir[] = ".tl/";
+  const char f_tps[] = "tps.db";
+  DB* tps_db;
+
+  struct stat st_tps;
+  recno_t kval;
+  DBT key;
+  DBT data;
+  int r_del; /* Return value from call to del. */
+
+  if (chdir(f_tldir) != 0)
+  {
+    return 1;
+  }
+
+  tps_db = dbopen(f_tps, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
+  if (tps_db == NULL)
+  {
+    return 2;
+  }
+
+  if (stat(f_tps, &st_tps) != 0)
+  {
+    tps_db->close(tps_db);
+    return 3;
+  }
+
+  kval = (st_tps.st_size/sizeof(timepoint));
+  key.size = sizeof(&kval);
+  key.data = &kval;
+
+  tps_db->seq(tps_db, &key, &data, R_CURSOR);
+  r_del = tps_db->del(tps_db, &key, R_CURSOR);
+  tps_db->close(tps_db);
+
+  return r_del;
+}
+
 int main (int argc, char* argv[])
 {
   char* pname = argv[0];
@@ -389,8 +429,11 @@ int main (int argc, char* argv[])
     }
     else if (strcmp(cmd, "pop-drop") == 0)
     {
-      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
-      exit(EXIT_FAILURE);
+      if (tl_popdrop() != 0)
+      {
+        exit(EXIT_FAILURE);
+      }
+      exit(EXIT_SUCCESS);
     }
     else if (strcmp(cmd, "merge-add") == 0)
     {
