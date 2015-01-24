@@ -30,10 +30,10 @@
 /* Point in time. */
 typedef struct _timepoint
 {
-  char loc[48]; /* Name of location. */
-  char msg[64]; /* Message. */
+  char loc[49]; /* Name of location. */
+  char msg[65]; /* Message. */
   char hts[17]; /* Human readable timestamp of local time at location. */
-  char etz[48]; /* Contents of environment variable TZ. */
+  char etz[49]; /* Contents of environment variable TZ. */
   struct tm ts; /* Timestamp. */
 } timepoint;
 
@@ -209,7 +209,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 
   if (msg != NULL)
   {
-    if (strlcpy(tpt->msg, msg, sizeof(tpt->msg)) > sizeof(tpt->msg))
+    if (strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
     {
       return NULL;
     }
@@ -217,7 +217,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 
   if (loc != NULL)
   {
-    if (strlcpy(tpt->loc, loc, sizeof(tpt->loc)) > sizeof(tpt->loc))
+    if (strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc))
     {
       return NULL;
     }
