@@ -71,7 +71,7 @@ int tl_init()
   const char f_tldb[] = "tl.db";
   const char f_tps[] = "tps.db";
   DB* tl_db;
-  DB* tl_tps;
+  DB* tps_db;
 
   int rem = 4; /* Stages remaining */
 
@@ -95,13 +95,13 @@ int tl_init()
   rem--;
   tl_db->close(tl_db);
 
-  tl_tps = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
-  if (tl_tps == NULL)
+  tps_db = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
+  if (tps_db == NULL)
   {
     goto rollback_init;
   }
   rem--;
-  tl_tps->close(tl_tps);
+  tps_db->close(tps_db);
 
   return rem;
 
@@ -143,7 +143,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 
   const char f_tldir[] = ".tl/";
   const char f_tps[] = "tps.db";
-  DB* tl_tps;
+  DB* tps_db;
 
   /*RECNOINFO info;*/
   struct stat st_tps;
@@ -219,15 +219,15 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
     }
   }
 
-  tl_tps = dbopen(f_tps, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
-  if (tl_tps == NULL)
+  tps_db = dbopen(f_tps, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
+  if (tps_db == NULL)
   {
     return NULL;
   }
 
   if (stat(f_tps, &st_tps) != 0)
   {
-    tl_tps->close(tl_tps);
+    tps_db->close(tps_db);
     return NULL;
   }
 
@@ -237,8 +237,8 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   data.size = sizeof(*tpt);
   data.data = tpt;
 
-  tl_tps->put(tl_tps, &key, &data, R_IAFTER);
-  tl_tps->close(tl_tps);
+  tps_db->put(tps_db, &key, &data, R_IAFTER);
+  tps_db->close(tps_db);
 
   return tpt;
 }
