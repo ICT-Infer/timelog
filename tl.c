@@ -32,7 +32,7 @@ typedef struct _timepoint
 {
   char loc[48]; /* Name of location. */
   char msg[64]; /* Message. */
-  char hts[16]; /* Human readable timestamp of local time at location. */
+  char hts[17]; /* Human readable timestamp of local time at location. */
   char etz[48]; /* Contents of environment variable TZ. */
   struct tm ts; /* Timestamp. */
 } timepoint;
