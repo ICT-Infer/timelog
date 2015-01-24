@@ -35,6 +35,7 @@ typedef struct _timepoint
   char hts[17]; /* Human readable timestamp of local time at location. */
   char etz[49]; /* Contents of environment variable TZ. */
   char rtz[49]; /* Resulting time zone. */
+  int64_t cts; /* Calendar time. Number of seconds since the Epoch. */
 } timepoint;
 
 typedef struct _tlentry
@@ -191,10 +192,11 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   }
 
   /* If the user provided the date, we check it now. */
+  tpt->cts = (int64_t) mktime(&sts);
   if (docmpts)
   {
-    time_t cmp = mktime(&sts);
-    (void)strftime(tpt->hts, sizeof(tpt->hts), format, localtime(&cmp));
+    (void)strftime(tpt->hts, sizeof(tpt->hts), format,
+      localtime((time_t*) &tpt->cts));
     if (strcmp(ts, tpt->hts) != 0)
     {
       return NULL;
