@@ -34,7 +34,7 @@ typedef struct _timepoint
   char msg[65]; /* Message. */
   char hts[17]; /* Human readable timestamp of local time at location. */
   char etz[49]; /* Contents of environment variable TZ. */
-  struct tm ts; /* Timestamp. */
+  char rtz[49]; /* Resulting time zone. */
 } timepoint;
 
 typedef struct _tlentry
@@ -137,6 +137,7 @@ rollback_init:
 timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   const char* ts)
 {
+  struct tm sts; /* Timestamp. */
   time_t currtime;
   bool docmpts = false; /* Flag used to indicate when ts should be compared. */
   char format[] = "%Y-%m-%dT%H:%M"; /* Fmt of the human readable timestamp. */
@@ -158,26 +159,26 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 
   /* Get current local time, set seconds to 0. */
   (void)time(&currtime);
-  (void)localtime_r(&currtime, &(tpt->ts));
-  tpt->ts.tm_sec = 0;
+  (void)localtime_r(&currtime, &sts);
+  sts.tm_sec = 0;
 
   /* If a timestamp was provided, overwrite with user-provided values. */
   if (ts != NULL)
   {
     if (!(strlen(ts) == 5
       && sscanf(ts, "%2d:%2d",
-        &(tpt->ts.tm_hour), &(tpt->ts.tm_min)) == 2
-      && tpt->ts.tm_hour >= 0 && tpt->ts.tm_hour <= 23
-      && tpt->ts.tm_min >= 0 && tpt->ts.tm_hour <= 59))
+        &(sts.tm_hour), &(sts.tm_min)) == 2
+      && sts.tm_hour >= 0 && sts.tm_hour <= 23
+      && sts.tm_min >= 0 && sts.tm_hour <= 59))
     {
       if (strlen(ts) == 16
         && sscanf(ts, "%4d-%2d-%2dT%2d:%2d",
-          &(tpt->ts.tm_year), &(tpt->ts.tm_mon), &(tpt->ts.tm_mday),
-          &(tpt->ts.tm_hour), &(tpt->ts.tm_min)) == 5)
+          &(sts.tm_year), &(sts.tm_mon), &(sts.tm_mday),
+          &(sts.tm_hour), &(sts.tm_min)) == 5)
       {
         /* See ctime(3) */
-        tpt->ts.tm_year -= 1900;
-        tpt->ts.tm_mon -= 1;
+        sts.tm_year -= 1900;
+        sts.tm_mon -= 1;
 
         docmpts = true;
       }
@@ -191,7 +192,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   /* If the user provided the date, we check it now. */
   if (docmpts)
   {
-    time_t cmp = mktime(&(tpt->ts));
+    time_t cmp = mktime(&sts);
     (void)strftime(tpt->hts, sizeof(tpt->hts), format, localtime(&cmp));
     if (strcmp(ts, tpt->hts) != 0)
     {
@@ -200,7 +201,12 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   }
   else
   {
-    (void)strftime(tpt->hts, sizeof(tpt->hts), format, &(tpt->ts));
+    (void)strftime(tpt->hts, sizeof(tpt->hts), format, &sts);
+  }
+
+  if (strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz))
+  {
+    return NULL;
   }
 
   if (msg != NULL)
@@ -367,7 +373,7 @@ int main (int argc, char* argv[])
         exit(EXIT_FAILURE);
       }
       fprintf(stderr, "%s: Using datetime `%s' with time zone `%s' "
-        "for timestamp.\n", pname, tpt.hts, tpt.ts.tm_zone);
+        "for timestamp.\n", pname, tpt.hts, tpt.rtz);
 
       exit(EXIT_SUCCESS);
     }
