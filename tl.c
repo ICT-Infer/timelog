@@ -137,10 +137,6 @@ rollback_init:
 timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   const char* ts)
 {
-  /*
-   * FIXME MAYBE: Some OS' accept an invalid TZ and silently use UTC.
-   *              Can we do something about that?
-   */
   time_t currtime;
   bool docmpts = false; /* Flag used to indicate when ts should be compared. */
   char format[] = "%Y-%m-%dT%H:%M"; /* Fmt of the human readable timestamp. */
