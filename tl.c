@@ -151,11 +151,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   DBT key;
   DBT data;
 
-  memset(tpt->loc, 0, sizeof(tpt->loc));
-  memset(tpt->msg, 0, sizeof(tpt->msg));
-  memset(tpt->hts, 0, sizeof(tpt->hts));
-  memset(tpt->etz, 0, sizeof(tpt->etz));
-  memset(tpt->rtz, 0, sizeof(tpt->rtz));
+  memset(tpt, 0, sizeof(*tpt));
 
   if (chdir(f_tldir) != 0)
   {
