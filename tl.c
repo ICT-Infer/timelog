@@ -145,6 +145,21 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   bool docmpts = false; /* Flag used to indicate when ts should be compared. */
   char format[] = "%Y-%m-%dT%H:%M"; /* Fmt of the human readable timestamp. */
 
+  const char f_tldir[] = ".tl/";
+  const char f_tps[] = "tps.db";
+  DB* tl_tps;
+
+  /*RECNOINFO info;*/
+  struct stat st_tps;
+  recno_t kval;
+  DBT key;
+  DBT data;
+
+  if (chdir(f_tldir) != 0)
+  {
+    return NULL;
+  }
+
   /* Get current local time, set seconds to 0. */
   (void)time(&currtime);
   (void)localtime_r(&currtime, &(tpt->ts));
@@ -207,6 +222,27 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
       return NULL;
     }
   }
+
+  tl_tps = dbopen(f_tps, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
+  if (tl_tps == NULL)
+  {
+    return NULL;
+  }
+
+  if (stat(f_tps, &st_tps) != 0)
+  {
+    tl_tps->close(tl_tps);
+    return NULL;
+  }
+
+  kval = (st_tps.st_size/sizeof(*tpt));
+  key.size = sizeof(&kval);
+  key.data = &kval;
+  data.size = sizeof(*tpt);
+  data.data = tpt;
+
+  tl_tps->put(tl_tps, &key, &data, R_IAFTER);
+  tl_tps->close(tl_tps);
 
   return tpt;
 }
@@ -337,8 +373,7 @@ int main (int argc, char* argv[])
       fprintf(stderr, "%s: Using datetime `%s' with time zone `%s' "
         "for timestamp.\n", pname, tpt.hts, tpt.ts.tm_zone);
 
-      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
-      exit(EXIT_FAILURE);
+      exit(EXIT_SUCCESS);
     }
     else if (strcmp(cmd, "pending") == 0)
     {
