@@ -432,6 +432,14 @@ int main (int argc, char* argv[])
     }
     else if (strcmp(cmd, "pending") == 0)
     {
+      if (cmd_argc > 1)
+      {
+        fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+          "First: `%s'.\n\n", pname, cmd, cmd_argc - 1, cmd_argv[1]);
+        usage(pname);
+        exit(EXIT_FAILURE);
+      }
+
       fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
       exit(EXIT_FAILURE);
     }
