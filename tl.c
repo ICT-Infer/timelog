@@ -179,23 +179,14 @@ DB* open_tldb (dottl* cdtl)
   return cdtl->tl;
 }
 
-timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
+/* Initialize a timepoint. */
+timepoint* tpt_init (timepoint* tpt,
   const char* loc, const char* msg, const char* ts)
 {
   struct tm sts; /* Timestamp. */
   time_t currtime;
   bool docmpts = false; /* Flag used to indicate when ts should be compared. */
   char format[] = "%Y-%m-%dT%H:%M"; /* Fmt of the human readable timestamp. */
-
-  struct stat st_tps;
-  recno_t kval;
-  DBT key;
-  DBT data;
-
-  if (open_tpsdb(cdtl) == NULL)
-  {
-    return NULL;
-  }
 
   memset(tpt, 0, sizeof(*tpt));
 
@@ -226,7 +217,6 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
       }
       else
       {
-        cdtl->tps->close(cdtl->tps);
         return NULL;
       }
     }
@@ -240,7 +230,6 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
       localtime((time_t*) &tpt->cts));
     if (strcmp(ts, tpt->hts) != 0)
     {
-      cdtl->tps->close(cdtl->tps);
       return NULL;
     }
   }
@@ -251,7 +240,6 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
 
   if (strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz))
   {
-    cdtl->tps->close(cdtl->tps);
     return NULL;
   }
 
@@ -259,7 +247,6 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   {
     if (strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
     {
-      cdtl->tps->close(cdtl->tps);
       return NULL;
     }
   }
@@ -268,12 +255,28 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   {
     if (strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc))
     {
-      cdtl->tps->close(cdtl->tps);
       return NULL;
     }
   }
 
-  if (fstat(cdtl->tps->fd(cdtl->tps), &st_tps) != 0)
+  return tpt;
+}
+
+timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
+  const char* loc, const char* msg, const char* ts)
+{
+  struct stat st_tps;
+  recno_t kval;
+  DBT key;
+  DBT data;
+
+  if (open_tpsdb(cdtl) == NULL)
+  {
+    return NULL;
+  }
+
+  if (fstat(cdtl->tps->fd(cdtl->tps), &st_tps) != 0
+    || (tpt = tpt_init(tpt, loc, msg, ts)) == NULL)
   {
     cdtl->tps->close(cdtl->tps);
     return NULL;
@@ -285,9 +288,13 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   data.size = sizeof(*tpt);
   data.data = tpt;
 
-  cdtl->tps->put(cdtl->tps, &key, &data, R_SETCURSOR);
-  cdtl->tps->close(cdtl->tps);
+  if (cdtl->tps->put(cdtl->tps, &key, &data, R_SETCURSOR) != 0)
+  {
+    cdtl->tps->close(cdtl->tps);
+    return NULL;
+  }
 
+  cdtl->tps->close(cdtl->tps);
   return tpt;
 }
 
