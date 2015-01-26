@@ -44,6 +44,15 @@ typedef struct _tlentry
   timepoint end;
 } tlentry;
 
+typedef struct _dottl
+{
+  char* f_dir;
+  char* f_tps;
+  char* f_tl;
+  DB* tps;
+  DB* tl;
+} dottl;
+
 void usage(const char* pname)
 {
   fprintf(stderr, "Usage:\n");
@@ -66,51 +75,51 @@ void usage(const char* pname)
  * On failure, rollback is attempted.  Should rollback fail,
  * the return value is sign-swapped, thus becoming negative.
  */
-int tl_init()
+int tl_init(dottl* cdtl)
 {
-  const char f_tldir[] = ".tl/";
-  const char f_tldb[] = "tl.db";
-  const char f_tps[] = "tps.db";
-  DB* tl_db;
-  DB* tps_db;
+  int rem = 5; /* Stages remaining */
 
-  int rem = 4; /* Stages remaining */
-
-  if (mkdir(f_tldir, 00755) != 0)
+  if (cdtl->tl != NULL || cdtl->tps != NULL)
   {
     goto rollback_init;
   }
   rem--;
 
-  if (chdir(f_tldir) != 0)
+  if (mkdir(cdtl->f_dir, 00755) != 0)
   {
     goto rollback_init;
   }
   rem--;
 
-  tl_db = dbopen(f_tldb, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
-  if (tl_db == NULL)
+  if (chdir(cdtl->f_dir) != 0)
   {
     goto rollback_init;
   }
   rem--;
-  tl_db->close(tl_db);
 
-  tps_db = dbopen(f_tps, O_CREAT | O_EXCL | O_RDWR, 00644, DB_RECNO, NULL);
-  if (tps_db == NULL)
+  if ((cdtl->tl = dbopen(cdtl->f_tl, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
+    00644, DB_RECNO, NULL)) == NULL)
   {
     goto rollback_init;
   }
   rem--;
-  tps_db->close(tps_db);
 
+  if ((cdtl->tps = dbopen(cdtl->f_tps, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
+    00644, DB_RECNO, NULL)) == NULL)
+  {
+    goto rollback_init;
+  }
+  rem--;
+
+  chdir("..");
   return rem;
 
 rollback_init:
   switch (rem)
   {
     case 1:
-      if (unlink(f_tldb) != 0)
+      cdtl->tl->close(cdtl->tl);
+      if (unlink(cdtl->f_tl) != 0)
       {
         return -rem;
       }
@@ -118,12 +127,15 @@ rollback_init:
     case 2:
       /* FALLTHROUGH */
     case 3:
-      if (rmdir(f_tldir) != 0)
+      chdir("..");
+      if (rmdir(cdtl->f_dir) != 0)
       {
         return -rem;
       }
       /* FALLTHROUGH */
     case 4:
+      /* FALLTHROUGH */
+    case 5:
       return rem;
       break;
     default:
@@ -131,33 +143,61 @@ rollback_init:
       {
         return -rem;
       }
-      return -5;
+      return -6;
   }
 }
 
-timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
-  const char* ts)
+DB* open_tpsdb (dottl* cdtl)
+{
+  if (cdtl->tps != NULL || chdir(cdtl->f_dir) != 0)
+  {
+    return NULL;
+  }
+  if ((cdtl->tps = dbopen(cdtl->f_tps, O_RDWR | O_EXLOCK,
+    00644, DB_RECNO, NULL)) == NULL)
+  {
+    chdir("..");
+    return NULL;
+  }
+  chdir("..");
+  return cdtl->tps;
+}
+
+DB* open_tldb (dottl* cdtl)
+{
+  if (cdtl->tl != NULL || chdir(cdtl->f_dir) != 0)
+  {
+    return NULL;
+  }
+  if ((cdtl->tl = dbopen(cdtl->f_tl, O_RDWR | O_EXLOCK,
+    00644, DB_RECNO, NULL)) == NULL)
+  {
+    chdir("..");
+    return NULL;
+  }
+  chdir("..");
+  return cdtl->tl;
+}
+
+timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
+  const char* loc, const char* msg, const char* ts)
 {
   struct tm sts; /* Timestamp. */
   time_t currtime;
   bool docmpts = false; /* Flag used to indicate when ts should be compared. */
   char format[] = "%Y-%m-%dT%H:%M"; /* Fmt of the human readable timestamp. */
 
-  const char f_tldir[] = ".tl/";
-  const char f_tps[] = "tps.db";
-  DB* tps_db;
-
   struct stat st_tps;
   recno_t kval;
   DBT key;
   DBT data;
 
-  memset(tpt, 0, sizeof(*tpt));
-
-  if (chdir(f_tldir) != 0)
+  if (open_tpsdb(cdtl) == NULL)
   {
     return NULL;
   }
+
+  memset(tpt, 0, sizeof(*tpt));
 
   /* Get current local time, set seconds to 0. */
   (void)time(&currtime);
@@ -186,6 +226,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
       }
       else
       {
+        cdtl->tps->close(cdtl->tps);
         return NULL;
       }
     }
@@ -199,6 +240,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
       localtime((time_t*) &tpt->cts));
     if (strcmp(ts, tpt->hts) != 0)
     {
+      cdtl->tps->close(cdtl->tps);
       return NULL;
     }
   }
@@ -209,6 +251,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
 
   if (strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz))
   {
+    cdtl->tps->close(cdtl->tps);
     return NULL;
   }
 
@@ -216,6 +259,7 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   {
     if (strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
     {
+      cdtl->tps->close(cdtl->tps);
       return NULL;
     }
   }
@@ -224,19 +268,14 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   {
     if (strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc))
     {
+      cdtl->tps->close(cdtl->tps);
       return NULL;
     }
   }
 
-  tps_db = dbopen(f_tps, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
-  if (tps_db == NULL)
+  if (fstat(cdtl->tps->fd(cdtl->tps), &st_tps) != 0)
   {
-    return NULL;
-  }
-
-  if (stat(f_tps, &st_tps) != 0)
-  {
-    tps_db->close(tps_db);
+    cdtl->tps->close(cdtl->tps);
     return NULL;
   }
 
@@ -246,8 +285,8 @@ timepoint* tl_timepoint(timepoint* tpt, const char* loc, const char* msg,
   data.size = sizeof(*tpt);
   data.data = tpt;
 
-  tps_db->put(tps_db, &key, &data, R_SETCURSOR);
-  tps_db->close(tps_db);
+  cdtl->tps->put(cdtl->tps, &key, &data, R_SETCURSOR);
+  cdtl->tps->close(cdtl->tps);
 
   return tpt;
 }
@@ -310,6 +349,7 @@ int main (int argc, char* argv[])
   int cmd_argc;
   char** cmd_argv;
   timepoint* tpt_res;
+  dottl cdtl = {".tl/", "tps.db", "tl.db", NULL, NULL}; /* Current dottl. */
 
   if (argc < 2)
   {
@@ -332,12 +372,14 @@ int main (int argc, char* argv[])
       exit(EXIT_FAILURE);
     }
 
-    r_init = tl_init();
+    r_init = tl_init(&cdtl);
     if (r_init != 0)
     {
       fprintf(stderr, "%s: %s: Failed. Error: `%d'.\n", pname, cmd, r_init);
       exit(EXIT_FAILURE);
     }
+    cdtl.tl->close(cdtl.tl);
+    cdtl.tps->close(cdtl.tps);
   }
   else
   {
@@ -417,7 +459,7 @@ int main (int argc, char* argv[])
         cmd_argv_parse++;
       }
 
-      tpt_res = tl_timepoint(&tpt, loc, msg, ts);
+      tpt_res = tl_timepoint(&cdtl, &tpt, loc, msg, ts);
 
       if (tpt_res == NULL)
       {
