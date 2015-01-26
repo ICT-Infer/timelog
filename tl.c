@@ -125,9 +125,9 @@ rollback_init:
       }
       /* FALLTHROUGH */
     case 2:
+      chdir("..");
       /* FALLTHROUGH */
     case 3:
-      chdir("..");
       if (rmdir(cdtl->f_dir) != 0)
       {
         return -rem;
