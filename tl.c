@@ -77,7 +77,7 @@ void usage(const char* pname)
  */
 int tl_init(dottl* cdtl)
 {
-  int rem = 5; /* Stages remaining */
+  int rem = 4; /* Stages remaining */
 
   if (cdtl->tl != NULL || cdtl->tps != NULL)
   {
@@ -86,12 +86,6 @@ int tl_init(dottl* cdtl)
   rem--;
 
   if (mkdir(cdtl->f_dir, 00755) != 0)
-  {
-    goto rollback_init;
-  }
-  rem--;
-
-  if (chdir(cdtl->f_dir) != 0)
   {
     goto rollback_init;
   }
@@ -111,7 +105,6 @@ int tl_init(dottl* cdtl)
   }
   rem--;
 
-  chdir("..");
   return rem;
 
 rollback_init:
@@ -125,17 +118,14 @@ rollback_init:
       }
       /* FALLTHROUGH */
     case 2:
-      chdir("..");
-      /* FALLTHROUGH */
-    case 3:
       if (rmdir(cdtl->f_dir) != 0)
       {
         return -rem;
       }
       /* FALLTHROUGH */
-    case 4:
+    case 3:
       /* FALLTHROUGH */
-    case 5:
+    case 4:
       return rem;
       break;
     default:
@@ -143,39 +133,29 @@ rollback_init:
       {
         return -rem;
       }
-      return -6;
+      return -5;
   }
 }
 
 DB* open_tpsdb (dottl* cdtl)
 {
-  if (cdtl->tps != NULL || chdir(cdtl->f_dir) != 0)
+  if (cdtl->tps != NULL
+    || (cdtl->tps = dbopen(cdtl->f_tps, O_RDWR | O_EXLOCK,
+      00644, DB_RECNO, NULL)) == NULL)
   {
     return NULL;
   }
-  if ((cdtl->tps = dbopen(cdtl->f_tps, O_RDWR | O_EXLOCK,
-    00644, DB_RECNO, NULL)) == NULL)
-  {
-    chdir("..");
-    return NULL;
-  }
-  chdir("..");
   return cdtl->tps;
 }
 
 DB* open_tldb (dottl* cdtl)
 {
-  if (cdtl->tl != NULL || chdir(cdtl->f_dir) != 0)
+  if (cdtl->tl != NULL
+    || (cdtl->tl = dbopen(cdtl->f_tl, O_RDWR | O_EXLOCK,
+      00644, DB_RECNO, NULL)) == NULL)
   {
     return NULL;
   }
-  if ((cdtl->tl = dbopen(cdtl->f_tl, O_RDWR | O_EXLOCK,
-    00644, DB_RECNO, NULL)) == NULL)
-  {
-    chdir("..");
-    return NULL;
-  }
-  chdir("..");
   return cdtl->tl;
 }
 
@@ -335,7 +315,9 @@ int main (int argc, char* argv[])
   int cmd_argc;
   char** cmd_argv;
   timepoint* tpt_res;
-  dottl cdtl = {".tl/", "tps.db", "tl.db", NULL, NULL}; /* Current dottl. */
+
+  /* Current dottl. */
+  dottl cdtl = {".tl/", ".tl/tps.db", ".tl/tl.db", NULL, NULL};
 
   if (argc < 2)
   {
