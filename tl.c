@@ -509,7 +509,7 @@ int main (int argc, char* argv[])
       {
         exit(EXIT_FAILURE);
       }
-      fprintf(stderr, "%s", buf);
+      printf("%s", buf);
       free(buf);
       exit(EXIT_SUCCESS);
     }
