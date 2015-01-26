@@ -238,25 +238,13 @@ timepoint* tpt_init (timepoint* tpt,
     (void)strftime(tpt->hts, sizeof(tpt->hts), format, &sts);
   }
 
-  if (strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz))
+  if (strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz)
+    || (msg != NULL
+      && strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
+    || (loc != NULL
+      && strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc)))
   {
     return NULL;
-  }
-
-  if (msg != NULL)
-  {
-    if (strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
-    {
-      return NULL;
-    }
-  }
-
-  if (loc != NULL)
-  {
-    if (strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc))
-    {
-      return NULL;
-    }
   }
 
   return tpt;
