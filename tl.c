@@ -286,31 +286,21 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   return tpt;
 }
 
-timepoint* tl_popdrop (timepoint* tpt)
+timepoint* tl_popdrop (dottl* cdtl, timepoint* tpt)
 {
-  const char f_tldir[] = ".tl/";
-  const char f_tps[] = "tps.db";
-  DB* tps_db;
-
   struct stat st_tps;
   recno_t kval;
   DBT key;
   DBT data;
 
-  if (chdir(f_tldir) != 0)
+  if (open_tpsdb(cdtl) == NULL)
   {
     return NULL;
   }
 
-  tps_db = dbopen(f_tps, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
-  if (tps_db == NULL)
+  if (fstat(cdtl->tps->fd(cdtl->tps), &st_tps) != 0)
   {
-    return NULL;
-  }
-
-  if (stat(f_tps, &st_tps) != 0)
-  {
-    tps_db->close(tps_db);
+    cdtl->tps->close(cdtl->tps);
     return NULL;
   }
 
@@ -318,21 +308,22 @@ timepoint* tl_popdrop (timepoint* tpt)
   key.size = sizeof(&kval);
   key.data = &kval;
 
-  tps_db->seq(tps_db, &key, &data, R_CURSOR);
+  cdtl->tps->seq(cdtl->tps, &key, &data, R_CURSOR);
 
   if (data.size != sizeof(*tpt))
   {
+    cdtl->tps->close(cdtl->tps);
     return NULL;
   }
   memcpy(tpt, data.data, sizeof(*tpt));
 
-  if (tps_db->del(tps_db, &key, R_CURSOR) != 0)
+  if (cdtl->tps->del(cdtl->tps, &key, R_CURSOR) != 0)
   {
-    tps_db->close(tps_db);
+    cdtl->tps->close(cdtl->tps);
     return NULL;
   }
-  tps_db->close(tps_db);
 
+  cdtl->tps->close(cdtl->tps);
   return tpt;
 }
 
@@ -492,7 +483,7 @@ int main (int argc, char* argv[])
         exit(EXIT_FAILURE);
       }
 
-      if (tl_popdrop(&tpt) == NULL)
+      if (tl_popdrop(&cdtl, &tpt) == NULL)
       {
         exit(EXIT_FAILURE);
       }
