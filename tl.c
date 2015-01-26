@@ -230,6 +230,38 @@ timepoint* tpt_init (timepoint* tpt,
   return tpt;
 }
 
+/* Prepares pretty print of timepoint. */
+char** tpt_ppprint(const timepoint* tpt, char** buf)
+{
+  size_t msize =
+    sizeof(tpt->hts)
+    + sizeof(char) * 2  + sizeof(tpt->rtz) + sizeof(char)
+    + sizeof(char) * 2 + sizeof(tpt->loc) + sizeof(char)
+    + sizeof(char) * 3 + sizeof(tpt->msg) + sizeof(char) * 3;
+  if((*buf = (char*)malloc(msize)) == NULL)
+  {
+    return NULL;
+  }
+
+  strlcpy(*buf, tpt->hts, msize);
+  strlcat(*buf, " (", msize);
+  strlcat(*buf, tpt->rtz, msize);
+  strlcat(*buf, ")", msize);
+  if (*(tpt->loc) != 0x00)
+  {
+    strlcat(*buf, ", ", msize);
+    strlcat(*buf, tpt->loc, msize);
+  }
+  strlcat(*buf, "\n", msize);
+  if (*(tpt->msg) != 0x00)
+  {
+    strlcat(*buf, "\n  ", msize);
+    strlcat(*buf, tpt->msg, msize);
+    strlcat(*buf, "\n\n", msize);
+  }
+  return buf;
+}
+
 timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   const char* loc, const char* msg, const char* ts)
 {
@@ -435,8 +467,8 @@ int main (int argc, char* argv[])
         fprintf(stderr, "%s: %s: Failed.\n", pname, cmd);
         exit(EXIT_FAILURE);
       }
-      fprintf(stderr, "%s: Using datetime `%s' with time zone `%s' "
-        "for timestamp.\n", pname, tpt.hts, tpt.rtz);
+      fprintf(stderr, "Timepoint at `%s' in TZ `%s'.\n",
+        tpt.hts, tpt.rtz);
 
       exit(EXIT_SUCCESS);
     }
@@ -456,6 +488,7 @@ int main (int argc, char* argv[])
     else if (strcmp(cmd, "pop-drop") == 0)
     {
       timepoint tpt;
+      char* buf = NULL;
 
       if (cmd_argc > 1)
       {
@@ -469,6 +502,12 @@ int main (int argc, char* argv[])
       {
         exit(EXIT_FAILURE);
       }
+      if (tpt_ppprint(&tpt, &buf) == NULL)
+      {
+        exit(EXIT_FAILURE);
+      }
+      fprintf(stderr, "%s", buf);
+      free(buf);
       exit(EXIT_SUCCESS);
     }
     else if (strcmp(cmd, "merge-add") == 0)
