@@ -498,6 +498,9 @@ int main (int argc, char* argv[])
         exit(EXIT_FAILURE);
       }
 
+      /* TODO: change this so that we first ensure
+               we can print it before we delete.
+               i.e. retrieve tpt separately first. */
       if (tl_popdrop(&cdtl, &tpt) == NULL)
       {
         exit(EXIT_FAILURE);
