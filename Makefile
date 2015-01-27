@@ -10,7 +10,7 @@ clean:
 	rm tests
 
 tests: tests.c
-	cc -o tests tests.c
+	cc -Wall -ansi -pedantic -O0 -g  -o tests tests.c
 
 .PHONY: test
 test: tests bin/tl
