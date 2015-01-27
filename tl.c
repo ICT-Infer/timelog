@@ -53,7 +53,7 @@ typedef struct _dottl
   DB* tl;
 } dottl;
 
-void usage(const char* pname)
+void usage (const char* pname)
 {
   fprintf(stderr, "Usage:\n");
   fprintf(stderr, " %s init\n", pname);
@@ -75,7 +75,7 @@ void usage(const char* pname)
  * On failure, rollback is attempted.  Should rollback fail,
  * the return value is sign-swapped, thus becoming negative.
  */
-int tl_init(dottl* cdtl)
+int tl_init (dottl* cdtl)
 {
   int rem = 4; /* Stages remaining */
 
@@ -231,7 +231,7 @@ timepoint* tpt_init (timepoint* tpt,
 }
 
 /* Prepares pretty print of timepoint. */
-char** tpt_ppprint(const timepoint* tpt, char** buf)
+char** tpt_ppprint (const timepoint* tpt, char** buf)
 {
   size_t msize =
     sizeof(tpt->hts)
