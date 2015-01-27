@@ -53,6 +53,12 @@ typedef struct _dottl
   DB* tl;
 } dottl;
 
+typedef struct _cmd
+{
+  char* name;
+  int (*f)(int, char**, char*, char*, dottl*);
+} cmd;
+
 void usage (const char* pname)
 {
   fprintf(stderr, "Usage:\n");
@@ -339,17 +345,190 @@ timepoint* tl_popdrop (dottl* cdtl, timepoint* tpt)
   return tpt;
 }
 
+/*
+ * Dummy command
+ * Use for commands which have not been implemented.
+ */
+int cmd_dummy (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
+{
+  fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
+  return EXIT_FAILURE;
+}
+
+/*
+ * Command: init
+ * Initialize time log.
+ */
+int cmd_init (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
+{
+  int r_init;
+
+  if (cargc > 1)
+  {
+    fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+      "First: `%s'.\n\n", pname, cmd, cargc - 1, cargv[1]);
+    usage(pname);
+    return EXIT_FAILURE;
+  }
+
+  r_init = tl_init(cdtl);
+  if (r_init != 0)
+  {
+    fprintf(stderr, "%s: %s: Failed. Error: `%d'.\n",
+      pname, cmd, r_init);
+    return EXIT_FAILURE;
+  }
+  cdtl->tl->close(cdtl->tl);
+  cdtl->tps->close(cdtl->tps);
+  return EXIT_SUCCESS;
+}
+
+/*
+ * Command: timepoint
+ * Add a timepoint to timepoint stack.
+ */
+int cmd_timepoint (int cargc, char** cargv,
+  char* pname, char* cmd, dottl* cdtl)
+{
+  timepoint tpt;
+  timepoint* tpt_res;
+  char* loc = NULL;
+  char* msg = NULL;
+  char* ts = NULL;
+
+  bool ap_loc = false;
+  bool ap_msg = false;
+  bool ap_ts = false;
+  int cargc_parse = cargc - 1;
+  char** cargv_parse = &(cargv[1]);
+  while (cargc_parse > 0)
+  {
+    if (strcmp(cargv_parse[0], "-l") == 0)
+    {
+      if (ap_loc)
+      {
+        fprintf(stderr, "%s: %s: Duplicate `-l'.\n", pname, cmd);
+        return EXIT_FAILURE;
+      }
+      if (cargc_parse < 2 || strncmp(cargv_parse[1], "-", 1) == 0)
+      {
+        fprintf(stderr, "%s: %s: `-l': Missing location.\n", pname, cmd);
+        return EXIT_FAILURE;
+      }
+      ap_loc = true;
+      loc = cargv_parse[1];
+      cargc_parse--;
+      cargv_parse++;
+    }
+    else if (strcmp(cargv_parse[0], "-m") == 0)
+    {
+      if (ap_msg)
+      {
+        fprintf(stderr, "%s: %s: Duplicate `-m'.\n", pname, cmd);
+        return EXIT_FAILURE;
+      }
+      if (cargc_parse < 2 || strncmp(cargv_parse[1], "-", 1) == 0)
+      {
+        fprintf(stderr, "%s: %s: `-m': Missing message.\n", pname, cmd);
+        return EXIT_FAILURE;
+      }
+      ap_msg = true;
+      msg = cargv_parse[1];
+      cargc_parse--;
+      cargv_parse++;
+    }
+    else if (strcmp(cargv_parse[0], "-t") == 0)
+    {
+      if (ap_ts)
+      {
+        fprintf(stderr, "%s: %s: Duplicate `-t'.\n", pname, cmd);
+        return EXIT_FAILURE;
+      }
+      if (cargc_parse < 2 || strncmp(cargv_parse[1], "-", 1) == 0)
+      {
+        fprintf(stderr, "%s: %s: `-t': Missing timestamp.\n", pname, cmd);
+        return EXIT_FAILURE;
+      }
+      ap_ts = true;
+      ts = cargv_parse[1];
+      cargc_parse--;
+      cargv_parse++;
+    }
+    else
+    {
+      fprintf(stderr, "%s: %s: Invalid argument `%s'.\n",
+        pname, cmd, cargv_parse[0]);
+      return EXIT_FAILURE;
+    }
+    cargc_parse--;
+    cargv_parse++;
+  }
+
+  tpt_res = tl_timepoint(cdtl, &tpt, loc, msg, ts);
+
+  if (tpt_res == NULL)
+  {
+    fprintf(stderr, "%s: %s: Failed.\n", pname, cmd);
+    return EXIT_FAILURE;
+  }
+  fprintf(stderr, "Timepoint at `%s' in TZ `%s'.\n", tpt.hts, tpt.rtz);
+
+  return EXIT_SUCCESS;
+}
+
+int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
+{
+  timepoint tpt;
+  char* buf = NULL;
+
+  if (cargc > 1)
+  {
+    fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+      "First: `%s'.\n\n", pname, cmd, cargc - 1, cargv[1]);
+    usage(pname);
+    return EXIT_FAILURE;
+  }
+
+  /* TODO: change this so that we first ensure
+           we can print it before we delete.
+           i.e. retrieve tpt separately first. */
+  if (tl_popdrop(cdtl, &tpt) == NULL)
+  {
+    return EXIT_FAILURE;
+  }
+  if (tpt_ppprint(&tpt, &buf) == NULL)
+  {
+    return EXIT_FAILURE;
+  }
+  printf("%s", buf);
+  free(buf);
+  exit(EXIT_SUCCESS);
+}
+
 int main (int argc, char* argv[])
 {
+  /* TODO MAYBE: When an error occurs, report to user what went wrong. */
   char* pname = argv[0];
-  int r_init;
-  char* cmd;
+
+  char* cmd_req;
   int cmd_argc;
   char** cmd_argv;
-  timepoint* tpt_res;
 
   /* Current dottl. */
   dottl cdtl = {".tl/", ".tl/tps.db", ".tl/tl.db", NULL, NULL};
+
+  /* Commands. */
+  cmd cmds[] =
+  {
+    {"init", &cmd_init},
+    {"timepoint", &cmd_timepoint},
+    {"pending", &cmd_dummy},
+    {"pop-drop", &cmd_popdrop},
+    {"merge-add", &cmd_dummy},
+    {"unlog", &cmd_dummy},
+    {"report", &cmd_dummy},
+  };
+  cmd* cmd_cur;
 
   if (argc < 2)
   {
@@ -358,183 +537,19 @@ int main (int argc, char* argv[])
     exit(EXIT_FAILURE);
   }
 
-  cmd = argv[1];
+  cmd_req = argv[1];
   cmd_argc = argc - 1;
   cmd_argv = &(argv[1]);
 
-  if (strcmp(cmd, "init") == 0)
+  for (cmd_cur = cmds ; cmd_cur < &cmds[sizeof(cmds)/sizeof(cmds[0])] ; cmd_cur++)
   {
-    if (cmd_argc > 1)
+    if (strcmp(cmd_cur->name, cmd_req) == 0)
     {
-      fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
-        "First: `%s'.\n\n", pname, cmd, cmd_argc - 1, cmd_argv[1]);
-      usage(pname);
-      exit(EXIT_FAILURE);
-    }
-
-    r_init = tl_init(&cdtl);
-    if (r_init != 0)
-    {
-      fprintf(stderr, "%s: %s: Failed. Error: `%d'.\n", pname, cmd, r_init);
-      exit(EXIT_FAILURE);
-    }
-    cdtl.tl->close(cdtl.tl);
-    cdtl.tps->close(cdtl.tps);
-  }
-  else
-  {
-    if (strcmp(cmd, "timepoint") == 0)
-    {
-      timepoint tpt;
-
-      char* loc = NULL;
-      char* msg = NULL;
-      char* ts = NULL;
-
-      bool ap_loc = false;
-      bool ap_msg = false;
-      bool ap_ts = false;
-      int cmd_argc_parse = cmd_argc - 1;
-      char** cmd_argv_parse = &(cmd_argv[1]);
-      while (cmd_argc_parse > 0)
-      {
-        if (strcmp(cmd_argv_parse[0], "-l") == 0)
-        {
-          if (ap_loc)
-          {
-            fprintf(stderr, "%s: %s: Duplicate `-l'.\n", pname, cmd);
-            exit(EXIT_FAILURE);
-          }
-          if (cmd_argc_parse < 2 || strncmp(cmd_argv_parse[1], "-", 1) == 0)
-          {
-            fprintf(stderr, "%s: %s: `-l': Missing location.\n", pname, cmd);
-            exit(EXIT_FAILURE);
-          }
-          ap_loc = true;
-          loc = cmd_argv_parse[1];
-          cmd_argc_parse--;
-          cmd_argv_parse++;
-        }
-        else if (strcmp(cmd_argv_parse[0], "-m") == 0)
-        {
-          if (ap_msg)
-          {
-            fprintf(stderr, "%s: %s: Duplicate `-m'.\n", pname, cmd);
-            exit(EXIT_FAILURE);
-          }
-          if (cmd_argc_parse < 2 || strncmp(cmd_argv_parse[1], "-", 1) == 0)
-          {
-            fprintf(stderr, "%s: %s: `-m': Missing message.\n", pname, cmd);
-            exit(EXIT_FAILURE);
-          }
-          ap_msg = true;
-          msg = cmd_argv_parse[1];
-          cmd_argc_parse--;
-          cmd_argv_parse++;
-        }
-        else if (strcmp(cmd_argv_parse[0], "-t") == 0)
-        {
-          if (ap_ts)
-          {
-            fprintf(stderr, "%s: %s: Duplicate `-t'.\n", pname, cmd);
-            exit(EXIT_FAILURE);
-          }
-          if (cmd_argc_parse < 2 || strncmp(cmd_argv_parse[1], "-", 1) == 0)
-          {
-            fprintf(stderr, "%s: %s: `-t': Missing timestamp.\n", pname, cmd);
-            exit(EXIT_FAILURE);
-          }
-          ap_ts = true;
-          ts = cmd_argv_parse[1];
-          cmd_argc_parse--;
-          cmd_argv_parse++;
-        }
-        else
-        {
-          fprintf(stderr, "%s: %s: Invalid argument `%s'.\n",
-            pname, cmd, cmd_argv_parse[0]);
-          exit(EXIT_FAILURE);
-        }
-        cmd_argc_parse--;
-        cmd_argv_parse++;
-      }
-
-      tpt_res = tl_timepoint(&cdtl, &tpt, loc, msg, ts);
-
-      if (tpt_res == NULL)
-      {
-        /* TODO MAYBE: Indicate what went wrong and report to user. */
-        fprintf(stderr, "%s: %s: Failed.\n", pname, cmd);
-        exit(EXIT_FAILURE);
-      }
-      fprintf(stderr, "Timepoint at `%s' in TZ `%s'.\n",
-        tpt.hts, tpt.rtz);
-
-      exit(EXIT_SUCCESS);
-    }
-    else if (strcmp(cmd, "pending") == 0)
-    {
-      if (cmd_argc > 1)
-      {
-        fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
-          "First: `%s'.\n\n", pname, cmd, cmd_argc - 1, cmd_argv[1]);
-        usage(pname);
-        exit(EXIT_FAILURE);
-      }
-
-      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
-      exit(EXIT_FAILURE);
-    }
-    else if (strcmp(cmd, "pop-drop") == 0)
-    {
-      timepoint tpt;
-      char* buf = NULL;
-
-      if (cmd_argc > 1)
-      {
-        fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
-          "First: `%s'.\n\n", pname, cmd, cmd_argc - 1, cmd_argv[1]);
-        usage(pname);
-        exit(EXIT_FAILURE);
-      }
-
-      /* TODO: change this so that we first ensure
-               we can print it before we delete.
-               i.e. retrieve tpt separately first. */
-      if (tl_popdrop(&cdtl, &tpt) == NULL)
-      {
-        exit(EXIT_FAILURE);
-      }
-      if (tpt_ppprint(&tpt, &buf) == NULL)
-      {
-        exit(EXIT_FAILURE);
-      }
-      printf("%s", buf);
-      free(buf);
-      exit(EXIT_SUCCESS);
-    }
-    else if (strcmp(cmd, "merge-add") == 0)
-    {
-      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
-      exit(EXIT_FAILURE);
-    }
-    else if (strcmp(cmd, "unlog") == 0)
-    {
-      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
-      exit(EXIT_FAILURE);
-    }
-    else if (strcmp(cmd, "report") == 0)
-    {
-      fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
-      exit(EXIT_FAILURE);
-    }
-    else
-    {
-      fprintf(stderr, "%s: Unknown command `%s'.\n\n", pname, cmd);
-      usage(pname);
-      exit(EXIT_FAILURE);
+      exit((*(cmd_cur->f))(cmd_argc, cmd_argv, pname, cmd_req, &cdtl));
     }
   }
 
-  exit(EXIT_SUCCESS);
+  fprintf(stderr, "%s: Unknown command `%s'.\n\n", pname, cmd_req);
+  usage(pname);
+  exit(EXIT_FAILURE);
 }
