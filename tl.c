@@ -46,6 +46,7 @@ typedef struct _tlentry
   timepoint end;
 } tlentry;
 
+/* Information about a time log directory and its files. */
 typedef struct _dottl
 {
   char* f_dir;
@@ -55,12 +56,16 @@ typedef struct _dottl
   DB* tl;
 } dottl;
 
+/* Holds a command name and the function to execute. */
 typedef struct _cmd
 {
   char* name;
   int (*f)(int, char**, char*, char*, dottl*);
 } cmd;
 
+/*
+ * Prints a short help for how to use the program.
+ */
 void usage (const char* pname)
 {
   fprintf(stderr, "Usage:\n");
@@ -145,6 +150,9 @@ rollback_init:
   }
 }
 
+/*
+ * Open a timepoint stack database.
+ */
 DB* open_tpsdb (dottl* cdtl)
 {
   if (cdtl->tps != NULL
@@ -156,6 +164,9 @@ DB* open_tpsdb (dottl* cdtl)
   return cdtl->tps;
 }
 
+/*
+ * Open a time log database.
+ */
 DB* open_tldb (dottl* cdtl)
 {
   if (cdtl->tl != NULL
@@ -167,7 +178,9 @@ DB* open_tldb (dottl* cdtl)
   return cdtl->tl;
 }
 
-/* Initialize a timepoint. */
+/*
+ * Initialize a new timepoint.
+ */
 timepoint* tpt_init (timepoint* tpt,
   const char* loc, const char* msg, const char* ts)
 {
@@ -238,7 +251,9 @@ timepoint* tpt_init (timepoint* tpt,
   return tpt;
 }
 
-/* Prepares pretty print of timepoint. */
+/*
+ * Prepare pretty print of a timepoint.
+ */
 char** tpt_ppprint (const timepoint* tpt, char** buf)
 {
   size_t msize =
@@ -270,6 +285,13 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
   return buf;
 }
 
+/*
+ * Put a new timepoint on the timepoint stack.
+ *
+ * TODO: Instead of this calling tpt_init(...),
+ *       have it take a pre-existing timepoint
+ *       as argument.
+ */
 timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   const char* loc, const char* msg, const char* ts)
 {
@@ -306,6 +328,9 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   return tpt;
 }
 
+/*
+ * Pop a timepoint off the timepoint stack.
+ */
 timepoint* tl_popdrop (dottl* cdtl, timepoint* tpt)
 {
   struct stat st_tps;
@@ -511,6 +536,9 @@ int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
   exit(EXIT_SUCCESS);
 }
 
+/*
+ * Call function implementing requested command.
+ */
 int main (int argc, char* argv[])
 {
   char* pname = argv[0];
