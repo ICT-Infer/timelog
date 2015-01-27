@@ -14,6 +14,8 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+/* TODO MAYBE: When an error occurs, report to user what went wrong. */
+
 #include <sys/stat.h>
 #include <sys/types.h>
 
@@ -511,7 +513,6 @@ int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
 
 int main (int argc, char* argv[])
 {
-  /* TODO MAYBE: When an error occurs, report to user what went wrong. */
   char* pname = argv[0];
 
   char* cmd_req;
