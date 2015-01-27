@@ -56,7 +56,7 @@ typedef struct _dottl
   DB* tl;
 } dottl;
 
-/* Holds a command name and the function to execute. */
+/* Holds a command name and the function to call. */
 typedef struct _cmd
 {
   char* name;
