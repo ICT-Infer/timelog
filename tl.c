@@ -476,6 +476,10 @@ int cmd_timepoint (int cargc, char** cargv,
   return EXIT_SUCCESS;
 }
 
+/*
+ * Command: pop-drop
+ * Pop a timepoint off the timepoint stack and print it.
+ */
 int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
 {
   timepoint tpt;
