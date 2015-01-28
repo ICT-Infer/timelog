@@ -151,37 +151,17 @@ rollback_init:
 }
 
 /*
- * Open a timepoint stack database.
+ * Open a flatfile database.
  */
-DB* open_tpsdb (dottl* cdtl)
+DB* open_flat (char* fname)
 {
-  if (cdtl->tps != NULL
-    || (cdtl->tps = dbopen(cdtl->f_tps, O_RDWR | O_EXLOCK,
-      00644, DB_RECNO, NULL)) == NULL)
-  {
-    return NULL;
-  }
-  return cdtl->tps;
-}
-
-/*
- * Open a time log database.
- */
-DB* open_tldb (dottl* cdtl)
-{
-  if (cdtl->tl != NULL
-    || (cdtl->tl = dbopen(cdtl->f_tl, O_RDWR | O_EXLOCK,
-      00644, DB_RECNO, NULL)) == NULL)
-  {
-    return NULL;
-  }
-  return cdtl->tl;
+  return dbopen(fname, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
 }
 
 /*
  * Initialize a new timepoint.
  */
-timepoint* tpt_init (timepoint* tpt,
+int tpt_init (timepoint* tpt,
   const char* loc, const char* msg, const char* ts)
 {
   struct tm sts; /* Timestamp. */
@@ -218,7 +198,7 @@ timepoint* tpt_init (timepoint* tpt,
       }
       else
       {
-        return NULL;
+        return 1;
       }
     }
   }
@@ -231,7 +211,7 @@ timepoint* tpt_init (timepoint* tpt,
       localtime((time_t*) &tpt->cts));
     if (strcmp(ts, tpt->hts) != 0)
     {
-      return NULL;
+      return 2;
     }
   }
   else
@@ -245,10 +225,10 @@ timepoint* tpt_init (timepoint* tpt,
     || (loc != NULL
       && strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc)))
   {
-    return NULL;
+    return 3;
   }
 
-  return tpt;
+  return 0;
 }
 
 /*
@@ -286,30 +266,18 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
 }
 
 /*
- * Put a new timepoint on the timepoint stack.
- *
- * TODO: Instead of this calling tpt_init(...),
- *       have it take a pre-existing timepoint
- *       as argument.
+ * Put a timepoint on a timepoint stack.
  */
-timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
-  const char* loc, const char* msg, const char* ts)
+int put_tpt (DB* stack, timepoint* tpt)
 {
   struct stat st_tps;
   recno_t kval;
   DBT key;
   DBT data;
 
-  if (open_tpsdb(cdtl) == NULL)
+  if (tpt == NULL || fstat(stack->fd(stack), &st_tps) != 0)
   {
-    return NULL;
-  }
-
-  if (fstat(cdtl->tps->fd(cdtl->tps), &st_tps) != 0
-    || (tpt = tpt_init(tpt, loc, msg, ts)) == NULL)
-  {
-    cdtl->tps->close(cdtl->tps);
-    return NULL;
+    return 1;
   }
 
   kval = (st_tps.st_size/sizeof(*tpt)) + 1;
@@ -318,58 +286,47 @@ timepoint* tl_timepoint (dottl* cdtl, timepoint* tpt,
   data.size = sizeof(*tpt);
   data.data = tpt;
 
-  if (cdtl->tps->put(cdtl->tps, &key, &data, R_SETCURSOR) != 0)
+  if (stack->put(stack, &key, &data, R_SETCURSOR) != 0)
   {
-    cdtl->tps->close(cdtl->tps);
-    return NULL;
+    return 2;
   }
 
-  cdtl->tps->close(cdtl->tps);
-  return tpt;
+  return 0;
 }
 
 /*
- * Pop a timepoint off the timepoint stack.
+ * Pop a timepoint off a timepoint stack.
  */
-timepoint* tl_popdrop (dottl* cdtl, timepoint* tpt)
+int popdrop (DB* stack, timepoint* tpt)
 {
   struct stat st_tps;
   recno_t kval;
   DBT key;
   DBT data;
 
-  if (open_tpsdb(cdtl) == NULL)
+  if (fstat(stack->fd(stack), &st_tps) != 0)
   {
-    return NULL;
-  }
-
-  if (fstat(cdtl->tps->fd(cdtl->tps), &st_tps) != 0)
-  {
-    cdtl->tps->close(cdtl->tps);
-    return NULL;
+    return 1;
   }
 
   kval = (st_tps.st_size/sizeof(*tpt));
   key.size = sizeof(&kval);
   key.data = &kval;
 
-  cdtl->tps->seq(cdtl->tps, &key, &data, R_CURSOR);
+  stack->seq(stack, &key, &data, R_CURSOR);
 
   if (data.size != sizeof(*tpt))
   {
-    cdtl->tps->close(cdtl->tps);
-    return NULL;
+    return 2;
   }
   memcpy(tpt, data.data, sizeof(*tpt));
 
-  if (cdtl->tps->del(cdtl->tps, &key, R_CURSOR) != 0)
+  if (stack->del(stack, &key, R_CURSOR) != 0)
   {
-    cdtl->tps->close(cdtl->tps);
-    return NULL;
+    return 3;
   }
 
-  cdtl->tps->close(cdtl->tps);
-  return tpt;
+  return 0;
 }
 
 /*
@@ -379,7 +336,7 @@ timepoint* tl_popdrop (dottl* cdtl, timepoint* tpt)
 int cmd_dummy (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
 {
   fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
-  return EXIT_FAILURE;
+  return 1;
 }
 
 /*
@@ -395,19 +352,19 @@ int cmd_init (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
     fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
       "First: `%s'.\n\n", pname, cmd, cargc - 1, cargv[1]);
     usage(pname);
-    return EXIT_FAILURE;
+    return 1;
   }
 
-  r_init = tl_init(cdtl);
-  if (r_init != 0)
+  if ((r_init = tl_init(cdtl)) != 0)
   {
     fprintf(stderr, "%s: %s: Failed. Error: `%d'.\n",
       pname, cmd, r_init);
-    return EXIT_FAILURE;
+    return 2;
   }
   cdtl->tl->close(cdtl->tl);
   cdtl->tps->close(cdtl->tps);
-  return EXIT_SUCCESS;
+
+  return 0;
 }
 
 /*
@@ -418,7 +375,6 @@ int cmd_timepoint (int cargc, char** cargv,
   char* pname, char* cmd, dottl* cdtl)
 {
   timepoint tpt;
-  timepoint* tpt_res;
   char* loc = NULL;
   char* msg = NULL;
   char* ts = NULL;
@@ -435,12 +391,12 @@ int cmd_timepoint (int cargc, char** cargv,
       if (ap_loc)
       {
         fprintf(stderr, "%s: %s: Duplicate `-l'.\n", pname, cmd);
-        return EXIT_FAILURE;
+        return 1;
       }
       if (cargc_parse < 2 || strncmp(cargv_parse[1], "-", 1) == 0)
       {
         fprintf(stderr, "%s: %s: `-l': Missing location.\n", pname, cmd);
-        return EXIT_FAILURE;
+        return 2;
       }
       ap_loc = true;
       loc = cargv_parse[1];
@@ -452,12 +408,12 @@ int cmd_timepoint (int cargc, char** cargv,
       if (ap_msg)
       {
         fprintf(stderr, "%s: %s: Duplicate `-m'.\n", pname, cmd);
-        return EXIT_FAILURE;
+        return 3;
       }
       if (cargc_parse < 2 || strncmp(cargv_parse[1], "-", 1) == 0)
       {
         fprintf(stderr, "%s: %s: `-m': Missing message.\n", pname, cmd);
-        return EXIT_FAILURE;
+        return 4;
       }
       ap_msg = true;
       msg = cargv_parse[1];
@@ -469,12 +425,12 @@ int cmd_timepoint (int cargc, char** cargv,
       if (ap_ts)
       {
         fprintf(stderr, "%s: %s: Duplicate `-t'.\n", pname, cmd);
-        return EXIT_FAILURE;
+        return 5;
       }
       if (cargc_parse < 2 || strncmp(cargv_parse[1], "-", 1) == 0)
       {
         fprintf(stderr, "%s: %s: `-t': Missing timestamp.\n", pname, cmd);
-        return EXIT_FAILURE;
+        return 6;
       }
       ap_ts = true;
       ts = cargv_parse[1];
@@ -485,22 +441,34 @@ int cmd_timepoint (int cargc, char** cargv,
     {
       fprintf(stderr, "%s: %s: Invalid argument `%s'.\n",
         pname, cmd, cargv_parse[0]);
-      return EXIT_FAILURE;
+      return 7;
     }
     cargc_parse--;
     cargv_parse++;
   }
 
-  tpt_res = tl_timepoint(cdtl, &tpt, loc, msg, ts);
-
-  if (tpt_res == NULL)
+  if ((cdtl->tps = open_flat(cdtl->f_tps)) == NULL)
   {
-    fprintf(stderr, "%s: %s: Failed.\n", pname, cmd);
-    return EXIT_FAILURE;
+    fprintf(stderr, "%s: %s: Failed to open tpt stack.\n", pname, cmd);
+    return 8;
   }
-  fprintf(stderr, "Timepoint at `%s' in TZ `%s'.\n", tpt.hts, tpt.rtz);
 
-  return EXIT_SUCCESS;
+  if (tpt_init(&tpt, loc, msg, ts) != 0)
+  {
+    fprintf(stderr, "%s: %s: Failed to initialize tpt.\n", pname, cmd);
+    return 9;
+  }
+
+  if (put_tpt(cdtl->tps, &tpt) != 0)
+  {
+    fprintf(stderr, "%s: %s: Failed to put tpt on tpt stack.\n", pname, cmd);
+    return 10;
+  }
+
+  fprintf(stderr, "Timepoint at `%s' in TZ `%s'.\n", tpt.hts, tpt.rtz);
+  cdtl->tps->close(cdtl->tps);
+
+  return 0;
 }
 
 /*
@@ -517,23 +485,28 @@ int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
     fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
       "First: `%s'.\n\n", pname, cmd, cargc - 1, cargv[1]);
     usage(pname);
-    return EXIT_FAILURE;
+    return 1;
   }
 
-  /* TODO: change this so that we first ensure
-           we can print it before we delete.
-           i.e. retrieve tpt separately first. */
-  if (tl_popdrop(cdtl, &tpt) == NULL)
+  if ((cdtl->tps = open_flat(cdtl->f_tps)) == NULL)
   {
-    return EXIT_FAILURE;
+    return 2;
   }
-  if (tpt_ppprint(&tpt, &buf) == NULL)
+
+  /*
+   * TODO: Ensure we have a copy before deleting.
+   */
+  if (popdrop(cdtl->tps, &tpt) != 0 ||
+    tpt_ppprint(&tpt, &buf) == NULL)
   {
-    return EXIT_FAILURE;
+    cdtl->tps->close(cdtl->tps);
+    return 3;
   }
   printf("%s", buf);
   free(buf);
-  exit(EXIT_SUCCESS);
+  cdtl->tps->close(cdtl->tps);
+
+  return 0;
 }
 
 /*
