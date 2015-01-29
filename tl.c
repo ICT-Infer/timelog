@@ -266,9 +266,9 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
 }
 
 /*
- * Put a timepoint on a timepoint stack.
+ * Push a timepoint to a timepoint stack.
  */
-int put_tpt (DB* stack, timepoint* tpt)
+int push_tpt (DB* stack, timepoint* tpt)
 {
   struct stat st_tps;
   recno_t kval;
@@ -459,7 +459,7 @@ int cmd_timepoint (int cargc, char** cargv,
     return 9;
   }
 
-  if (put_tpt(cdtl->tps, &tpt) != 0)
+  if (push_tpt(cdtl->tps, &tpt) != 0)
   {
     fprintf(stderr, "%s: %s: Failed to put tpt on tpt stack.\n", pname, cmd);
     return 10;
