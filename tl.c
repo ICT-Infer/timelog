@@ -295,6 +295,39 @@ int push_tpt (DB* stack, timepoint* tpt)
 }
 
 /*
+ * Peek into the timepoint stack ("cheating").
+ */
+int peek_tpt (DB* stack, timepoint* tpt, int n_inv)
+{
+  struct stat st_tps;
+  recno_t kval;
+  DBT key;
+  DBT data;
+
+  if (fstat(stack->fd(stack), &st_tps) != 0)
+  {
+    return 1;
+  }
+
+  if ((kval = (st_tps.st_size/sizeof(*tpt)) - n_inv) < 1)
+  {
+    return 2;
+  }
+  key.size = sizeof(&kval);
+  key.data = &kval;
+
+  stack->seq(stack, &key, &data, R_CURSOR);
+
+  if (data.size != sizeof(*tpt))
+  {
+    return 3;
+  }
+  memcpy(tpt, data.data, sizeof(*tpt));
+
+  return 0;
+}
+
+/*
  * Pop a timepoint off a timepoint stack.
  */
 int pop_tpt (DB* stack, timepoint* tpt)
@@ -493,11 +526,9 @@ int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
     return 2;
   }
 
-  /*
-   * TODO: Ensure we have a copy before deleting.
-   */
-  if (pop_tpt(cdtl->tps, &tpt) != 0 ||
-    tpt_ppprint(&tpt, &buf) == NULL)
+  if (peek_tpt(cdtl->tps, &tpt, 0) != 0 ||
+    tpt_ppprint(&tpt, &buf) == NULL ||
+    pop_tpt(cdtl->tps, &tpt) != 0)
   {
     cdtl->tps->close(cdtl->tps);
     return 3;
