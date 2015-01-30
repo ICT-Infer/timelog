@@ -269,7 +269,6 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
  * Number of timepoints on a timepoint stack.
  *
  * Returns a negative number on failure.
- *
  */
 int num_tpt (DB* stack)
 {
@@ -336,7 +335,7 @@ int peek_tpt (DB* stack, timepoint* tpt, int n_inv)
 }
 
 /*
- * Pop a timepoint off a timepoint stack.
+ * Pop a timepoint off of a timepoint stack.
  */
 int pop_tpt (DB* stack, timepoint* tpt)
 {
@@ -366,6 +365,7 @@ int pop_tpt (DB* stack, timepoint* tpt)
 
 /*
  * Dummy command
+ *
  * Use for commands which have not been implemented.
  */
 int cmd_dummy (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
@@ -376,6 +376,7 @@ int cmd_dummy (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
 
 /*
  * Command: init
+ *
  * Initialize time log.
  */
 int cmd_init (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
@@ -404,6 +405,7 @@ int cmd_init (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
 
 /*
  * Command: timepoint
+ *
  * Add a timepoint to timepoint stack.
  */
 int cmd_timepoint (int cargc, char** cargv,
@@ -508,6 +510,7 @@ int cmd_timepoint (int cargc, char** cargv,
 
 /*
  * Command: pop-drop
+ *
  * Pop a timepoint off the timepoint stack and print it.
  */
 int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
