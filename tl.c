@@ -511,6 +511,52 @@ int cmd_timepoint (int cargc, char** cargv,
 }
 
 /*
+ * Command: pending
+ *
+ * Print timepoint stack in order from most recent to oldest
+ * (without removing anything from the stack).
+ */
+int cmd_pending (int cargc, char** cargv,
+  char* pname, char* cmd, dottl* cdtl)
+{
+  int n, i;
+  timepoint tpt;
+  char* buf = NULL;
+
+  if (cargc > 1)
+  {
+    fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+      "First: `%s'.\n\n", pname, cmd, cargc - 1, cargv[1]);
+    usage(pname);
+    return 1;
+  }
+
+  if ((cdtl->tps = open_flat(cdtl->f_tps)) == NULL)
+  {
+    return 2;
+  }
+
+  for (i = (n = num_tpt(cdtl->tps)) - 1 ; i >= 0 ; i--)
+  {
+    if (peek_tpt(cdtl->tps, &tpt, i) != 0 ||
+      tpt_ppprint(&tpt, &buf) == NULL)
+    {
+      cdtl->tps->close(cdtl->tps);
+      if (i < n)
+      {
+        fprintf(stderr, "%s: %s: ERROR.", pname, cmd);
+      }
+      return 3;
+    }
+    printf("%s", buf);
+    free(buf);
+  }
+  cdtl->tps->close(cdtl->tps);
+
+  return 0;
+}
+
+/*
  * Command: pop-drop
  *
  * Pop a timepoint off the timepoint stack and print it.
@@ -567,7 +613,7 @@ int main (int argc, char* argv[])
   {
     {"init", &cmd_init},
     {"timepoint", &cmd_timepoint},
-    {"pending", &cmd_dummy},
+    {"pending", &cmd_pending},
     {"pop-drop", &cmd_popdrop},
     {"merge-add", &cmd_dummy},
     {"unlog", &cmd_dummy},
