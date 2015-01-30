@@ -297,7 +297,7 @@ int push_tpt (DB* stack, timepoint* tpt)
 /*
  * Pop a timepoint off a timepoint stack.
  */
-int popdrop (DB* stack, timepoint* tpt)
+int pop_tpt (DB* stack, timepoint* tpt)
 {
   struct stat st_tps;
   recno_t kval;
@@ -496,7 +496,7 @@ int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
   /*
    * TODO: Ensure we have a copy before deleting.
    */
-  if (popdrop(cdtl->tps, &tpt) != 0 ||
+  if (pop_tpt(cdtl->tps, &tpt) != 0 ||
     tpt_ppprint(&tpt, &buf) == NULL)
   {
     cdtl->tps->close(cdtl->tps);
