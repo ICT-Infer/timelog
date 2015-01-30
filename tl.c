@@ -266,32 +266,44 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
 }
 
 /*
+ * Number of timepoints on a timepoint stack.
+ *
+ * Returns a negative number on failure.
+ *
+ */
+int num_tpt (DB* stack)
+{
+  struct stat st_tps;
+
+  if (fstat(stack->fd(stack), &st_tps) != 0)
+  {
+    return -1;
+  }
+
+  return st_tps.st_size/sizeof(timepoint);
+}
+
+/*
  * Push a timepoint to a timepoint stack.
  */
 int push_tpt (DB* stack, timepoint* tpt)
 {
-  struct stat st_tps;
+  int n;
   recno_t kval;
   DBT key;
   DBT data;
 
-  if (tpt == NULL || fstat(stack->fd(stack), &st_tps) != 0)
+  if (tpt == NULL || (n = num_tpt(stack)) < 0)
   {
-    return 1;
+    return 2;
   }
-
-  kval = (st_tps.st_size/sizeof(*tpt)) + 1;
+  kval = n + 1;
   key.size = sizeof(&kval);
   key.data = &kval;
   data.size = sizeof(*tpt);
   data.data = tpt;
 
-  if (stack->put(stack, &key, &data, R_SETCURSOR) != 0)
-  {
-    return 2;
-  }
-
-  return 0;
+  return stack->put(stack, &key, &data, R_SETCURSOR);
 }
 
 /*
@@ -299,20 +311,16 @@ int push_tpt (DB* stack, timepoint* tpt)
  */
 int peek_tpt (DB* stack, timepoint* tpt, int n_inv)
 {
-  struct stat st_tps;
+  int n;
   recno_t kval;
   DBT key;
   DBT data;
 
-  if (fstat(stack->fd(stack), &st_tps) != 0)
-  {
-    return 1;
-  }
-
-  if ((kval = (st_tps.st_size/sizeof(*tpt)) - n_inv) < 1)
+  if (tpt == NULL || (n = num_tpt(stack) - n_inv) < 1)
   {
     return 2;
   }
+  kval = n;
   key.size = sizeof(&kval);
   key.data = &kval;
 
@@ -332,17 +340,16 @@ int peek_tpt (DB* stack, timepoint* tpt, int n_inv)
  */
 int pop_tpt (DB* stack, timepoint* tpt)
 {
-  struct stat st_tps;
+  int n;
   recno_t kval;
   DBT key;
   DBT data;
 
-  if (fstat(stack->fd(stack), &st_tps) != 0)
+  if (tpt == NULL || (n = num_tpt(stack)) < 0)
   {
-    return 1;
+    return 3;
   }
-
-  kval = (st_tps.st_size/sizeof(*tpt));
+  kval = n;
   key.size = sizeof(&kval);
   key.data = &kval;
 
@@ -354,12 +361,7 @@ int pop_tpt (DB* stack, timepoint* tpt)
   }
   memcpy(tpt, data.data, sizeof(*tpt));
 
-  if (stack->del(stack, &key, R_CURSOR) != 0)
-  {
-    return 3;
-  }
-
-  return 0;
+  return stack->del(stack, &key, R_CURSOR);
 }
 
 /*
