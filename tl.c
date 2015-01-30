@@ -368,7 +368,8 @@ int pop_tpt (DB* stack, timepoint* tpt)
  *
  * Use for commands which have not been implemented.
  */
-int cmd_dummy (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
+int cmd_dummy (int cargc, char** cargv,
+  char* pname, char* cmd, dottl* cdtl)
 {
   fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
   return 1;
@@ -379,7 +380,8 @@ int cmd_dummy (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
  *
  * Initialize time log.
  */
-int cmd_init (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
+int cmd_init (int cargc, char** cargv,
+  char* pname, char* cmd, dottl* cdtl)
 {
   int r_init;
 
@@ -513,7 +515,8 @@ int cmd_timepoint (int cargc, char** cargv,
  *
  * Pop a timepoint off the timepoint stack and print it.
  */
-int cmd_popdrop (int cargc, char** cargv, char* pname, char* cmd, dottl* cdtl)
+int cmd_popdrop (int cargc, char** cargv,
+  char* pname, char* cmd, dottl* cdtl)
 {
   timepoint tpt;
   char* buf = NULL;
