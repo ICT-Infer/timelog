@@ -585,7 +585,7 @@ int cmd_popdrop (int cargc, char** cargv,
 
   if (peek_tpt(cdtl->tps, &tpt, 0) != 0 ||
     tpt_ppprint(&tpt, &buf) == NULL ||
-    pop_tpt(cdtl->tps, &tpt) != 0)
+    pop_tpt(cdtl->tps, NULL) != 0)
   {
     cdtl->tps->close(cdtl->tps);
     return 3;
