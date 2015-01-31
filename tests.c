@@ -24,6 +24,8 @@
 #include <stdbool.h>
 #include <sys/wait.h>
 
+extern char **environ;
+
 typedef struct _tltest
 {
   bool xsuccess; /* Expecting success (true) or failure (false)? */
@@ -114,8 +116,15 @@ int main()
     {true, "`tl timepoint -t <ts>' with valid ts #1",
       (char *[]){tlb, "timepoint", "-t", "22:22", NULL}},
 
+    /* In timezone Europe/Oslo, calendar time will contain 0x0a. */
     {true, "`tl timepoint -t <ts>' with valid ts #2",
-      (char *[]){tlb, "timepoint", "-t", "2015-01-10T22:22", NULL}},
+      (char *[]){tlb, "timepoint", "-t", "2015-01-30T23:50", NULL}},
+
+    {true, "`tl timepoint -t <ts>' with valid ts #3",
+      (char *[]){tlb, "timepoint", "-t", "2015-01-31T01:02", NULL}},
+
+    {true, "`tl pop-drop' to see if tps db was corrupted by valid ts #2",
+      (char *[]){tlb, "pop-drop", NULL}},
 
     {false, "`tl timepoint -t <ts>' with invalid ts #1",
       (char *[]){tlb, "timepoint", "-t", "T22:22", NULL}},
@@ -162,7 +171,7 @@ int main()
       fclose(stdin);
       fclose(stdout);
       fclose(stderr);
-      return execve(tlb, tests[i].argv, NULL);
+      return execve(tlb, tests[i].argv, environ);
     }
     else
     {

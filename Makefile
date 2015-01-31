@@ -14,4 +14,4 @@ tests: tests.c
 
 .PHONY: test
 test: tests bin/tl
-	./tests
+	TZ=Europe/Oslo ./tests
