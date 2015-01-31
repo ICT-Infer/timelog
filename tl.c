@@ -49,9 +49,11 @@ typedef struct _tlentry
 /* Information about a time log directory and its files. */
 typedef struct _dottl
 {
-  char* f_dir;
-  char* f_tps;
-  char* f_tl;
+  const char* f_dir;
+  const char* f_tps;
+  const char* f_tl;
+  const RECNOINFO info_tps;
+  const RECNOINFO info_tl;
   DB* tps;
   DB* tl;
 } dottl;
@@ -60,7 +62,7 @@ typedef struct _dottl
 typedef struct _cmd
 {
   char* name;
-  int (*f)(int, char**, char*, char*, dottl*);
+  int (*f)(int, char**, const char*, const char*, dottl*);
 } cmd;
 
 /*
@@ -105,14 +107,14 @@ int tl_init (dottl* cdtl)
   rem--;
 
   if ((cdtl->tl = dbopen(cdtl->f_tl, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
-    00644, DB_RECNO, NULL)) == NULL)
+    00644, DB_RECNO, (void*)&(cdtl->info_tl))) == NULL)
   {
     goto rollback_init;
   }
   rem--;
 
   if ((cdtl->tps = dbopen(cdtl->f_tps, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
-    00644, DB_RECNO, NULL)) == NULL)
+    00644, DB_RECNO, (void*)&(cdtl->info_tps))) == NULL)
   {
     goto rollback_init;
   }
@@ -124,13 +126,11 @@ rollback_init:
   switch (rem)
   {
     case 1:
+      unlink(cdtl->f_tps);
       cdtl->tl->close(cdtl->tl);
-      if (unlink(cdtl->f_tl) != 0)
-      {
-        return -rem;
-      }
       /* FALLTHROUGH */
     case 2:
+      unlink(cdtl->f_tl);
       if (rmdir(cdtl->f_dir) != 0)
       {
         return -rem;
@@ -153,9 +153,9 @@ rollback_init:
 /*
  * Open a flatfile database.
  */
-DB* open_flat (char* fname)
+DB* open_flat (const char* fname, const RECNOINFO* info)
 {
-  return dbopen(fname, O_RDWR | O_EXLOCK, 00644, DB_RECNO, NULL);
+  return dbopen(fname, O_RDWR | O_EXLOCK, 00644, DB_RECNO, (void*)info);
 }
 
 /*
@@ -270,7 +270,7 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
  *
  * Returns a negative number on failure.
  */
-int num_tpt (DB* stack)
+int num_tpt (const DB* stack)
 {
   struct stat st_tps;
 
@@ -285,7 +285,7 @@ int num_tpt (DB* stack)
 /*
  * Push a timepoint to a timepoint stack.
  */
-int push_tpt (DB* stack, timepoint* tpt)
+int push_tpt (const DB* stack, timepoint* tpt)
 {
   int n;
   recno_t kval;
@@ -308,7 +308,7 @@ int push_tpt (DB* stack, timepoint* tpt)
 /*
  * Peek into the timepoint stack ("cheating").
  */
-int peek_tpt (DB* stack, timepoint* tpt, int n_inv)
+int peek_tpt (const DB* stack, timepoint* tpt, const int n_inv)
 {
   int n;
   recno_t kval;
@@ -337,7 +337,7 @@ int peek_tpt (DB* stack, timepoint* tpt, int n_inv)
 /*
  * Pop a timepoint off of a timepoint stack.
  */
-int pop_tpt (DB* stack, timepoint* tpt)
+int pop_tpt (const DB* stack, timepoint* tpt)
 {
   int n;
   recno_t kval;
@@ -369,7 +369,7 @@ int pop_tpt (DB* stack, timepoint* tpt)
  * Use for commands which have not been implemented.
  */
 int cmd_dummy (int cargc, char** cargv,
-  char* pname, char* cmd, dottl* cdtl)
+  const char* pname, const char* cmd, dottl* cdtl)
 {
   fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
   return 1;
@@ -381,7 +381,7 @@ int cmd_dummy (int cargc, char** cargv,
  * Initialize time log.
  */
 int cmd_init (int cargc, char** cargv,
-  char* pname, char* cmd, dottl* cdtl)
+  const char* pname, const char* cmd, dottl* cdtl)
 {
   int r_init;
 
@@ -411,7 +411,7 @@ int cmd_init (int cargc, char** cargv,
  * Add a timepoint to timepoint stack.
  */
 int cmd_timepoint (int cargc, char** cargv,
-  char* pname, char* cmd, dottl* cdtl)
+  const char* pname, const char* cmd, dottl* cdtl)
 {
   timepoint tpt;
   char* loc = NULL;
@@ -486,7 +486,7 @@ int cmd_timepoint (int cargc, char** cargv,
     cargv_parse++;
   }
 
-  if ((cdtl->tps = open_flat(cdtl->f_tps)) == NULL)
+  if ((cdtl->tps = open_flat(cdtl->f_tps, &(cdtl->info_tps))) == NULL)
   {
     fprintf(stderr, "%s: %s: Failed to open tpt stack.\n", pname, cmd);
     return 8;
@@ -517,7 +517,7 @@ int cmd_timepoint (int cargc, char** cargv,
  * (without removing anything from the stack).
  */
 int cmd_pending (int cargc, char** cargv,
-  char* pname, char* cmd, dottl* cdtl)
+  const char* pname, const char* cmd, dottl* cdtl)
 {
   int n, i;
   timepoint tpt;
@@ -531,7 +531,7 @@ int cmd_pending (int cargc, char** cargv,
     return 1;
   }
 
-  if ((cdtl->tps = open_flat(cdtl->f_tps)) == NULL)
+  if ((cdtl->tps = open_flat(cdtl->f_tps, &(cdtl->info_tps))) == NULL)
   {
     return 2;
   }
@@ -562,7 +562,7 @@ int cmd_pending (int cargc, char** cargv,
  * Pop a timepoint off the timepoint stack and print it.
  */
 int cmd_popdrop (int cargc, char** cargv,
-  char* pname, char* cmd, dottl* cdtl)
+  const char* pname, const char* cmd, dottl* cdtl)
 {
   timepoint tpt;
   char* buf = NULL;
@@ -575,7 +575,7 @@ int cmd_popdrop (int cargc, char** cargv,
     return 1;
   }
 
-  if ((cdtl->tps = open_flat(cdtl->f_tps)) == NULL)
+  if ((cdtl->tps = open_flat(cdtl->f_tps, &(cdtl->info_tps))) == NULL)
   {
     return 2;
   }
@@ -606,7 +606,10 @@ int main (int argc, char* argv[])
   char** cmd_argv;
 
   /* Current dottl. */
-  dottl cdtl = {".tl/", ".tl/tps.db", ".tl/tl.db", NULL, NULL};
+  dottl cdtl = {".tl/", ".tl/tps.db", ".tl/tl.db",
+    {R_FIXEDLEN, 0, 0, 0, sizeof(timepoint), 0x00, NULL},
+    {R_FIXEDLEN, 0, 0, 0, sizeof(tlentry), 0x00, NULL},
+    NULL, NULL};
 
   /* Commands. */
   cmd cmds[] =
