@@ -38,6 +38,7 @@ typedef struct _timepoint
   char etz[49]; /* Contents of environment variable TZ. */
   char rtz[49]; /* Resulting time zone. */
   int64_t cts; /* Calendar time. Number of seconds since the Epoch. */
+  char eor; /* End of record. Set to decimal 30 for valid records. */
 } timepoint;
 
 typedef struct _tlentry
@@ -228,6 +229,8 @@ int tpt_init (timepoint* tpt,
     return 3;
   }
 
+  tpt->eor = 30;
+
   return 0;
 }
 
@@ -266,68 +269,64 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
 }
 
 /*
- * Number of timepoints on a timepoint stack.
- *
- * Returns a negative number on failure.
- */
-int num_tpt (const DB* stack)
-{
-  struct stat st_tps;
-
-  if (fstat(stack->fd(stack), &st_tps) != 0)
-  {
-    return -1;
-  }
-
-  return st_tps.st_size/sizeof(timepoint);
-}
-
-/*
  * Push a timepoint to a timepoint stack.
  */
 int push_tpt (const DB* stack, timepoint* tpt)
 {
-  int n;
-  recno_t kval;
-  DBT key;
+  int rval;
   DBT data;
+  DBT key;
 
-  if (tpt == NULL || (n = num_tpt(stack)) < 0)
+  if (tpt == NULL || tpt->eor != 30)
   {
     return 2;
   }
-  kval = n + 1;
-  key.size = sizeof(&kval);
-  key.data = &kval;
+
   data.size = sizeof(*tpt);
   data.data = tpt;
 
-  return stack->put(stack, &key, &data, R_SETCURSOR);
+  if (stack->seq(stack, &key, NULL, R_LAST) == 0)
+  {
+    rval = stack->put(stack, &key, &data, R_CURSOR);
+  }
+  else
+  {
+    recno_t kval = 1;
+    key.size = sizeof(&kval);
+    key.data = &kval;
+    rval = stack->put(stack, &key, &data, R_SETCURSOR);
+  }
+  return rval;
 }
 
 /*
  * Peek into the timepoint stack ("cheating").
  */
-int peek_tpt (const DB* stack, timepoint* tpt, const int n_inv)
+int peek_tpt (const DB* stack, timepoint* tpt, const int n)
 {
-  int n;
-  recno_t kval;
+  int i = n + 1;
   DBT key;
   DBT data;
 
-  if (tpt == NULL || (n = num_tpt(stack) - n_inv) < 1)
+  if (tpt == NULL || stack->seq(stack, &key, NULL, R_LAST) != 0)
   {
-    return 2;
+    return 4;
   }
-  kval = n;
-  key.size = sizeof(&kval);
-  key.data = &kval;
-
-  stack->seq(stack, &key, &data, R_CURSOR);
+  do
+  {
+    if (stack->seq(stack, &key, &data, R_PREV) != 0)
+    {
+      return 3;
+    }
+    if (((timepoint*)data.data)->eor == 30)
+    {
+      i--;
+    }
+  } while (i > 0 && ((timepoint*)data.data)->eor != 30);
 
   if (data.size != sizeof(*tpt))
   {
-    return 3;
+    return 2;
   }
   memcpy(tpt, data.data, sizeof(*tpt));
 
@@ -339,26 +338,28 @@ int peek_tpt (const DB* stack, timepoint* tpt, const int n_inv)
  */
 int pop_tpt (const DB* stack, timepoint* tpt)
 {
-  int n;
-  recno_t kval;
   DBT key;
   DBT data;
 
-  if (tpt == NULL || (n = num_tpt(stack)) < 0)
+  if (stack->seq(stack, &key, NULL, R_LAST) != 0)
   {
-    return 3;
+    return 4;
   }
-  kval = n;
-  key.size = sizeof(&kval);
-  key.data = &kval;
+  do {
+    if (stack->seq(stack, &key, &data, R_PREV) != 0)
+    {
+      return 3;
+    }
+  } while (((timepoint*)data.data)->eor != 30);
 
-  stack->seq(stack, &key, &data, R_CURSOR);
-
-  if (data.size != sizeof(*tpt))
+  if (tpt != NULL)
   {
-    return 2;
+    if (data.size != sizeof(*tpt))
+    {
+      return 2;
+    }
+    memcpy(tpt, data.data, sizeof(*tpt));
   }
-  memcpy(tpt, data.data, sizeof(*tpt));
 
   return stack->del(stack, &key, R_CURSOR);
 }
@@ -536,6 +537,7 @@ int cmd_pending (int cargc, char** cargv,
     return 2;
   }
 
+  /*
   for (i = (n = num_tpt(cdtl->tps)) - 1 ; i >= 0 ; i--)
   {
     if (peek_tpt(cdtl->tps, &tpt, i) != 0 ||
@@ -551,6 +553,7 @@ int cmd_pending (int cargc, char** cargv,
     printf("%s", buf);
     free(buf);
   }
+  */
   cdtl->tps->close(cdtl->tps);
 
   return 0;
