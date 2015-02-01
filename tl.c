@@ -38,7 +38,6 @@ typedef struct _timepoint
   char etz[49]; /* Contents of environment variable TZ. */
   char rtz[49]; /* Resulting time zone. */
   int64_t cts; /* Calendar time. Number of seconds since the Epoch. */
-  char eor; /* End of record. Set to decimal 30 for valid records. */
 } timepoint;
 
 typedef struct _tlentry
@@ -229,8 +228,6 @@ int tpt_init (timepoint* tpt,
     return 3;
   }
 
-  tpt->eor = 30;
-
   return 0;
 }
 
@@ -277,7 +274,7 @@ int push_tpt (const DB* stack, timepoint* tpt)
   DBT data;
   DBT key;
 
-  if (tpt == NULL || tpt->eor != 30)
+  if (tpt == NULL || tpt->hts[0] == 0)
   {
     return 2;
   }
@@ -318,11 +315,11 @@ int peek_tpt (const DB* stack, timepoint* tpt, const int n)
     {
       return 3;
     }
-    if (((timepoint*)data.data)->eor == 30)
+    if (((timepoint*)data.data)->hts[0] != 0)
     {
       i--;
     }
-  } while (i > 0 && ((timepoint*)data.data)->eor != 30);
+  } while (i > 0 && ((timepoint*)data.data)->hts != 0);
 
   if (data.size != sizeof(*tpt))
   {
@@ -350,7 +347,7 @@ int pop_tpt (const DB* stack, timepoint* tpt)
     {
       return 3;
     }
-  } while (((timepoint*)data.data)->eor != 30);
+  } while (((timepoint*)data.data)->hts[0] == 0);
 
   if (tpt != NULL)
   {
