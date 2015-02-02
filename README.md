@@ -23,7 +23,11 @@ Time zone is included in the timestamp as provided by your OS.
 The time zone recorded by `tl timepoint` will be used when presenting
 timepoints (such as by `tl pending` and `tl report`).
 
-### Known issues
+## Supported platforms
+
+`tl` is being developed on FreeBSD/armv6, FreeBSD/amd64 and OpenBSD/i386.
+
+## Known issues
 
 * When a timepoint is deleted from the timepoint-stack (tps),
   the record is not removed, so the file doesn't shrink.
@@ -35,10 +39,6 @@ timepoints (such as by `tl pending` and `tl report`).
   They need to be rewritten so that they instead test the actual outcome.
 * Some operating systems, when faced with an invalid `$TZ`, will
   silently ignore it and use UTC.
-
-## Supported platforms
-
-`tl` is being developed on FreeBSD/armv6, FreeBSD/amd64 and OpenBSD/i386.
 
 ## Compiling
 
