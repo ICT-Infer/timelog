@@ -159,7 +159,7 @@ DB* open_flat (const char* fname, const RECNOINFO* info)
 }
 
 /*
- * Initialize a new timepoint.
+ * Initialize timepoint.
  */
 int tpt_init (timepoint* tpt,
   const char* loc, const char* msg, const char* ts)
