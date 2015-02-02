@@ -266,13 +266,53 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
 }
 
 /*
- * Push a timepoint to a timepoint stack.
+ * Set cursor to point at previous record in timepoint-stack.
+ *
+ * Returns index of record.
+ * Returns 0 if no previous record can be found.
  */
-int push_tpt (const DB* stack, timepoint* tpt)
+recno_t tps_prev (const DB* stack)
 {
-  int rval;
   DBT data;
   DBT key;
+
+  do
+  {
+    if (stack->seq(stack, &key, &data, R_PREV) != 0 ||
+      (*(recno_t*)key.data == 1 &&
+        (((timepoint*)data.data)->hts[0] == 0)))
+    {
+      return 0;
+    }
+  } while (((timepoint*)data.data)->hts[0] == 0);
+
+  return *(recno_t*)key.data;
+}
+
+/*
+ * Set cursor to point at head of timepoint-stack.
+ *
+ * Returns index of head.
+ * Returns 0 if stack is empty.
+ */
+recno_t tps_head (const DB* stack)
+{
+  if (stack->seq(stack, NULL, NULL, R_LAST) != 0)
+  {
+    return 0;
+  }
+
+  return tps_prev(stack);
+}
+
+/*
+ * Push timepoint onto timepoint-stack.
+ */
+int tps_push (const DB* stack, timepoint* tpt)
+{
+  DBT data;
+  DBT key;
+  recno_t kval;
 
   if (tpt == NULL || tpt->hts[0] == 0)
   {
@@ -281,47 +321,24 @@ int push_tpt (const DB* stack, timepoint* tpt)
 
   data.size = sizeof(*tpt);
   data.data = tpt;
+  kval = tps_head(stack) + 1;
+  key.size = sizeof(&kval);
+  key.data = &kval;
 
-  if (stack->seq(stack, &key, NULL, R_LAST) == 0)
-  {
-    rval = stack->put(stack, &key, &data, R_CURSOR);
-  }
-  else
-  {
-    recno_t kval = 1;
-    key.size = sizeof(&kval);
-    key.data = &kval;
-    rval = stack->put(stack, &key, &data, R_SETCURSOR);
-  }
-  return rval;
+  return stack->put(stack, &key, &data, R_SETCURSOR);
 }
 
 /*
- * Peek into the timepoint stack ("cheating").
+ * Peek at the timepoint-stack, retrieving a timepoint
+ * from anywhere in the stack without pop-ing anything.
+ * ("Cheating".)
  */
-int peek_tpt (const DB* stack, timepoint* tpt, const int n)
+int tps_peek (const DB* stack, timepoint* tpt, DBT* key)
 {
-  int i = n + 1;
-  DBT key;
   DBT data;
 
-  if (tpt == NULL || stack->seq(stack, &key, NULL, R_LAST) != 0)
-  {
-    return 4;
-  }
-  do
-  {
-    if (stack->seq(stack, &key, &data, R_PREV) != 0)
-    {
-      return 3;
-    }
-    if (((timepoint*)data.data)->hts[0] != 0)
-    {
-      i--;
-    }
-  } while (i > 0 && *(recno_t*)key.data > 1);
-
-  if (i > 0 || data.size != sizeof(*tpt))
+  if (stack->get(stack, key, &data, 0) != 0 ||
+    data.size != sizeof(*tpt))
   {
     return 2;
   }
@@ -331,31 +348,23 @@ int peek_tpt (const DB* stack, timepoint* tpt, const int n)
 }
 
 /*
- * Pop a timepoint off of a timepoint stack.
+ * Pop timepoint off of timepoint-stack.
  */
-int pop_tpt (const DB* stack, timepoint* tpt)
+int tps_pop (const DB* stack, timepoint* tpt)
 {
+  recno_t kval;
   DBT key;
-  DBT data;
 
-  if (stack->seq(stack, &key, NULL, R_LAST) != 0)
+  if ((kval = tps_head(stack)) == 0)
   {
-    return 4;
+    return 3;
   }
-  do {
-    if (stack->seq(stack, &key, &data, R_PREV) != 0)
-    {
-      return 3;
-    }
-  } while (((timepoint*)data.data)->hts[0] == 0);
+  key.size = sizeof(&kval);
+  key.data = &kval;
 
-  if (tpt != NULL)
+  if (tpt != NULL && tps_peek(stack, tpt, &key) != 0)
   {
-    if (data.size != sizeof(*tpt))
-    {
-      return 2;
-    }
-    memcpy(tpt, data.data, sizeof(*tpt));
+    return 2;
   }
 
   return stack->del(stack, &key, R_CURSOR);
@@ -406,7 +415,7 @@ int cmd_init (int cargc, char** cargv,
 /*
  * Command: timepoint
  *
- * Add a timepoint to timepoint stack.
+ * Create timepoint and push it on to timepoint-stack.
  */
 int cmd_timepoint (int cargc, char** cargv,
   const char* pname, const char* cmd, dottl* cdtl)
@@ -496,7 +505,7 @@ int cmd_timepoint (int cargc, char** cargv,
     return 9;
   }
 
-  if (push_tpt(cdtl->tps, &tpt) != 0)
+  if (tps_push(cdtl->tps, &tpt) != 0)
   {
     fprintf(stderr, "%s: %s: Failed to put tpt on tpt stack.\n", pname, cmd);
     return 10;
@@ -511,13 +520,14 @@ int cmd_timepoint (int cargc, char** cargv,
 /*
  * Command: pending
  *
- * Print timepoint stack in order from most recent to oldest
+ * Print timepoint-stack in order from most recent to oldest
  * (without removing anything from the stack).
  */
 int cmd_pending (int cargc, char** cargv,
   const char* pname, const char* cmd, dottl* cdtl)
 {
-  int n, i;
+  recno_t kval;
+  DBT key;
   timepoint tpt;
   char* buf = NULL;
 
@@ -534,23 +544,20 @@ int cmd_pending (int cargc, char** cargv,
     return 2;
   }
 
-  /*
-  for (i = (n = num_tpt(cdtl->tps)) - 1 ; i >= 0 ; i--)
+  key.size = sizeof(&kval);
+  for (kval = tps_head(cdtl->tps) ; kval > 0 ; kval = tps_prev(cdtl->tps))
   {
-    if (peek_tpt(cdtl->tps, &tpt, i) != 0 ||
+    key.data = &kval;
+    if (tps_peek(cdtl->tps, &tpt, &key) ||
       tpt_ppprint(&tpt, &buf) == NULL)
     {
-      cdtl->tps->close(cdtl->tps);
-      if (i < n)
-      {
-        fprintf(stderr, "%s: %s: ERROR.", pname, cmd);
-      }
+      fprintf(stderr, "%s: %s: Error during printing.\n", pname, cmd);
       return 3;
     }
     printf("%s", buf);
     free(buf);
   }
-  */
+
   cdtl->tps->close(cdtl->tps);
 
   return 0;
@@ -559,11 +566,13 @@ int cmd_pending (int cargc, char** cargv,
 /*
  * Command: pop-drop
  *
- * Pop a timepoint off the timepoint stack and print it.
+ * Pop timepoint off the timepoint-stack and print it.
  */
 int cmd_popdrop (int cargc, char** cargv,
   const char* pname, const char* cmd, dottl* cdtl)
 {
+  recno_t kval;
+  DBT key;
   timepoint tpt;
   char* buf = NULL;
 
@@ -580,12 +589,19 @@ int cmd_popdrop (int cargc, char** cargv,
     return 2;
   }
 
-  if (peek_tpt(cdtl->tps, &tpt, 0) != 0 ||
+  if ((kval = tps_head(cdtl->tps)) == 0)
+  {
+    return 3;
+  }
+  key.size = sizeof(&kval);
+  key.data = &kval;
+
+  if (tps_peek(cdtl->tps, &tpt, &key) != 0 ||
     tpt_ppprint(&tpt, &buf) == NULL ||
-    pop_tpt(cdtl->tps, NULL) != 0)
+    tps_pop(cdtl->tps, NULL) != 0)
   {
     cdtl->tps->close(cdtl->tps);
-    return 3;
+    return 4;
   }
   printf("%s", buf);
   free(buf);
