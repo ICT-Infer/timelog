@@ -319,7 +319,7 @@ int peek_tpt (const DB* stack, timepoint* tpt, const int n)
     {
       i--;
     }
-  } while (i > 0 && *(int*)key.data > 1);
+  } while (i > 0 && *(recno_t*)key.data > 1);
 
   if (i > 0 || data.size != sizeof(*tpt))
   {
