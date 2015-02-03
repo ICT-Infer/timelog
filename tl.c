@@ -354,6 +354,7 @@ int tps_pop (const DB* stack, timepoint* tpt)
 {
   recno_t kval;
   DBT key;
+  struct stat sb;
 
   if ((kval = tps_head(stack)) == 0)
   {
@@ -367,7 +368,14 @@ int tps_pop (const DB* stack, timepoint* tpt)
     return 2;
   }
 
-  return stack->del(stack, &key, R_CURSOR);
+  /*
+   * They said in dbopen(3) that the fd returned by the fd routine is
+   * "not necessarily associated with any of the underlying files
+   *  used by the access method".
+   * TODO: Ensure the below truncation is safe.
+   */
+  fstat(stack->fd(stack), &sb);
+  return ftruncate(stack->fd(stack), sb.st_size - sizeof(*tpt));
 }
 
 /*
