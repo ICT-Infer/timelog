@@ -29,12 +29,6 @@ timepoints (such as by `tl pending` and `tl report`).
 
 ## Known issues
 
-* When a timepoint is deleted from the timepoint-stack (tps),
-  the record is not removed, so the file doesn't shrink.
-  This by itself wouldn't be too bad if it wasn't for the next point.
-* When a timepoint is added to the tps, and the tps already has empty
-  records so we are overwriting empty records to combat the above problem,
-  the tps *keeps* growing, receiving an additional empty record at the end.
 * The tests only check the return values of functions.
   They need to be rewritten so that they instead test the actual outcome.
 * Some operating systems, when faced with an invalid `$TZ`, will
