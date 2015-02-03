@@ -276,15 +276,10 @@ recno_t tps_prev (const DB* stack)
   DBT data;
   DBT key;
 
-  do
+  if (stack->seq(stack, &key, &data, R_PREV) != 0)
   {
-    if (stack->seq(stack, &key, &data, R_PREV) != 0 ||
-      (*(recno_t*)key.data == 1 &&
-        (((timepoint*)data.data)->hts[0] == 0)))
-    {
-      return 0;
-    }
-  } while (((timepoint*)data.data)->hts[0] == 0);
+    return 0;
+  }
 
   return *(recno_t*)key.data;
 }
