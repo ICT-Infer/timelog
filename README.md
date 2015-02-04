@@ -29,7 +29,7 @@ timepoints (such as by `tl pending` and `tl report`).
 
 ## Known issues
 
-* The tests only check the return values of functions.
+* The tests only check the execution return values.
   They need to be rewritten so that they instead test the actual outcome.
 * Some operating systems, when faced with an invalid `$TZ`, will
   silently ignore it and use UTC.
