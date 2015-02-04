@@ -32,12 +32,12 @@
 /* Point in time. */
 typedef struct _timepoint
 {
-  char loc[49]; /* Name of location. */
-  char msg[65]; /* Message. */
+  int64_t cts; /* Calendar time. Number of seconds since the Epoch. */
   char hts[17]; /* Human readable timestamp of local time at location. */
   char etz[49]; /* Contents of environment variable TZ. */
   char rtz[49]; /* Resulting time zone. */
-  int64_t cts; /* Calendar time. Number of seconds since the Epoch. */
+  char loc[49]; /* Name of location. */
+  char msg[65]; /* Message. */
 } timepoint;
 
 typedef struct _tlentry
