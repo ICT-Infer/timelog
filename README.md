@@ -31,8 +31,8 @@ timepoints (such as by `tl pending` and `tl report`).
 
 ### Ticketed
 
-* #4: Close to no concern has yet been given to endianness.
-* #5: The tests only check the `tl` execution return values.
+* saas-by-erik/timelog#4: Close to no concern has yet been given to endianness.
+* saas-by-erik/timelog#5: The tests only check `tl` execution return values.
   They need to be rewritten so that they additionally test the actual outcome.
 
 ### Not ticketed
