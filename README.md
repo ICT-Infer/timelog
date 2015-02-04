@@ -31,9 +31,9 @@ timepoints (such as by `tl pending` and `tl report`).
 
 ### Ticketed
 
-* [#4](https://github.com/saas-by-erik/timelog/issues/4):
+* [#3](https://github.com/saas-by-erik/timelog/issues/3):
   Close to no concern has yet been given to endianness.
-* [#5](https://github.com/saas-by-erik/timelog/issues/5):
+* [#4](https://github.com/saas-by-erik/timelog/issues/4):
   The tests only check `tl` execution return values.
   They need to be rewritten so that they additionally test the actual outcome.
 
