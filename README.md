@@ -29,9 +29,18 @@ timepoints (such as by `tl pending` and `tl report`).
 
 ## Known issues
 
-* Close to no concern has yet been given to endianness.
-* The tests only check the `tl` execution return values.
+### Ticketed
+
+* #4: Close to no concern has yet been given to endianness.
+* #5: The tests only check the `tl` execution return values.
   They need to be rewritten so that they additionally test the actual outcome.
+
+### Not ticketed
+
+These are issues for which no tickets have been made since
+it has not yet been determined whether tickets
+should be created for these issues.
+
 * Some operating systems, when faced with an invalid `$TZ`, will
   silently ignore it and use UTC.
 
