@@ -164,6 +164,7 @@ DB* open_flat (const char* fname, const RECNOINFO* info)
 int tpt_init (timepoint* tpt,
   const char* loc, const char* msg, const char* ts)
 {
+  char* etz;
   struct tm sts; /* Timestamp. */
   time_t currtime;
   bool docmpts = false; /* Flag used to indicate when ts should be compared. */
@@ -219,11 +220,15 @@ int tpt_init (timepoint* tpt,
     (void)strftime(tpt->hts, sizeof(tpt->hts), format, &sts);
   }
 
-  if (strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz)
-    || (msg != NULL
-      && strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
+  /* Fields msg, loc, etz and rtz. */
+  etz = getenv("TZ");
+  if ((msg != NULL
+    && strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
     || (loc != NULL
-      && strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc)))
+      && strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc))
+    || (etz != NULL
+      && strlcpy(tpt->etz, etz, sizeof(tpt->etz)) >= sizeof(tpt->etz))
+    || strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz))
   {
     return 3;
   }
