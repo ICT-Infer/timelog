@@ -269,7 +269,7 @@ char** tpt_ppprint (const timepoint* tpt, char** buf)
  * Set cursor to point at previous record in timepoint-stack.
  *
  * Returns index of record.
- * Returns 0 if no previous record can be found.
+ * Returns 0 if no previous record can be found (none exists or error).
  */
 recno_t tps_prev (const DB* stack)
 {
@@ -288,7 +288,7 @@ recno_t tps_prev (const DB* stack)
  * Set cursor to point at head of timepoint-stack.
  *
  * Returns index of head.
- * Returns 0 if stack is empty.
+ * Returns 0 if stack is empty or if there was an error.
  */
 recno_t tps_head (const DB* stack)
 {
