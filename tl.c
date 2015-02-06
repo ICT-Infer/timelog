@@ -204,8 +204,8 @@ int tpt_init (timepoint* tpt,
     }
   }
 
-  /* If the user provided the date, we check it now. */
   tpt->cts = (int64_t) mktime(&sts);
+  /* If the user provided the date, we check it now. */
   if (docmpts)
   {
     (void)strftime(tpt->hts, sizeof(tpt->hts), format,
