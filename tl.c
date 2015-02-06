@@ -220,15 +220,14 @@ int tpt_init (timepoint* tpt,
     (void)strftime(tpt->hts, sizeof(tpt->hts), format, &sts);
   }
 
-  /* Fields msg, loc, etz and rtz. */
-  etz = getenv("TZ");
-  if ((msg != NULL
-    && strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg))
+  /* Fields etz, rtz, loc and msg. */
+  if (((etz = getenv("TZ")) != NULL
+    && strlcpy(tpt->etz, etz, sizeof(tpt->etz)) >= sizeof(tpt->etz))
+    || strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz)
     || (loc != NULL
       && strlcpy(tpt->loc, loc, sizeof(tpt->loc)) >= sizeof(tpt->loc))
-    || (etz != NULL
-      && strlcpy(tpt->etz, etz, sizeof(tpt->etz)) >= sizeof(tpt->etz))
-    || strlcpy(tpt->rtz, sts.tm_zone, sizeof(tpt->rtz)) >= sizeof(tpt->rtz))
+    || (msg != NULL
+    && strlcpy(tpt->msg, msg, sizeof(tpt->msg)) >= sizeof(tpt->msg)))
   {
     return 3;
   }
