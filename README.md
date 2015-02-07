@@ -46,7 +46,7 @@ should be created for these issues.
 * Some operating systems, when faced with an invalid `$TZ`, will
   silently ignore it and use UTC.
 
-## Compiling
+## Building
 
 ```
 make test
