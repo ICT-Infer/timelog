@@ -413,8 +413,6 @@ int cmd_init (int cargc, char** cargv,
       pname, cmd, r_init);
     return 2;
   }
-  cdtl->tl->close(cdtl->tl);
-  cdtl->tps->close(cdtl->tps);
 
   return 0;
 }
@@ -519,7 +517,6 @@ int cmd_timepoint (int cargc, char** cargv,
   }
 
   fprintf(stderr, "Timepoint at `%s' in TZ `%s'.\n", tpt.hts, tpt.rtz);
-  cdtl->tps->close(cdtl->tps);
 
   return 0;
 }
@@ -565,8 +562,6 @@ int cmd_pending (int cargc, char** cargv,
     free(buf);
   }
 
-  cdtl->tps->close(cdtl->tps);
-
   return 0;
 }
 
@@ -607,12 +602,10 @@ int cmd_popdrop (int cargc, char** cargv,
     tpt_ppprint(&tpt, &buf) == NULL ||
     tps_pop(cdtl->tps, NULL) != 0)
   {
-    cdtl->tps->close(cdtl->tps);
     return 4;
   }
   printf("%s", buf);
   free(buf);
-  cdtl->tps->close(cdtl->tps);
 
   return 0;
 }
@@ -651,22 +644,36 @@ int main (int argc, char* argv[])
   {
     fprintf(stderr, "%s: No command provided.\n\n", pname);
     usage(pname);
-    exit(EXIT_FAILURE);
+    return EXIT_FAILURE;
   }
 
   cmd_req = argv[1];
   cmd_argc = argc - 1;
   cmd_argv = &(argv[1]);
 
-  for (cmd_cur = cmds ; cmd_cur < &cmds[sizeof(cmds)/sizeof(cmds[0])] ; cmd_cur++)
+  for
+  (
+    cmd_cur = cmds;
+    cmd_cur < &cmds[sizeof(cmds)/sizeof(cmds[0])];
+    cmd_cur++
+  )
   {
     if (strcmp(cmd_cur->name, cmd_req) == 0)
     {
-      exit((*(cmd_cur->f))(cmd_argc, cmd_argv, pname, cmd_req, &cdtl));
+      int rval = (*(cmd_cur->f))(cmd_argc, cmd_argv, pname, cmd_req, &cdtl);
+      if (cdtl.tps != NULL && cdtl.tps->close(cdtl.tps) != 0)
+      {
+        rval++;
+      }
+      if (cdtl.tl != NULL && cdtl.tl->close(cdtl.tl) != 0)
+      {
+        rval++;
+      }
+      return rval;
     }
   }
 
   fprintf(stderr, "%s: Unknown command `%s'.\n\n", pname, cmd_req);
   usage(pname);
-  exit(EXIT_FAILURE);
+  return EXIT_FAILURE;
 }
