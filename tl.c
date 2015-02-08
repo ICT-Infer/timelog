@@ -336,8 +336,7 @@ int tps_peek (const DB* stack, timepoint* tpt, DBT* key)
 {
   DBT data;
 
-  if (stack->get(stack, key, &data, 0) != 0 ||
-    data.size != sizeof(*tpt))
+  if (stack->get(stack, key, &data, 0) != 0)
   {
     return 2;
   }
