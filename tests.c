@@ -26,19 +26,22 @@
 
 extern char **environ;
 
-typedef struct _tltest {
+typedef struct _tltest
+{
   bool xsuccess; /* Expecting success (true) or failure (false)? */
   char *desc;    /* Description. */
   char **argv;
 } tltest;
 
-int main() {
+int main()
+{
   int errors = 0;    /* Errors in the test program itself. */
   int nt_passed = 0; /* Number of tests passed. */
   int nt_failed = 0; /* Number of tests failed. */
 
   char odir[MAXPATHLEN];
-  if (getcwd(odir, sizeof(odir)) == NULL) {
+  if (getcwd(odir, sizeof(odir)) == NULL)
+  {
     fprintf(stderr, "`getcwd' failed.\n");
     exit(EXIT_FAILURE);
   }
@@ -47,7 +50,8 @@ int main() {
   struct stat stlb;
   if (strlcpy(tlb, odir, sizeof(tlb)) > sizeof(tlb) ||
       strlcat(tlb, "/bin/tl", sizeof(tlb)) > sizeof(tlb) ||
-      stat(tlb, &stlb) != 0) {
+      stat(tlb, &stlb) != 0)
+  {
     fprintf(stderr, "Creation of path to `tl' binary failed.\n");
     exit(EXIT_FAILURE);
   }
@@ -55,7 +59,8 @@ int main() {
   /* Temporary directory in which tests will be run. */
   char template[] = "/tmp/tl-XXXXXXXX";
   char *tmpdir = mkdtemp(template);
-  if (chdir(tmpdir) != 0) {
+  if (chdir(tmpdir) != 0)
+  {
     fprintf(stderr, "`chdir' into temporary directory `%s' failed.\n", tmpdir);
     exit(EXIT_FAILURE);
   }
@@ -148,22 +153,31 @@ int main() {
       {true, "`tl report' with empty log", (char *[]){tlb, "report", NULL}}};
 
   int i;
-  for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
+  for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++)
+  {
     pid_t pid = fork();
-    if (pid < 0) {
+    if (pid < 0)
+    {
       fprintf(stderr, "Test #%02d: %s. Not run.\n", i + 1, tests[i].desc);
       errors++;
-    } else if (pid == 0) {
+    }
+    else if (pid == 0)
+    {
       fclose(stdin);
       fclose(stdout);
       fclose(stderr);
       return execve(tlb, tests[i].argv, environ);
-    } else {
+    }
+    else
+    {
       int r;
       waitpid(pid, &r, 0);
-      if ((r == 0 && tests[i].xsuccess) || (r != 0 && !(tests[i].xsuccess))) {
+      if ((r == 0 && tests[i].xsuccess) || (r != 0 && !(tests[i].xsuccess)))
+      {
         nt_passed++;
-      } else {
+      }
+      else
+      {
         fprintf(stderr, "Test #%02d: %s. Failed.\n", i + 1, tests[i].desc);
         nt_failed++;
       }
@@ -173,13 +187,15 @@ int main() {
   const char f_tldir[] = ".tl/";
   const char f_tldb[] = "tl.db";
   const char f_tps[] = "tps.db";
-  if (chdir(f_tldir) == 0) {
+  if (chdir(f_tldir) == 0)
+  {
     unlink(f_tldb);
     unlink(f_tps);
     chdir("..");
     rmdir(f_tldir);
   }
-  if (rmdir(tmpdir) != 0) {
+  if (rmdir(tmpdir) != 0)
+  {
     fprintf(stderr, "Failed to remove temporary directory `%s'.\n", tmpdir);
     errors++;
   }
