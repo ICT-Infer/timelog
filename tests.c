@@ -26,22 +26,19 @@
 
 extern char **environ;
 
-typedef struct _tltest
-{
+typedef struct _tltest {
   bool xsuccess; /* Expecting success (true) or failure (false)? */
-  char* desc; /* Description. */
-  char** argv;
+  char *desc;    /* Description. */
+  char **argv;
 } tltest;
 
-int main()
-{
-  int errors = 0; /* Errors in the test program itself. */
+int main() {
+  int errors = 0;    /* Errors in the test program itself. */
   int nt_passed = 0; /* Number of tests passed. */
   int nt_failed = 0; /* Number of tests failed. */
 
   char odir[MAXPATHLEN];
-  if (getcwd(odir, sizeof(odir)) == NULL)
-  {
+  if (getcwd(odir, sizeof(odir)) == NULL) {
     fprintf(stderr, "`getcwd' failed.\n");
     exit(EXIT_FAILURE);
   }
@@ -49,140 +46,124 @@ int main()
   char tlb[MAXPATHLEN];
   struct stat stlb;
   if (strlcpy(tlb, odir, sizeof(tlb)) > sizeof(tlb) ||
-    strlcat(tlb, "/bin/tl", sizeof(tlb)) > sizeof(tlb) ||
-    stat(tlb, &stlb) != 0)
-  {
+      strlcat(tlb, "/bin/tl", sizeof(tlb)) > sizeof(tlb) ||
+      stat(tlb, &stlb) != 0) {
     fprintf(stderr, "Creation of path to `tl' binary failed.\n");
     exit(EXIT_FAILURE);
   }
 
   /* Temporary directory in which tests will be run. */
   char template[] = "/tmp/tl-XXXXXXXX";
-  char* tmpdir = mkdtemp(template);
-  if (chdir(tmpdir) != 0)
-  {
+  char *tmpdir = mkdtemp(template);
+  if (chdir(tmpdir) != 0) {
     fprintf(stderr, "`chdir' into temporary directory `%s' failed.\n", tmpdir);
     exit(EXIT_FAILURE);
   }
 
-  tltest tests[] =
-  {
-    {true, "`tl init'",
-      (char *[]){tlb, "init", NULL}},
+  tltest tests[] = {
+      {true, "`tl init'", (char *[]){tlb, "init", NULL}},
 
-    {false, "`tl init' in directory with existing timelog",
-      (char *[]){tlb, "init", NULL}},
+      {false, "`tl init' in directory with existing timelog",
+       (char *[]){tlb, "init", NULL}},
 
-    {false, "`tl' without arguments",
-      (char *[]){tlb, NULL}},
+      {false, "`tl' without arguments", (char *[]){tlb, NULL}},
 
-    {false, "`tl x' (invalid command)",
-      (char *[]){tlb, "x", NULL}},
+      {false, "`tl x' (invalid command)", (char *[]){tlb, "x", NULL}},
 
-    {true, "`tl pending' with empty stack",
-      (char *[]){tlb, "pending", NULL}},
+      {true, "`tl pending' with empty stack", (char *[]){tlb, "pending", NULL}},
 
-    {false, "`tl pop-drop' with empty stack",
-      (char *[]){tlb, "pop-drop", NULL}},
+      {false, "`tl pop-drop' with empty stack",
+       (char *[]){tlb, "pop-drop", NULL}},
 
-    {false, "`tl merge-add' with empty stack",
-      (char *[]){tlb, "merge-add", NULL}},
+      {false, "`tl merge-add' with empty stack",
+       (char *[]){tlb, "merge-add", NULL}},
 
-    {true, "`tl timepoint'",
-      (char *[]){tlb, "timepoint", NULL}},
+      {true, "`tl timepoint'", (char *[]){tlb, "timepoint", NULL}},
 
-    {true, "`tl pending' with one element on stack",
-      (char *[]){tlb, "pending", NULL}},
+      {true, "`tl pending' with one element on stack",
+       (char *[]){tlb, "pending", NULL}},
 
-    {true, "`tl pop-drop' with one element on stack",
-      (char *[]){tlb, "pop-drop", NULL}},
+      {true, "`tl pop-drop' with one element on stack",
+       (char *[]){tlb, "pop-drop", NULL}},
 
-    {true, "`tl timepoint -l <loc>' with valid length loc",
-      (char *[]){tlb, "timepoint", "-l",
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy", NULL}},
+      {true, "`tl timepoint -l <loc>' with valid length loc",
+       (char *[]){tlb, "timepoint", "-l",
+                  "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy", NULL}},
 
-    {false, "`tl timepoint -l <loc>' with invalid length loc",
-      (char *[]){tlb, "timepoint", "-l",
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz", NULL}},
+      {false, "`tl timepoint -l <loc>' with invalid length loc",
+       (char *[]){tlb, "timepoint", "-l",
+                  "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz", NULL}},
 
-    {true, "`tl timepoint -m <msg>' with valid length msg",
-      (char *[]){tlb, "timepoint", "-m", "xxxxxxxxxxxxxxxx"
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy", NULL}},
+      {true, "`tl timepoint -m <msg>' with valid length msg",
+       (char *[]){tlb, "timepoint", "-m",
+                  "xxxxxxxxxxxxxxxx"
+                  "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy",
+                  NULL}},
 
-    {false, "`tl timepoint -m <msg>' with invalid length msg",
-      (char *[]){tlb, "timepoint", "-m", "xxxxxxxxxxxxxxxx"
-        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz", NULL}},
+      {false, "`tl timepoint -m <msg>' with invalid length msg",
+       (char *[]){tlb, "timepoint", "-m",
+                  "xxxxxxxxxxxxxxxx"
+                  "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz",
+                  NULL}},
 
-    {true, "`tl timepoint -t <ts>' with valid ts #1",
-      (char *[]){tlb, "timepoint", "-t", "22:22", NULL}},
+      {true, "`tl timepoint -t <ts>' with valid ts #1",
+       (char *[]){tlb, "timepoint", "-t", "22:22", NULL}},
 
-    /* In timezone Europe/Oslo, calendar time will contain 0x0a. */
-    {true, "`tl timepoint -t <ts>' with valid ts #2",
-      (char *[]){tlb, "timepoint", "-t", "2015-01-30T23:50", NULL}},
+      /* In timezone Europe/Oslo, calendar time will contain 0x0a. */
+      {true, "`tl timepoint -t <ts>' with valid ts #2",
+       (char *[]){tlb, "timepoint", "-t", "2015-01-30T23:50", NULL}},
 
-    {true, "`tl timepoint -t <ts>' with valid ts #3",
-      (char *[]){tlb, "timepoint", "-t", "2015-01-31T01:02", NULL}},
+      {true, "`tl timepoint -t <ts>' with valid ts #3",
+       (char *[]){tlb, "timepoint", "-t", "2015-01-31T01:02", NULL}},
 
-    {true, "`tl pop-drop' to see if tps db was corrupted by valid ts #2",
-      (char *[]){tlb, "pop-drop", NULL}},
+      {true, "`tl pop-drop' to see if tps db was corrupted by valid ts #2",
+       (char *[]){tlb, "pop-drop", NULL}},
 
-    {false, "`tl timepoint -t <ts>' with invalid ts #1",
-      (char *[]){tlb, "timepoint", "-t", "T22:22", NULL}},
+      {false, "`tl timepoint -t <ts>' with invalid ts #1",
+       (char *[]){tlb, "timepoint", "-t", "T22:22", NULL}},
 
-    {false, "`tl timepoint -t <ts>' with invalid ts #2",
-      (char *[]){tlb, "timepoint", "-t", "22:22:00", NULL}},
+      {false, "`tl timepoint -t <ts>' with invalid ts #2",
+       (char *[]){tlb, "timepoint", "-t", "22:22:00", NULL}},
 
-    {false, "`tl timepoint -t <ts>' with invalid ts #3",
-      (char *[]){tlb, "timepoint", "-t", "2015-01-10t22:22", NULL}},
+      {false, "`tl timepoint -t <ts>' with invalid ts #3",
+       (char *[]){tlb, "timepoint", "-t", "2015-01-10t22:22", NULL}},
 
-    {false, "`tl timepoint -t <ts>' with invalid ts #4",
-      (char *[]){tlb, "timepoint", "-t", "2014-02-31T22:22", NULL}},
+      {false, "`tl timepoint -t <ts>' with invalid ts #4",
+       (char *[]){tlb, "timepoint", "-t", "2014-02-31T22:22", NULL}},
 
-    {true, "`tl merge-add' with multiple points on stack",
-      (char *[]){tlb, "merge-add", NULL}},
+      {true, "`tl merge-add' with multiple points on stack",
+       (char *[]){tlb, "merge-add", NULL}},
 
-    {true, "`tl report' with one entry in log",
-      (char *[]){tlb, "report", NULL}},
+      {true, "`tl report' with one entry in log",
+       (char *[]){tlb, "report", NULL}},
 
-    {false, "`tl unlog' 2nd log entry with only one entry in log",
-      (char *[]){tlb, "unlog", "2", NULL}},
+      {false, "`tl unlog' 2nd log entry with only one entry in log",
+       (char *[]){tlb, "unlog", "2", NULL}},
 
-    {true, "`tl unlog' 1st log entry",
-      (char *[]){tlb, "unlog", "1", NULL}},
+      {true, "`tl unlog' 1st log entry", (char *[]){tlb, "unlog", "1", NULL}},
 
-    {false, "`tl unlog' 1st log entry again",
-      (char *[]){tlb, "unlog", "1", NULL}},
+      {false, "`tl unlog' 1st log entry again",
+       (char *[]){tlb, "unlog", "1", NULL}},
 
-    {true, "`tl report' with empty log",
-      (char *[]){tlb, "report", NULL}}
-  };
+      {true, "`tl report' with empty log", (char *[]){tlb, "report", NULL}}};
 
   int i;
-  for (i = 0; i < sizeof(tests)/sizeof(tests[0]); i++)
-  {
+  for (i = 0; i < sizeof(tests) / sizeof(tests[0]); i++) {
     pid_t pid = fork();
-    if (pid < 0)
-    {
+    if (pid < 0) {
       fprintf(stderr, "Test #%02d: %s. Not run.\n", i + 1, tests[i].desc);
       errors++;
-    }
-    else if (pid == 0)
-    {
+    } else if (pid == 0) {
       fclose(stdin);
       fclose(stdout);
       fclose(stderr);
       return execve(tlb, tests[i].argv, environ);
-    }
-    else
-    {
+    } else {
       int r;
       waitpid(pid, &r, 0);
-      if ((r == 0 && tests[i].xsuccess) || (r != 0 && !(tests[i].xsuccess)))
-      {
+      if ((r == 0 && tests[i].xsuccess) || (r != 0 && !(tests[i].xsuccess))) {
         nt_passed++;
-      }
-      else
-      {
+      } else {
         fprintf(stderr, "Test #%02d: %s. Failed.\n", i + 1, tests[i].desc);
         nt_failed++;
       }
@@ -192,21 +173,19 @@ int main()
   const char f_tldir[] = ".tl/";
   const char f_tldb[] = "tl.db";
   const char f_tps[] = "tps.db";
-  if (chdir(f_tldir) == 0)
-  {
+  if (chdir(f_tldir) == 0) {
     unlink(f_tldb);
     unlink(f_tps);
     chdir("..");
     rmdir(f_tldir);
   }
-  if (rmdir(tmpdir) != 0)
-  {
+  if (rmdir(tmpdir) != 0) {
     fprintf(stderr, "Failed to remove temporary directory `%s'.\n", tmpdir);
     errors++;
   }
 
-  printf("Ran %d test. %d passed. %d failed.\n",
-    nt_passed + nt_failed, nt_passed, nt_failed);
+  printf("Ran %d test. %d passed. %d failed.\n", nt_passed + nt_failed,
+         nt_passed, nt_failed);
 
   exit(errors + nt_failed);
 }
