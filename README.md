@@ -25,14 +25,17 @@ timepoints (such as by `tl pending` and `tl report`).
 
 ## Supported platforms
 
-`tl` is being developed on FreeBSD/armv6, FreeBSD/amd64 and OpenBSD/i386.
+`tl` is being developed on:
+
+  * FreeBSD/armv6
+  * FreeBSD/amd64
+  * OpenBSD/i386
+  * Mac OS X/powerpc
 
 ## Known issues
 
 ### Ticketed
 
-* [#3](https://github.com/saas-by-erik/timelog/issues/3):
-  Close to no concern has yet been given to endianness.
 * [#4](https://github.com/saas-by-erik/timelog/issues/4):
   The tests only check `tl` execution return values.
   They need to be rewritten so that they additionally test the actual outcome.
