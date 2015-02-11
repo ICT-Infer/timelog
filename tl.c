@@ -205,8 +205,9 @@ int tpt_init(timepoint *tpt, const char *loc, const char *msg, const char *ts)
   /* If the user provided the date, we check it now. */
   if (docmpts)
   {
+    time_t cts_tmp = (time_t)tpt->cts;
     (void)strftime(tpt->hts, sizeof(tpt->hts), format,
-                   localtime((time_t *)&tpt->cts));
+                   localtime(&cts_tmp));
     if (strcmp(ts, tpt->hts) != 0)
     {
       return 2;
