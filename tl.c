@@ -206,8 +206,7 @@ int tpt_init(timepoint *tpt, const char *loc, const char *msg, const char *ts)
   if (docmpts)
   {
     time_t cts_tmp = (time_t)tpt->cts;
-    (void)strftime(tpt->hts, sizeof(tpt->hts), format,
-                   localtime(&cts_tmp));
+    (void)strftime(tpt->hts, sizeof(tpt->hts), format, localtime(&cts_tmp));
     if (strcmp(ts, tpt->hts) != 0)
     {
       return 2;
@@ -595,8 +594,8 @@ int cmd_popdrop(int cargc, char **cargv, const char *pname, const char *cmd,
   key.size = sizeof(&kval);
   key.data = &kval;
 
-  if (tps_peek(cdtl->tps, &tpt, &key) != 0 || tpt_ppprint(&tpt, &buf) == NULL ||
-      tps_pop(cdtl->tps, NULL) != 0)
+  if (tps_peek(cdtl->tps, &tpt, &key) != 0 ||
+      tpt_ppprint(&tpt, &buf) == NULL || tps_pop(cdtl->tps, NULL) != 0)
   {
     return 4;
   }
