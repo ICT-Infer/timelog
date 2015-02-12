@@ -75,7 +75,8 @@ int main()
 
       {false, "`tl x' (invalid command)", (char *[]){tlb, "x", NULL}},
 
-      {true, "`tl pending' with empty stack", (char *[]){tlb, "pending", NULL}},
+      {true, "`tl pending' with empty stack",
+       (char *[]){tlb, "pending", NULL}},
 
       {false, "`tl pop-drop' with empty stack",
        (char *[]){tlb, "pop-drop", NULL}},
