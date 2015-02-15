@@ -20,13 +20,13 @@ EOF
 if [ "$host_os" = "Darwin" ] ; then
 cat >>Makefile <<EOF
 lib/libtimelog.dylib: lib/libtimelog.0.dylib lib/
-	ln -s libtimelog.0.dylib lib/libtimelog.dylib
+	test -f lib/libtimelog.dylib || ln -s libtimelog.0.dylib lib/libtimelog.dylib
 
 EOF
 else
 cat >>Makefile <<EOF
 lib/libtimelog.so: lib/libtimelog.so.0 lib/
-	ln -s libtimelog.so.0 lib/libtimelog.so
+	test -f lib/libtimelog.so || ln -s libtimelog.so.0 lib/libtimelog.so
 
 EOF
 fi
