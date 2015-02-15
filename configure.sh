@@ -42,7 +42,7 @@ else
 cat >>Makefile <<EOF
 lib/libtimelog.so.0: timelog.c oobj/ lib/
 	cc -Iinclude -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c timelog.c
-	cc -shared -Wl,-soname,libtimelog.so.0 -o lib/libtimelog.0.dylib oobj/timelog.o
+	cc -shared -Wl,-soname,libtimelog.so.0 -o lib/libtimelog.so.0 oobj/timelog.o
 
 EOF
 fi
