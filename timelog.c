@@ -30,6 +30,22 @@
 #include "timelog.h"
 
 /*
+ * Default dottl.
+ */
+dottl dottl_default(void)
+{
+  dottl ddtl = {".tl/",
+                ".tl/tps.db",
+                ".tl/tl.db",
+                {R_FIXEDLEN, 0, 0, 0, sizeof(timepoint), 0x00, NULL},
+                {R_FIXEDLEN, 0, 0, 0, sizeof(tlentry), 0x00, NULL},
+                NULL,
+                NULL};
+
+  return ddtl;
+}
+
+/*
  * Initialize time log directory and files.
  * Returns zero on success.
  *

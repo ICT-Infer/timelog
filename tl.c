@@ -298,13 +298,7 @@ int main(int argc, char *argv[])
   char **cmd_argv;
 
   /* Current dottl. */
-  dottl cdtl = {".tl/",
-                ".tl/tps.db",
-                ".tl/tl.db",
-                {R_FIXEDLEN, 0, 0, 0, sizeof(timepoint), 0x00, NULL},
-                {R_FIXEDLEN, 0, 0, 0, sizeof(tlentry), 0x00, NULL},
-                NULL,
-                NULL};
+  dottl cdtl = dottl_default();
 
   /* Commands. */
   cmd cmds[] = {
