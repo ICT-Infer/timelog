@@ -43,6 +43,7 @@ typedef struct _dottl
   DB *tl;
 } dottl;
 
+dottl dottl_default(void);
 int tl_init(dottl *);
 DB *open_flat(const char *, const RECNOINFO *);
 int tpt_init(timepoint *, const char *, const char *, const char *);
