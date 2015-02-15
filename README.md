@@ -56,5 +56,5 @@ should be created for these issues.
 ## Building
 
 ```
-make test
+./configure.sh && make test
 ```
