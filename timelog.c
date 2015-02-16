@@ -198,39 +198,6 @@ int tpt_init(timepoint *tpt, const char *loc, const char *msg, const char *ts)
 }
 
 /*
- * Prepare pretty print of a timepoint.
- */
-char **tpt_ppprint(const timepoint *tpt, char **buf)
-{
-  size_t msize = sizeof(tpt->hts) + sizeof(char) * 2 + sizeof(tpt->rtz) +
-                 sizeof(char) + sizeof(char) * 2 + sizeof(tpt->loc) +
-                 sizeof(char) + sizeof(char) * 3 + sizeof(tpt->msg) +
-                 sizeof(char) * 3;
-  if ((*buf = (char *)malloc(msize)) == NULL)
-  {
-    return NULL;
-  }
-
-  strlcpy(*buf, tpt->hts, msize);
-  strlcat(*buf, " (", msize);
-  strlcat(*buf, tpt->rtz, msize);
-  strlcat(*buf, ")", msize);
-  if (*(tpt->loc) != 0x00)
-  {
-    strlcat(*buf, ", ", msize);
-    strlcat(*buf, tpt->loc, msize);
-  }
-  strlcat(*buf, "\n", msize);
-  if (*(tpt->msg) != 0x00)
-  {
-    strlcat(*buf, "\n  ", msize);
-    strlcat(*buf, tpt->msg, msize);
-    strlcat(*buf, "\n\n", msize);
-  }
-  return buf;
-}
-
-/*
  * Set cursor to point at previous record in timepoint-stack.
  *
  * Returns index of record.
