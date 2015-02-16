@@ -53,7 +53,9 @@ dottl dottl_default(void)
  * non-zero number is returned.
  *
  * On failure, rollback is attempted and a negative,
- * non-zero number is returned.
+ * non-zero number is returned indicating failure and
+ * whether (-1) or not (-2) rollback, if any,
+ * was successful.
  */
 int tl_init(dottl *cdtl)
 {
