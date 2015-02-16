@@ -47,7 +47,6 @@ dottl dottl_default(void);
 int tl_init(dottl *);
 DB *open_flat(const char *, const RECNOINFO *);
 int tpt_init(timepoint *, const char *, const char *, const char *);
-char **tpt_ppprint(const timepoint *, char **);
 recno_t tps_prev(const DB *);
 recno_t tps_head(const DB *);
 int tps_push(const DB *, timepoint *);
