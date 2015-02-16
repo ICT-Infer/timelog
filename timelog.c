@@ -68,7 +68,7 @@ int tl_init(dottl *cdtl)
   }
 
   /*
-   * It is tempting to combine these if-statements with "or" sinc
+   * It is tempting to combine these if-statements with "or" since
    * their bodies do the same thing. Doing so would hurt readability IMO.
    * So we don't.
    */
