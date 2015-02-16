@@ -49,70 +49,51 @@ dottl dottl_default(void)
  * Initialize time log directory and files.
  * Returns zero on success.
  *
- * The absolute value of a non-zero return value
- * indicates the stage of tl_init where failure occured.
+ * If invalid parameters are detected, a positive,
+ * non-zero number is returned.
  *
- * On failure, rollback is attempted.  Should rollback fail,
- * the return value is sign-swapped, thus becoming negative.
+ * On failure, rollback is attempted and a negative,
+ * non-zero number is returned.
  */
 int tl_init(dottl *cdtl)
 {
-  int rem = 4; /* Stages remaining */
-
   if (cdtl->tl != NULL || cdtl->tps != NULL)
   {
-    goto rollback_init;
+    return 1;
   }
-  rem--;
 
   if (mkdir(cdtl->f_dir, 00755) != 0)
   {
-    goto rollback_init;
+    return -1;
   }
-  rem--;
 
+  /*
+   * It is tempting to combine these if-statements with "or" sinc
+   * their bodies do the same thing. Doing so would hurt readability IMO.
+   * So we don't.
+   */
   if ((cdtl->tl = dbopen(cdtl->f_tl, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
                          00644, DB_RECNO, (void *)&(cdtl->info_tl))) == NULL)
   {
     goto rollback_init;
   }
-  rem--;
-
   if ((cdtl->tps = dbopen(cdtl->f_tps, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
                           00644, DB_RECNO, (void *)&(cdtl->info_tps))) == NULL)
   {
     goto rollback_init;
   }
-  rem--;
 
-  return rem;
+  return 0;
 
 rollback_init:
-  switch (rem)
+  unlink(cdtl->f_tps);
+  cdtl->tl->close(cdtl->tl);
+  unlink(cdtl->f_tl);
+  if (rmdir(cdtl->f_dir) != 0)
   {
-  case 1:
-    unlink(cdtl->f_tps);
-    cdtl->tl->close(cdtl->tl);
-  /* FALLTHROUGH */
-  case 2:
-    unlink(cdtl->f_tl);
-    if (rmdir(cdtl->f_dir) != 0)
-    {
-      return -rem;
-    }
-  /* FALLTHROUGH */
-  case 3:
-  /* FALLTHROUGH */
-  case 4:
-    return rem;
-    break;
-  default:
-    if (rem > 0)
-    {
-      return -rem;
-    }
-    return -5;
+    return -2;
   }
+  return -1;
 }
 
 /*
