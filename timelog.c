@@ -31,6 +31,10 @@
 
 /*
  * Default dottl.
+ *
+ * The dottl holds information relating to a timelog directory in use.
+ * The fields of the dottl type are explained in the declaration
+ * of said type in timelog.h (which is to be found in include/).
  */
 dottl dottl_default(void)
 {
@@ -47,15 +51,15 @@ dottl dottl_default(void)
 
 /*
  * Initialize time log directory and files.
+ *
  * Returns zero on success.
  *
- * If invalid parameters are detected, a positive,
- * non-zero number is returned.
+ * Returns a positive, non-zero number for invalid arguments.
  *
- * On failure, rollback is attempted and a negative,
- * non-zero number is returned indicating failure and
- * whether (-1) or not (-2) rollback, if any,
- * was successful.
+ * Returns a negative, non-zero number on failure.
+ * If applicable to the failure condition, rollback will be attempted
+ * and the negative, non-zero return value will indicate
+ * whether (-1) or not (<= -2) rollback succeeded.
  */
 int tl_init(dottl *cdtl)
 {
