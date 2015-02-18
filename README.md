@@ -47,6 +47,9 @@ noteable issues pertaining to building and running saas-by-erik/timelog.)
   Timelogs are tied to the endianness of the host they were generated on.
   Endianness to use when reading and writing timelog files should be chosen so
   that timelogs are "portable" between little-endian and big-endian hosts.
+* [#9](https://github.com/saas-by-erik/timelog/issues/9):
+  No install target currently exists in Makefile.
+  It is common to have a target to be able to `make install`.
 
 ### Not ticketed
 
