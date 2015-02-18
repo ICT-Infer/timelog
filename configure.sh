@@ -2,40 +2,34 @@
 
 host_os=$( uname -s )
 
-if [ "$host_os" = "Darwin" ] ; then
 cat >Makefile <<EOF
-bin/tl: lib/libtimelog.dylib tl.c bin/
+.PHONY: all
+EOF
+
+if [ "$host_os" = "Darwin" ] ; then
+cat >>Makefile <<EOF
+all: lib/libtimelog.0.dylib bin/tl
+
 EOF
 else
-cat >Makefile <<EOF
-bin/tl: lib/libtimelog.so tl.c bin/
+cat >>Makefile <<EOF
+all: lib/libtimelog.so.0 bin/tl
+
 EOF
 fi
 
 cat >>Makefile <<EOF
+bin/tl: include/timelog.h tl.c bin/
 	cc -Iinclude -Llib -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c -ltimelog
 
 EOF
 
 if [ "$host_os" = "Darwin" ] ; then
 cat >>Makefile <<EOF
-lib/libtimelog.dylib: lib/libtimelog.0.dylib lib/
-	test -f lib/libtimelog.dylib || ln -s libtimelog.0.dylib lib/libtimelog.dylib
-
-EOF
-else
-cat >>Makefile <<EOF
-lib/libtimelog.so: lib/libtimelog.so.0 lib/
-	test -f lib/libtimelog.so || ln -s libtimelog.so.0 lib/libtimelog.so
-
-EOF
-fi
-
-if [ "$host_os" = "Darwin" ] ; then
-cat >>Makefile <<EOF
 lib/libtimelog.0.dylib: timelog.c oobj/ lib/
 	cc -Iinclude -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c timelog.c
 	cc -dynamiclib -o lib/libtimelog.0.dylib oobj/timelog.o
+	test -f lib/libtimelog.dylib || ln -s libtimelog.0.dylib lib/libtimelog.dylib
 
 EOF
 else
@@ -43,6 +37,7 @@ cat >>Makefile <<EOF
 lib/libtimelog.so.0: timelog.c oobj/ lib/
 	cc -Iinclude -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c timelog.c
 	cc -shared -Wl,-soname,libtimelog.so.0 -o lib/libtimelog.so.0 oobj/timelog.o
+	test -f lib/libtimelog.so || ln -s libtimelog.so.0 lib/libtimelog.so
 
 EOF
 fi
@@ -58,7 +53,7 @@ oobj/:
 	mkdir oobj/
 
 .PHONY: test
-test: tests bin/tl
+test: all tests
 EOF
 
 if [ "$host_os" = "Darwin" ] ; then
