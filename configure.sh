@@ -19,6 +19,9 @@ EOF
 fi
 
 cat >>Makefile <<EOF
+Makefile: configure.sh
+	./configure.sh
+
 bin/tl: include/timelog.h tl.c bin/
 	cc -Iinclude -Llib -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c -ltimelog
 
