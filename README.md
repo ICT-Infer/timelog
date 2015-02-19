@@ -38,7 +38,7 @@ timepoints (such as by `tl pending` and `tl report`).
 
 (Note that this is not meant to be a list of *all* ticketed issues, but rather,
 to be a list of currently open tickets regarding issues considered to be
-noteable issues pertaining to building and running saas-by-erik/timelog.)
+noteable pertaining to building and running saas-by-erik/timelog.)
 
 * [#4](https://github.com/saas-by-erik/timelog/issues/4):
   The tests only check `tl` execution return values.
