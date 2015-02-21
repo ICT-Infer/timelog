@@ -41,13 +41,15 @@ dottl dottl_default(void)
   dottl ddtl = {".tl/",
                 ".tl/tps.db",
                 ".tl/tl.db",
-                {R_FIXEDLEN, 0, 0, 0, sizeof(timepoint), 0x00, NULL},
-                {R_FIXEDLEN, 0, 0, 0, sizeof(tlentry), 0x00, NULL},
                 NULL,
                 NULL};
 
   return ddtl;
 }
+
+/* See recno(3). */
+const RECNOINFO i_tps = {R_FIXEDLEN, 0, 0, 0, sizeof(timepoint), 0x00, NULL};
+const RECNOINFO i_tl = {R_FIXEDLEN, 0, 0, 0, sizeof(tlentry), 0x00, NULL};
 
 /*
  * Initialize time log directory and files.
@@ -79,12 +81,12 @@ int tl_init(dottl *cdtl)
    * So we don't.
    */
   if ((cdtl->tl = dbopen(cdtl->f_tl, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
-                         00644, DB_RECNO, (void *)&(cdtl->info_tl))) == NULL)
+                         00644, DB_RECNO, (void *)&(i_tl))) == NULL)
   {
     goto rollback_init;
   }
   if ((cdtl->tps = dbopen(cdtl->f_tps, O_CREAT | O_EXCL | O_RDWR | O_EXLOCK,
-                          00644, DB_RECNO, (void *)&(cdtl->info_tps))) == NULL)
+                          00644, DB_RECNO, (void *)&(i_tps))) == NULL)
   {
     goto rollback_init;
   }
@@ -103,11 +105,19 @@ rollback_init:
 }
 
 /*
- * Open a flatfile database.
+ * Open timepoint-stack flat file database.
  */
-DB *open_flat(const char *fname, const RECNOINFO *info)
+DB *open_tps(const char *fname)
 {
-  return dbopen(fname, O_RDWR | O_EXLOCK, 00644, DB_RECNO, (void *)info);
+  return dbopen(fname, O_RDWR | O_EXLOCK, 00644, DB_RECNO, (void *)&i_tps);
+}
+
+/*
+ * Open timelog flat file database.
+ */
+DB *open_tl(const char *fname)
+{
+  return dbopen(fname, O_RDWR | O_EXLOCK, 00644, DB_RECNO, (void *)&i_tl);
 }
 
 /*
