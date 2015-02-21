@@ -207,7 +207,7 @@ int cmd_timepoint(int cargc, char **cargv, const char *pname, const char *cmd,
     cargv_parse++;
   }
 
-  if ((cdtl->tps = open_flat(cdtl->f_tps, &(cdtl->info_tps))) == NULL)
+  if ((cdtl->tps = open_tps(cdtl->f_tps)) == NULL)
   {
     fprintf(stderr, "%s: %s: Failed to open tpt stack.\n", pname, cmd);
     return 8;
@@ -253,7 +253,7 @@ int cmd_pending(int cargc, char **cargv, const char *pname, const char *cmd,
     return 1;
   }
 
-  if ((cdtl->tps = open_flat(cdtl->f_tps, &(cdtl->info_tps))) == NULL)
+  if ((cdtl->tps = open_tps(cdtl->f_tps)) == NULL)
   {
     return 2;
   }
@@ -296,7 +296,7 @@ int cmd_popdrop(int cargc, char **cargv, const char *pname, const char *cmd,
     return 1;
   }
 
-  if ((cdtl->tps = open_flat(cdtl->f_tps, &(cdtl->info_tps))) == NULL)
+  if ((cdtl->tps = open_tps(cdtl->f_tps)) == NULL)
   {
     return 2;
   }
