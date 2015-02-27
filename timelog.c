@@ -38,11 +38,7 @@
  */
 dottl dottl_default(void)
 {
-  dottl ddtl = {".tl/",
-                ".tl/tps.db",
-                ".tl/tl.db",
-                NULL,
-                NULL};
+  dottl ddtl = {".tl/", ".tl/tps.db", ".tl/tl.db", NULL, NULL};
 
   return ddtl;
 }
@@ -299,4 +295,104 @@ int tps_pop(const DB *stack, timepoint *tpt)
    */
   fstat(stack->fd(stack), &sb);
   return ftruncate(stack->fd(stack), sb.st_size - sizeof(*tpt));
+}
+
+/*
+ * Initialize tlentry.
+ */
+int tle_init(tlentry *tle, timepoint *tpt_h, timepoint *tpt_p)
+{
+  if (tpt_h->cts < tpt_p->cts)
+  {
+    /* Reverse order. */
+    tle->begin = *tpt_h;
+    tle->end = *tpt_p;
+  }
+  else
+  {
+    /* Default order. */
+    tle->begin = *tpt_p;
+    tle->end = *tpt_h;
+  }
+
+  return 0;
+}
+
+/*
+ * Set cursor to point at previous record in time log.
+ *
+ * Returns index of record.
+ * Returns 0 if no previous record can be found (none exists or error).
+ */
+recno_t tl_prev(const DB *tl)
+{
+  DBT data;
+  DBT key;
+
+  if (tl->seq(tl, &key, &data, R_PREV) != 0)
+  {
+    return 0;
+  }
+
+  return *(recno_t *)key.data;
+}
+
+/*
+ * Set cursor to point at head of time log.
+ *
+ * Returns index of head.
+ * Returns 0 if stack is empty or if there was an error.
+ */
+recno_t tl_head(const DB *tl)
+{
+  if (tl->seq(tl, NULL, NULL, R_LAST) != 0)
+  {
+    return 0;
+  }
+
+  return tl_prev(tl);
+}
+
+/*
+ * Insert tlentry into time log.
+ *
+ * Returns row number greater than zero on success.
+ * Returns zero on failure.
+ */
+recno_t tl_insert(const DB *tl, tlentry *tle)
+{
+  /* TODO MAYBE: Insert in ordered position. */
+  DBT data;
+  DBT key;
+  recno_t kval;
+
+  if (tle == NULL || tle->begin.hts[0] == 0 || tle->end.hts[0] == 0)
+  {
+    return 0;
+  }
+
+  data.size = sizeof(*tle);
+  data.data = tle;
+  kval = tl_head(tl) + 1;
+  key.size = sizeof(&kval);
+  key.data = &kval;
+
+  if (tl->put(tl, &key, &data, R_SETCURSOR) != 0)
+  {
+    return 0;
+  }
+
+  return *((recno_t *)key.data);
+}
+
+/*
+ * Drop tlentry by row number from time log.
+ *
+ * Returns 0 on success.
+ * Returns non-zero on failure.
+ */
+int tl_drop(const DB *tl, int row)
+{
+  /* TODO: Implement. */
+  return 1;
 }
