@@ -34,11 +34,11 @@ typedef struct _tlentry
 /* Information about a timelog directory and its files. */
 typedef struct _dottl
 {
-  const char *f_dir;        /* Path to directory. Typically relative. */
-  const char *f_tps;        /* Name of the timepoint stack flat file. */
-  const char *f_tl;         /* Name of the time log flat file. */
-  DB *tps;                  /* Set by certain libtimelog functions. */
-  DB *tl;                   /* Set by certain libtimelog functions. */
+  const char *f_dir; /* Path to directory. Typically relative. */
+  const char *f_tps; /* Name of the timepoint stack flat file. */
+  const char *f_tl;  /* Name of the time log flat file. */
+  DB *tps;           /* Set by certain libtimelog functions. */
+  DB *tl;            /* Set by certain libtimelog functions. */
 } dottl;
 
 dottl dottl_default(void);
@@ -51,3 +51,8 @@ recno_t tps_head(const DB *);
 int tps_push(const DB *, timepoint *);
 int tps_peek(const DB *, timepoint *, DBT *);
 int tps_pop(const DB *, timepoint *);
+int tle_init(tlentry *, timepoint *, timepoint *);
+recno_t tl_prev(const DB *);
+recno_t tl_head(const DB *);
+recno_t tl_insert(const DB *, tlentry *);
+int tl_drop(const DB *, int);

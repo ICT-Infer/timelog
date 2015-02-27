@@ -320,6 +320,70 @@ int cmd_popdrop(int cargc, char **cargv, const char *pname, const char *cmd,
 }
 
 /*
+ * Command: merge-add
+ *
+ * Pop timepoint off the timepoint-stack twice, merge them and add to time log.
+ */
+int cmd_mergeadd(int cargc, char **cargv, const char *pname, const char *cmd,
+                 dottl *cdtl)
+{
+  recno_t kval_h, kval_p;
+  DBT key_h, key_p;
+  timepoint tpt_h, tpt_p;
+  tlentry tle;
+  recno_t irow;
+
+  if (cargc > 1)
+  {
+    fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+                    "First: `%s'.\n\n",
+            pname, cmd, cargc - 1, cargv[1]);
+    usage(pname);
+    return 1;
+  }
+
+  if ((cdtl->tps = open_tps(cdtl->f_tps)) == NULL ||
+      (cdtl->tl = open_tl(cdtl->f_tl)) == NULL)
+  {
+    return 2;
+  }
+
+  key_h.size = sizeof(&kval_h);
+  kval_h = tps_head(cdtl->tps);
+  key_h.data = &kval_h;
+
+  key_p.size = sizeof(&kval_p);
+  kval_p = tps_prev(cdtl->tps);
+  key_p.data = &kval_p;
+
+  if (tps_peek(cdtl->tps, &tpt_h, &key_h) != 0 ||
+      tps_peek(cdtl->tps, &tpt_p, &key_p) != 0)
+  {
+    return 3;
+  }
+
+  tle_init(&tle, &tpt_h, &tpt_p);
+
+  if ((irow = tl_insert(cdtl->tl, &tle)) == 0)
+  {
+    return 4;
+  }
+  fprintf(stderr, "Inserted row %i.\n", irow);
+
+  /* Pop twice. */
+  if (tps_pop(cdtl->tps, NULL) != 0 || tps_pop(cdtl->tps, NULL) != 0)
+  {
+    if (tl_drop(cdtl->tl, irow) != 0)
+    {
+      return 5;
+    }
+    return 6;
+  }
+
+  return 0;
+}
+
+/*
  * Call function implementing requested command.
  */
 int main(int argc, char *argv[])
@@ -339,7 +403,7 @@ int main(int argc, char *argv[])
       {"timepoint", &cmd_timepoint},
       {"pending", &cmd_pending},
       {"pop-drop", &cmd_popdrop},
-      {"merge-add", &cmd_dummy},
+      {"merge-add", &cmd_mergeadd},
       {"unlog", &cmd_dummy},
       {"report", &cmd_dummy},
   };
