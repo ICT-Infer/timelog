@@ -32,7 +32,7 @@ cat >>Makefile <<EOF
 
 ${OUTDIR}/lib/libtimelog.0.dylib: src/timelog.c build/oobj/ ${OUTDIR}/lib/
 	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o build/oobj/timelog.o -c src/timelog.c
-	cc -dynamiclib -o lib/libtimelog.0.dylib -Wl,-install_name,@loader_path/../lib/libtimelog.0.dylib build/oobj/timelog.o
+	cc -dynamiclib -o ${OUTDIR}/lib/libtimelog.0.dylib -Wl,-install_name,@loader_path/../lib/libtimelog.0.dylib build/oobj/timelog.o
 	test -f ${OUTDIR}/lib/libtimelog.dylib || ln -s libtimelog.0.dylib ${OUTDIR}/lib/libtimelog.dylib
 
 EOF
