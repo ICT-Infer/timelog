@@ -55,8 +55,6 @@ tests[i_tests].argv[4] = NULL;
 #include <unistd.h>
 #include <stdio.h>
 #include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <stdbool.h>
 #include <sys/wait.h>
 
@@ -75,7 +73,6 @@ int main(int argc, char *argv[])
   int nt_passed = 0; /* Number of tests passed. */
   int nt_failed = 0; /* Number of tests failed. */
   char *tlb = argv[1];
-  struct stat stlb;
   char template[] = "/tmp/tl-XXXXXXXX";
   char *tmpdir = mkdtemp(template);
   const char f_tldir[] = ".tl/";
