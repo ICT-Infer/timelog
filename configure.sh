@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-OUTDIR=$( pwd )/devel
+OUTDIR=$( pwd )/debug
 host_os=$( uname -s )
 
 cat >Makefile <<EOF
