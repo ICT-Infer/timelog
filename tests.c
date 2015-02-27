@@ -180,6 +180,7 @@ int main()
         nt_failed++;
       }
     }
+    free(tests[i].argv);
   }
 
   if (chdir(f_tldir) == 0)
