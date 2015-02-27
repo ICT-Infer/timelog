@@ -1,5 +1,6 @@
 #!/usr/bin/env sh
 
+OUTDIR=$( pwd )/devel
 host_os=$( uname -s )
 
 cat >Makefile <<EOF
@@ -8,12 +9,12 @@ EOF
 
 if [ "$host_os" = "Darwin" ] ; then
 cat >>Makefile <<EOF
-all: lib/libtimelog.0.dylib bin/tl
+all: ${OUTDIR}/lib/libtimelog.0.dylib ${OUTDIR}/bin/tl
 
 EOF
 else
 cat >>Makefile <<EOF
-all: lib/libtimelog.so.0 bin/tl
+all: ${OUTDIR}/lib/libtimelog.so.0 ${OUTDIR}/bin/tl
 
 EOF
 fi
@@ -22,52 +23,62 @@ cat >>Makefile <<EOF
 Makefile: configure.sh
 	./configure.sh
 
-bin/tl: src/include/timelog.h src/tl.c bin/
+${OUTDIR}/bin/tl: src/include/timelog.h src/tl.c ${OUTDIR}/bin/
 EOF
 
 if [ "$host_os" = "Darwin" ] ; then
 cat >>Makefile <<EOF
-	cc -Isrc/include -Llib -Wall -ansi -pedantic -O0 -g -o bin/tl src/tl.c -ltimelog
+	cc -Isrc/include -L${OUTDIR}/lib -Wall -ansi -pedantic -O0 -g -o ${OUTDIR}/bin/tl src/tl.c -ltimelog
 
-lib/libtimelog.0.dylib: src/timelog.c oobj/ lib/
-	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c src/timelog.c
-	cc -dynamiclib -o lib/libtimelog.0.dylib -Wl,-install_name,@loader_path/../lib/libtimelog.0.dylib oobj/timelog.o
-	test -f lib/libtimelog.dylib || ln -s libtimelog.0.dylib lib/libtimelog.dylib
+${OUTDIR}/lib/libtimelog.0.dylib: src/timelog.c build/oobj/ ${OUTDIR}/lib/
+	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o build/oobj/timelog.o -c src/timelog.c
+	cc -dynamiclib -o lib/libtimelog.0.dylib -Wl,-install_name,@loader_path/../lib/libtimelog.0.dylib build/oobj/timelog.o
+	test -f ${OUTDIR}/lib/libtimelog.dylib || ln -s libtimelog.0.dylib ${OUTDIR}/lib/libtimelog.dylib
 
 EOF
 else
 cat >>Makefile <<EOF
-	cc -Isrc/include -Llib -Wl,-z,origin,-rpath='\$\$ORIGIN/../lib/' -Wall -ansi -pedantic -O0 -g -o bin/tl src/tl.c -ltimelog
+	cc -Isrc/include -L${OUTDIR}/lib -Wl,-z,origin,-rpath='\$\$ORIGIN/../lib/' -Wall -ansi -pedantic -O0 -g -o ${OUTDIR}/bin/tl src/tl.c -ltimelog
 
-lib/libtimelog.so.0: src/timelog.c oobj/ lib/
-	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c src/timelog.c
-	cc -shared -Wl,-soname,libtimelog.so.0 -o lib/libtimelog.so.0 oobj/timelog.o
-	test -f lib/libtimelog.so || ln -s libtimelog.so.0 lib/libtimelog.so
+${OUTDIR}/lib/libtimelog.so.0: src/timelog.c build/oobj/ ${OUTDIR}/lib/
+	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o build/oobj/timelog.o -c src/timelog.c
+	cc -shared -Wl,-soname,libtimelog.so.0 -o ${OUTDIR}/lib/libtimelog.so.0 build/oobj/timelog.o
+	test -f ${OUTDIR}/lib/libtimelog.so || ln -s libtimelog.so.0 ${OUTDIR}/lib/libtimelog.so
 
 EOF
 fi
 
 cat >>Makefile <<EOF
-bin/:
-	mkdir bin/
+${OUTDIR}/:
+	test -d ${OUTDIR}/ || mkdir ${OUTDIR}/
 
-lib/:
-	mkdir lib/
+${OUTDIR}/bin/: ${OUTDIR}/
+	test -d ${OUTDIR}/bin/ || mkdir ${OUTDIR}/bin/
 
-oobj/:
-	mkdir oobj/
+${OUTDIR}/lib/: ${OUTDIR}/
+	test -d ${OUTDIR}/lib/ || mkdir ${OUTDIR}/lib/
+
+build/:
+	test -d build/ || mkdir build/
+
+build/oobj/: build/
+	test -d build/oobj/ || mkdir build/oobj/
 
 .PHONY: test
-test: all tests
-	TZ=Europe/Oslo ./tests
+test: all build/tests
+	TZ=Europe/Oslo ./build/tests ${OUTDIR}/bin/tl
 
-tests: src/tests.c
-	cc -Wall -ansi -pedantic -O0 -g -o tests src/tests.c
+build/tests: src/tests.c build/
+	cc -Wall -ansi -pedantic -O0 -g -o build/tests src/tests.c
 
 .PHONY: clean
 clean:
-	rm -rf bin/ lib/ oobj/
-	rm -f tests
+	rm -rf build/
+
+.PHONY: clean-all
+clean-all: clean
+	rm -rf ${OUTDIR}/
+
 .PHONY: pretty
 pretty:
 	echo | clang-format >/dev/null # Instead of \`which' because on

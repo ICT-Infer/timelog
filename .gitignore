@@ -1,6 +1,5 @@
 Makefile
-bin/
-lib/
-oobj/
+build/
+devel/
+dist/
 *.db
-tests

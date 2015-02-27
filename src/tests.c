@@ -69,13 +69,12 @@ typedef struct _tltest
   char **argv;
 } tltest;
 
-int main()
+int main(int argc, char *argv[])
 {
   int errors = 0;    /* Errors in the test program itself. */
   int nt_passed = 0; /* Number of tests passed. */
   int nt_failed = 0; /* Number of tests failed. */
-  char odir[MAXPATHLEN];
-  char tlb[MAXPATHLEN];
+  char *tlb = argv[1];
   struct stat stlb;
   char template[] = "/tmp/tl-XXXXXXXX";
   char *tmpdir = mkdtemp(template);
@@ -129,20 +128,6 @@ int main()
   TEST2(true, "`tl unlog' 1st log entry", "unlog", "1");
   TEST2(false, "`tl unlog' 1st log entry again", "unlog", "1");
   TEST1(true, "`tl report' with empty log", "report");
-
-  if (getcwd(odir, sizeof(odir)) == NULL)
-  {
-    fprintf(stderr, "`getcwd' failed.\n");
-    exit(EXIT_FAILURE);
-  }
-
-  if (strlcpy(tlb, odir, sizeof(tlb)) > sizeof(tlb) ||
-      strlcat(tlb, "/bin/tl", sizeof(tlb)) > sizeof(tlb) ||
-      stat(tlb, &stlb) != 0)
-  {
-    fprintf(stderr, "Creation of path to `tl' binary failed.\n");
-    exit(EXIT_FAILURE);
-  }
 
   /* Temporary directory in which tests will be run. */
   if (chdir(tmpdir) != 0)
