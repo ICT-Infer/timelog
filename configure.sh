@@ -22,25 +22,25 @@ cat >>Makefile <<EOF
 Makefile: configure.sh
 	./configure.sh
 
-bin/tl: include/timelog.h tl.c bin/
+bin/tl: src/include/timelog.h src/tl.c bin/
 EOF
 
 if [ "$host_os" = "Darwin" ] ; then
 cat >>Makefile <<EOF
-	cc -Iinclude -Llib -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c -ltimelog
+	cc -Isrc/include -Llib -Wall -ansi -pedantic -O0 -g -o bin/tl src/tl.c -ltimelog
 
-lib/libtimelog.0.dylib: timelog.c oobj/ lib/
-	cc -Iinclude -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c timelog.c
+lib/libtimelog.0.dylib: src/timelog.c oobj/ lib/
+	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c src/timelog.c
 	cc -dynamiclib -o lib/libtimelog.0.dylib -Wl,-install_name,@loader_path/../lib/libtimelog.0.dylib oobj/timelog.o
 	test -f lib/libtimelog.dylib || ln -s libtimelog.0.dylib lib/libtimelog.dylib
 
 EOF
 else
 cat >>Makefile <<EOF
-	cc -Iinclude -Llib -Wl,-z,origin,-rpath='\$\$ORIGIN/../lib/' -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c -ltimelog
+	cc -Isrc/include -Llib -Wl,-z,origin,-rpath='\$\$ORIGIN/../lib/' -Wall -ansi -pedantic -O0 -g -o bin/tl src/tl.c -ltimelog
 
-lib/libtimelog.so.0: timelog.c oobj/ lib/
-	cc -Iinclude -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c timelog.c
+lib/libtimelog.so.0: src/timelog.c oobj/ lib/
+	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c src/timelog.c
 	cc -shared -Wl,-soname,libtimelog.so.0 -o lib/libtimelog.so.0 oobj/timelog.o
 	test -f lib/libtimelog.so || ln -s libtimelog.so.0 lib/libtimelog.so
 
@@ -61,8 +61,8 @@ oobj/:
 test: all tests
 	TZ=Europe/Oslo ./tests
 
-tests: tests.c
-	cc -Wall -ansi -pedantic -O0 -g -o tests tests.c
+tests: src/tests.c
+	cc -Wall -ansi -pedantic -O0 -g -o tests src/tests.c
 
 .PHONY: clean
 clean:
@@ -74,15 +74,21 @@ pretty:
 	                               # Mac OS X 10.4.11, \`which'
 	                               # exits with 0 regardless of
 	                               # whether or not the program was found.
-	clang-format timelog.c > timelog.c_
-	diff timelog.c timelog.c_ >/dev/null && \\
-		mv timelog.c_ timelog.c || rm timelog.c_
-	clang-format tl.c > tl.c_
-	diff tl.c tl.c_ >/dev/null && mv tl.c_ tl.c || rm tl.c_
-	clang-format include/timelog.h > include/timelog.h_
-	diff include/timelog.h include/timelog.h_ >/dev/null && \\
-		mv include/timelog.h_ include/timelog.h \\
-		|| rm include/timelog.h_
-	clang-format tests.c > tests.c_
-	diff tests.c tests.c_ >/dev/null && mv tests.c_ tests.c || rm tests.c_
+	mkdir fmt/
+	mkdir fmt/include/
+	clang-format src/timelog.c > fmt/timelog.c
+	diff src/timelog.c fmt/timelog.c >/dev/null && \\
+		mv fmt/timelog.c src/timelog.c || rm fmt/timelog.c
+	clang-format src/tl.c > fmt/tl.c
+	diff src/tl.c fmt/tl.c >/dev/null && mv fmt/tl.c src/tl.c \
+		|| rm fmt/tl.c
+	clang-format src/include/timelog.h > fmt/include/timelog.h
+	diff include/timelog.h include/timelog.h >/dev/null && \\
+		mv include/timelog.h include/timelog.h \\
+		|| rm include/timelog.h
+	clang-format src/tests.c > fmt/tests.c
+	diff src/tests.c fmt/tests.c >/dev/null \
+		&& mv fmt/tests.c src/tests.c || rm fmt/tests.c
+	rmdir fmt/include
+	rmdir fmt/
 EOF
