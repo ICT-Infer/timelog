@@ -72,7 +72,7 @@ clean:
 pretty:
 	echo | clang-format >/dev/null # Instead of \`which' because on
 	                               # Mac OS X 10.4.11, \`which'
-	                               # exits with 0 regardless of whether
+	                               # exits with 0 regardless of
 	                               # whether or not the program was found.
 	clang-format timelog.c > timelog.c_
 	diff timelog.c timelog.c_ >/dev/null && \\
