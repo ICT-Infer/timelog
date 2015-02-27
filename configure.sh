@@ -23,20 +23,22 @@ Makefile: configure.sh
 	./configure.sh
 
 bin/tl: include/timelog.h tl.c bin/
-	cc -Iinclude -Llib -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c -ltimelog
-
 EOF
 
 if [ "$host_os" = "Darwin" ] ; then
 cat >>Makefile <<EOF
+	cc -Iinclude -Llib -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c -ltimelog
+
 lib/libtimelog.0.dylib: timelog.c oobj/ lib/
 	cc -Iinclude -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c timelog.c
-	cc -dynamiclib -o lib/libtimelog.0.dylib oobj/timelog.o
+	cc -dynamiclib -o lib/libtimelog.0.dylib -Wl,-install_name,@loader_path/../lib/libtimelog.0.dylib oobj/timelog.o
 	test -f lib/libtimelog.dylib || ln -s libtimelog.0.dylib lib/libtimelog.dylib
 
 EOF
 else
 cat >>Makefile <<EOF
+	cc -Iinclude -Llib -Wl,-z,origin,-rpath='\$\$ORIGIN/../lib/' -Wall -ansi -pedantic -O0 -g -o bin/tl tl.c -ltimelog
+
 lib/libtimelog.so.0: timelog.c oobj/ lib/
 	cc -Iinclude -fPIC -Wall -ansi -pedantic -O0 -g -o oobj/timelog.o -c timelog.c
 	cc -shared -Wl,-soname,libtimelog.so.0 -o lib/libtimelog.so.0 oobj/timelog.o
@@ -57,21 +59,8 @@ oobj/:
 
 .PHONY: test
 test: all tests
-EOF
+	TZ=Europe/Oslo ./tests
 
-if [ "$host_os" = "Darwin" ] ; then
-cat >>Makefile <<EOF
-	DYLD_LIBRARY_PATH=\${CURDIR}/lib:\${DYLD_LIBRARY_PATH} TZ=Europe/Oslo ./tests
-
-EOF
-else
-cat >>Makefile <<EOF
-	LD_LIBRARY_PATH=\${.CURDIR}/lib:\${LD_LIBRARY_PATH} TZ=Europe/Oslo ./tests
-
-EOF
-fi
-
-cat >>Makefile <<EOF
 tests: tests.c
 	cc -Wall -ansi -pedantic -O0 -g -o tests tests.c
 
