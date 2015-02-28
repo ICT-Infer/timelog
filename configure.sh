@@ -23,25 +23,28 @@ cat >>Makefile <<EOF
 Makefile: configure.sh
 	./configure.sh
 
-${OUTDIR}/bin/tl: src/include/timelog.h src/tl.c ${OUTDIR}/bin/
+${OUTDIR}/include/timelog.h: src/include/timelog.h ${OUTDIR}/include/
+	cp src/include/timelog.h ${OUTDIR}/include/timelog.h
+
+${OUTDIR}/bin/tl: ${OUTDIR}/include/timelog.h src/tl.c ${OUTDIR}/bin/
 EOF
 
 if [ "$host_os" = "Darwin" ] ; then
 cat >>Makefile <<EOF
-	cc -Isrc/include -L${OUTDIR}/lib -Wall -ansi -pedantic -O0 -g -o ${OUTDIR}/bin/tl src/tl.c -ltimelog
+	cc -I${OUTDIR}/include -L${OUTDIR}/lib -Wall -ansi -pedantic -O0 -g -o ${OUTDIR}/bin/tl src/tl.c -ltimelog
 
-${OUTDIR}/lib/libtimelog.0.dylib: src/timelog.c build/oobj/ ${OUTDIR}/lib/
-	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o build/oobj/timelog.o -c src/timelog.c
+${OUTDIR}/lib/libtimelog.0.dylib: ${OUTDIR}/include/timelog.h src/timelog.c build/oobj/ ${OUTDIR}/lib/
+	cc -I${OUTDIR}/include -fPIC -Wall -ansi -pedantic -O0 -g -o build/oobj/timelog.o -c src/timelog.c
 	cc -dynamiclib -o ${OUTDIR}/lib/libtimelog.0.dylib -Wl,-install_name,@loader_path/../lib/libtimelog.0.dylib build/oobj/timelog.o
 	test -f ${OUTDIR}/lib/libtimelog.dylib || ln -s libtimelog.0.dylib ${OUTDIR}/lib/libtimelog.dylib
 
 EOF
 else
 cat >>Makefile <<EOF
-	cc -Isrc/include -L${OUTDIR}/lib -Wl,-z,origin,-rpath='\$\$ORIGIN/../lib/' -Wall -ansi -pedantic -O0 -g -o ${OUTDIR}/bin/tl src/tl.c -ltimelog
+	cc -I${OUTDIR}/include -L${OUTDIR}/lib -Wl,-z,origin,-rpath='\$\$ORIGIN/../lib/' -Wall -ansi -pedantic -O0 -g -o ${OUTDIR}/bin/tl src/tl.c -ltimelog
 
-${OUTDIR}/lib/libtimelog.so.0: src/timelog.c build/oobj/ ${OUTDIR}/lib/
-	cc -Isrc/include -fPIC -Wall -ansi -pedantic -O0 -g -o build/oobj/timelog.o -c src/timelog.c
+${OUTDIR}/lib/libtimelog.so.0: ${OUTDIR}/include/timelog.h src/timelog.c build/oobj/ ${OUTDIR}/lib/
+	cc -I${OUTDIR}/include -fPIC -Wall -ansi -pedantic -O0 -g -o build/oobj/timelog.o -c src/timelog.c
 	cc -shared -Wl,-soname,libtimelog.so.0 -o ${OUTDIR}/lib/libtimelog.so.0 build/oobj/timelog.o
 	test -f ${OUTDIR}/lib/libtimelog.so || ln -s libtimelog.so.0 ${OUTDIR}/lib/libtimelog.so
 
@@ -51,6 +54,9 @@ fi
 cat >>Makefile <<EOF
 ${OUTDIR}/:
 	test -d ${OUTDIR}/ || mkdir ${OUTDIR}/
+
+${OUTDIR}/include/: ${OUTDIR}/
+	test -d ${OUTDIR}/include/ || mkdir ${OUTDIR}/include/
 
 ${OUTDIR}/bin/: ${OUTDIR}/
 	test -d ${OUTDIR}/bin/ || mkdir ${OUTDIR}/bin/

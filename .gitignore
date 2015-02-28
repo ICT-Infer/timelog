@@ -1,5 +1,5 @@
 Makefile
 build/
-devel/
+debug/
 dist/
 *.db
