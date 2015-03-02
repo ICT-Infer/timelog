@@ -15,6 +15,7 @@
  */
 
 #include <sys/param.h>
+#include <sys/syslimits.h>
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdio.h>
@@ -24,38 +25,32 @@
 
 #define NUMTESTS 28
 
-#define TEST0(xsv, dv) \
+#define TESTCOMMON(xsv, dv) \
 tests[++i_tests]; \
 tests[i_tests].xsuccess = xsv; \
 tests[i_tests].desc = dv; \
-tests[i_tests].argv = malloc(4096); \
+tests[i_tests].argv = malloc(ARG_MAX); \
+
+#define TEST0(xsv, dv) \
+TESTCOMMON(xsv, dv) \
 tests[i_tests].argv[0] = tlb; \
 tests[i_tests].argv[1] = NULL;
 
 #define TEST1(xsv, dv, argv1) \
-tests[++i_tests]; \
-tests[i_tests].xsuccess = xsv; \
-tests[i_tests].desc = dv; \
-tests[i_tests].argv = malloc(4096); \
+TESTCOMMON(xsv, dv) \
 tests[i_tests].argv[0] = tlb; \
 tests[i_tests].argv[1] = argv1; \
 tests[i_tests].argv[2] = NULL;
 
 #define TEST2(xsv, dv, argv1, argv2) \
-tests[++i_tests]; \
-tests[i_tests].xsuccess = xsv; \
-tests[i_tests].desc = dv; \
-tests[i_tests].argv = malloc(4096); \
+TESTCOMMON(xsv, dv) \
 tests[i_tests].argv[0] = tlb; \
 tests[i_tests].argv[1] = argv1; \
 tests[i_tests].argv[2] = argv2; \
 tests[i_tests].argv[3] = NULL;
 
 #define TEST3(xsv, dv, argv1, argv2, argv3) \
-tests[++i_tests]; \
-tests[i_tests].xsuccess = xsv; \
-tests[i_tests].desc = dv; \
-tests[i_tests].argv = malloc(4096); \
+TESTCOMMON(xsv, dv) \
 tests[i_tests].argv[0] = tlb; \
 tests[i_tests].argv[1] = argv1; \
 tests[i_tests].argv[2] = argv2; \
