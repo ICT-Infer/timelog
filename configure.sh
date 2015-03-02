@@ -91,21 +91,23 @@ pretty:
 	                               # Mac OS X 10.4.11, \`which'
 	                               # exits with 0 regardless of
 	                               # whether or not the program was found.
-	mkdir fmt/
-	mkdir fmt/include/
+	test -d fmt/ || mkdir fmt/
+	test -d fmt/include/ || mkdir fmt/include/
 	clang-format src/timelog.c > fmt/timelog.c
 	diff src/timelog.c fmt/timelog.c >/dev/null && \\
-		mv fmt/timelog.c src/timelog.c || rm fmt/timelog.c
+		mv fmt/timelog.c src/timelog.c \
+		|| rm fmt/timelog.c
 	clang-format src/tl.c > fmt/tl.c
-	diff src/tl.c fmt/tl.c >/dev/null && mv fmt/tl.c src/tl.c \
+	diff src/tl.c fmt/tl.c >/dev/null && \
+		mv fmt/tl.c src/tl.c \
 		|| rm fmt/tl.c
 	clang-format src/include/timelog.h > fmt/include/timelog.h
-	diff include/timelog.h include/timelog.h >/dev/null && \\
-		mv include/timelog.h include/timelog.h \\
-		|| rm include/timelog.h
+	diff src/include/timelog.h fmt/include/timelog.h >/dev/null && \\
+		mv fmt/include/timelog.h src/include/timelog.h \\
+		|| rm fmt/include/timelog.h
 	clang-format src/tests.c > fmt/tests.c
 	diff src/tests.c fmt/tests.c >/dev/null \
-		&& mv fmt/tests.c src/tests.c || rm fmt/tests.c
-	rmdir fmt/include
-	rmdir fmt/
+		&& mv fmt/tests.c src/tests.c \
+		|| rm fmt/tests.c
+	rm -rf fmt/
 EOF
