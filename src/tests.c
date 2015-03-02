@@ -16,14 +16,16 @@
 
 #define NUMTESTS 28
 
-#define TEST0(xsv, dv) tests[++i_tests]; \
+#define TEST0(xsv, dv) \
+tests[++i_tests]; \
 tests[i_tests].xsuccess = xsv; \
 tests[i_tests].desc = dv; \
 tests[i_tests].argv = malloc(4096); \
 tests[i_tests].argv[0] = tlb; \
 tests[i_tests].argv[1] = NULL;
 
-#define TEST1(xsv, dv, argv1) tests[++i_tests]; \
+#define TEST1(xsv, dv, argv1) \
+tests[++i_tests]; \
 tests[i_tests].xsuccess = xsv; \
 tests[i_tests].desc = dv; \
 tests[i_tests].argv = malloc(4096); \
@@ -31,7 +33,8 @@ tests[i_tests].argv[0] = tlb; \
 tests[i_tests].argv[1] = argv1; \
 tests[i_tests].argv[2] = NULL;
 
-#define TEST2(xsv, dv, argv1, argv2) tests[++i_tests]; \
+#define TEST2(xsv, dv, argv1, argv2) \
+tests[++i_tests]; \
 tests[i_tests].xsuccess = xsv; \
 tests[i_tests].desc = dv; \
 tests[i_tests].argv = malloc(4096); \
@@ -40,7 +43,8 @@ tests[i_tests].argv[1] = argv1; \
 tests[i_tests].argv[2] = argv2; \
 tests[i_tests].argv[3] = NULL;
 
-#define TEST3(xsv, dv, argv1, argv2, argv3) tests[++i_tests]; \
+#define TEST3(xsv, dv, argv1, argv2, argv3) \
+tests[++i_tests]; \
 tests[i_tests].xsuccess = xsv; \
 tests[i_tests].desc = dv; \
 tests[i_tests].argv = malloc(4096); \
