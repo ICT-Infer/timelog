@@ -14,6 +14,14 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#include <sys/param.h>
+#include <stdlib.h>
+#include <unistd.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdbool.h>
+#include <sys/wait.h>
+
 #define NUMTESTS 28
 
 #define TEST0(xsv, dv) \
@@ -53,14 +61,6 @@ tests[i_tests].argv[1] = argv1; \
 tests[i_tests].argv[2] = argv2; \
 tests[i_tests].argv[3] = argv3; \
 tests[i_tests].argv[4] = NULL;
-
-#include <sys/param.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <stdio.h>
-#include <string.h>
-#include <stdbool.h>
-#include <sys/wait.h>
 
 extern char **environ;
 
