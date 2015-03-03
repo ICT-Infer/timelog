@@ -20,7 +20,9 @@
 #include <sys/types.h>
 
 #include <db.h>
+#include <errno.h>
 #include <fcntl.h>
+#include <inttypes.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -28,6 +30,8 @@
 #include <string.h>
 #include <time.h>
 #include <unistd.h>
+
+/* TODO: Determine all places where we should be using errno. */
 
 #include "timelog.h"
 
@@ -384,6 +388,48 @@ int cmd_mergeadd(int cargc, char **cargv, const char *pname, const char *cmd,
 }
 
 /*
+ * Command: unlog
+ *
+ * Remove entry from time log.
+ */
+int cmd_unlog(int cargc, char **cargv, const char *pname, const char *cmd,
+              dottl *cdtl)
+{
+  int row;
+
+  if (cargc == 1)
+  {
+    fprintf(stderr, "%s: %s: Missing argument.\n\n", pname, cmd);
+    usage(pname);
+    return 1;
+  }
+  if (cargc > 2)
+  {
+    fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
+                    "First: `%s'.\n\n",
+            pname, cmd, cargc - 1, cargv[1]);
+    usage(pname);
+    return 1;
+  }
+
+  if ((cdtl->tps = open_tps(cdtl->f_tps)) == NULL ||
+      (cdtl->tl = open_tl(cdtl->f_tl)) == NULL)
+  {
+    return 2;
+  }
+
+  /* TODO: Determine maximum value of the dbopen key. */
+  row = strtoumax(cargv[1], &cargv[strlen(cargv[1])], 10);
+  if (row == UINTMAX_MAX && errno == ERANGE)
+  {
+    fprintf(stderr, "%s: %s: Row number out of range.\n", pname, cmd);
+    return 3;
+  }
+
+  return tl_drop(cdtl->tl, (recno_t)row);
+}
+
+/*
  * Call function implementing requested command.
  */
 int main(int argc, char *argv[])
@@ -404,7 +450,7 @@ int main(int argc, char *argv[])
       {"pending", &cmd_pending},
       {"pop-drop", &cmd_popdrop},
       {"merge-add", &cmd_mergeadd},
-      {"unlog", &cmd_dummy},
+      {"unlog", &cmd_unlog},
       {"report", &cmd_dummy},
   };
   cmd *cmd_cur;
@@ -426,11 +472,13 @@ int main(int argc, char *argv[])
     if (strcmp(cmd_cur->name, cmd_req) == 0)
     {
       int rval = (*(cmd_cur->f))(cmd_argc, cmd_argv, pname, cmd_req, &cdtl);
-      if (cdtl.tps != NULL && cdtl.tps->close(cdtl.tps) != 0)
+      if (cdtl.tps != NULL &&
+          (cdtl.tps->sync(cdtl.tps, 0) || cdtl.tps->close(cdtl.tps) != 0))
       {
         rval++;
       }
-      if (cdtl.tl != NULL && cdtl.tl->close(cdtl.tl) != 0)
+      if (cdtl.tl != NULL &&
+          (cdtl.tl->sync(cdtl.tl, 0) || cdtl.tl->close(cdtl.tl) != 0))
       {
         rval++;
       }
