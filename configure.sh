@@ -94,20 +94,20 @@ pretty:
 	test -d fmt/ || mkdir fmt/
 	test -d fmt/include/ || mkdir fmt/include/
 	clang-format src/timelog.c > fmt/timelog.c
-	diff src/timelog.c fmt/timelog.c >/dev/null && \\
-		mv fmt/timelog.c src/timelog.c \
-		|| rm fmt/timelog.c
+	diff src/timelog.c fmt/timelog.c >/dev/null \\
+		&& rm fmt/timelog.c \\
+		|| mv fmt/timelog.c src/timelog.c
 	clang-format src/tl.c > fmt/tl.c
-	diff src/tl.c fmt/tl.c >/dev/null && \
-		mv fmt/tl.c src/tl.c \
-		|| rm fmt/tl.c
+	diff src/tl.c fmt/tl.c >/dev/null \\
+		&& rm fmt/tl.c \\
+		|| mv fmt/tl.c src/tl.c
 	clang-format src/include/timelog.h > fmt/include/timelog.h
-	diff src/include/timelog.h fmt/include/timelog.h >/dev/null && \\
-		mv fmt/include/timelog.h src/include/timelog.h \\
-		|| rm fmt/include/timelog.h
+	diff src/include/timelog.h fmt/include/timelog.h >/dev/null \\
+		&& rm fmt/include/timelog.h \\
+		|| mv fmt/include/timelog.h src/include/timelog.h
 	clang-format src/tests.c > fmt/tests.c
-	diff src/tests.c fmt/tests.c >/dev/null \
-		&& mv fmt/tests.c src/tests.c \
-		|| rm fmt/tests.c
+	diff src/tests.c fmt/tests.c >/dev/null \\
+		&& rm fmt/tests.c \\
+		|| mv fmt/tests.c src/tests.c
 	rm -rf fmt/
 EOF
