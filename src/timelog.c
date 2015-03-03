@@ -334,6 +334,11 @@ recno_t tl_prev(const DB *tl)
     return 0;
   }
 
+  if (!((tlentry *)data.data)->iae)
+  {
+    return tl_prev(tl);
+  }
+
   return *(recno_t *)key.data;
 }
 
@@ -371,6 +376,7 @@ recno_t tl_insert(const DB *tl, tlentry *tle)
     return 0;
   }
 
+  tle->iae = true;
   data.size = sizeof(*tle);
   data.data = tle;
   kval = tl_head(tl) + 1;
@@ -391,8 +397,31 @@ recno_t tl_insert(const DB *tl, tlentry *tle)
  * Returns 0 on success.
  * Returns non-zero on failure.
  */
-int tl_drop(const DB *tl, int row)
+int tl_drop(const DB *tl, recno_t row)
 {
-  /* TODO: Implement. */
-  return 1;
+  int h = tl_head(tl);
+  fprintf(stderr, "Row: %d, Head: %d.\n", (int)row, h);
+  if (row == h)
+  {
+    /*
+     * They said in dbopen(3) that the fd returned by the fd routine is
+     * "not necessarily associated with any of the underlying files
+     *  used by the access method".
+     * TODO: Ensure the below truncation is safe.
+     */
+    struct stat sb;
+    fstat(tl->fd(tl), &sb);
+    return ftruncate(tl->fd(tl), sb.st_size - sizeof(tlentry));
+  }
+  else if (row > h)
+  {
+    return 2;
+  }
+  else
+  {
+    DBT key;
+    key.data = &row;
+    key.size = sizeof(key.data);
+    return tl->del(tl, &key, 0);
+  }
 }

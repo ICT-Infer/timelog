@@ -27,6 +27,7 @@ typedef struct _timepoint
 
 typedef struct _tlentry
 {
+  bool iae; /* Is active entry. Clients MUST ignore this. Sorry for leaking. */
   timepoint begin;
   timepoint end;
 } tlentry;
@@ -55,4 +56,4 @@ int tle_init(tlentry *, timepoint *, timepoint *);
 recno_t tl_prev(const DB *);
 recno_t tl_head(const DB *);
 recno_t tl_insert(const DB *, tlentry *);
-int tl_drop(const DB *, int);
+int tl_drop(const DB *, recno_t);
