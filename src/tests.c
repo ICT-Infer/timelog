@@ -25,37 +25,37 @@
 
 #define NUMTESTS 28
 
-#define TESTCOMMON(xsv, dv) \
-tests[++i_tests]; \
-tests[i_tests].xsuccess = xsv; \
-tests[i_tests].desc = dv; \
-tests[i_tests].argv = malloc(ARG_MAX); \
+#define TESTCOMMON(xsv, dv)                                                   \
+  tests[++i_tests];                                                           \
+  tests[i_tests].xsuccess = xsv;                                              \
+  tests[i_tests].desc = dv;                                                   \
+  tests[i_tests].argv = malloc(ARG_MAX);
 
-#define TEST0(xsv, dv) \
-TESTCOMMON(xsv, dv) \
-tests[i_tests].argv[0] = tlb; \
-tests[i_tests].argv[1] = NULL;
+#define TEST0(xsv, dv)                                                        \
+  TESTCOMMON(xsv, dv)                                                         \
+  tests[i_tests].argv[0] = tlb;                                               \
+  tests[i_tests].argv[1] = NULL;
 
-#define TEST1(xsv, dv, argv1) \
-TESTCOMMON(xsv, dv) \
-tests[i_tests].argv[0] = tlb; \
-tests[i_tests].argv[1] = argv1; \
-tests[i_tests].argv[2] = NULL;
+#define TEST1(xsv, dv, argv1)                                                 \
+  TESTCOMMON(xsv, dv)                                                         \
+  tests[i_tests].argv[0] = tlb;                                               \
+  tests[i_tests].argv[1] = argv1;                                             \
+  tests[i_tests].argv[2] = NULL;
 
-#define TEST2(xsv, dv, argv1, argv2) \
-TESTCOMMON(xsv, dv) \
-tests[i_tests].argv[0] = tlb; \
-tests[i_tests].argv[1] = argv1; \
-tests[i_tests].argv[2] = argv2; \
-tests[i_tests].argv[3] = NULL;
+#define TEST2(xsv, dv, argv1, argv2)                                          \
+  TESTCOMMON(xsv, dv)                                                         \
+  tests[i_tests].argv[0] = tlb;                                               \
+  tests[i_tests].argv[1] = argv1;                                             \
+  tests[i_tests].argv[2] = argv2;                                             \
+  tests[i_tests].argv[3] = NULL;
 
-#define TEST3(xsv, dv, argv1, argv2, argv3) \
-TESTCOMMON(xsv, dv) \
-tests[i_tests].argv[0] = tlb; \
-tests[i_tests].argv[1] = argv1; \
-tests[i_tests].argv[2] = argv2; \
-tests[i_tests].argv[3] = argv3; \
-tests[i_tests].argv[4] = NULL;
+#define TEST3(xsv, dv, argv1, argv2, argv3)                                   \
+  TESTCOMMON(xsv, dv)                                                         \
+  tests[i_tests].argv[0] = tlb;                                               \
+  tests[i_tests].argv[1] = argv1;                                             \
+  tests[i_tests].argv[2] = argv2;                                             \
+  tests[i_tests].argv[3] = argv3;                                             \
+  tests[i_tests].argv[4] = NULL;
 
 extern char **environ;
 
@@ -93,34 +93,36 @@ int main(int argc, char *argv[])
   TEST1(true, "`tl pending' with one element on stack", "pending");
   TEST1(true, "`tl pop-drop' with one element on stack", "pop-drop");
   TEST3(true, "`tl timepoint -l <loc>' with valid length loc", "timepoint",
-    "-l", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy");
+        "-l", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy");
   TEST3(false, "`tl timepoint -l <loc>' with invalid length loc", "timepoint",
-    "-l", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz");
+        "-l", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz");
   TEST3(true, "`tl timepoint -m <msg>' with valid length msg", "timepoint",
-    "-m", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy");
+        "-m",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxy");
   TEST3(false, "`tl timepoint -m <msg>' with invalid length msg", "timepoint",
-    "-m", "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz");
+        "-m",
+        "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxyz");
   TEST3(true, "`tl timepoint -t <ts>' with valid ts #1", "timepoint", "-t",
-    "22:22");
+        "22:22");
   /* In timezone Europe/Oslo, calendar time will contain 0x0a. */
   TEST3(true, "`tl timepoint -t <ts>' with valid ts #2", "timepoint", "-t",
-    "2015-01-30T23:50");
+        "2015-01-30T23:50");
   TEST3(true, "`tl timepoint -t <ts>' with valid ts #3", "timepoint", "-t",
-    "2015-01-31T01:02");
+        "2015-01-31T01:02");
   TEST1(true, "`tl pop-drop' to see if tps db was corrupted by valid ts #2",
-    "pop-drop");
+        "pop-drop");
   TEST3(false, "`tl timepoint -t <ts>' with invalid ts #1", "timepoint", "-t",
-    "T22:22");
+        "T22:22");
   TEST3(false, "`tl timepoint -t <ts>' with invalid ts #2", "timepoint", "-t",
-    "22:22:00");
+        "22:22:00");
   TEST3(false, "`tl timepoint -t <ts>' with invalid ts #3", "timepoint", "-t",
-    "2015-01-10t22:22");
+        "2015-01-10t22:22");
   TEST3(false, "`tl timepoint -t <ts>' with invalid ts #4", "timepoint", "-t",
-    "2014-02-31T22:22");
+        "2014-02-31T22:22");
   TEST1(true, "`tl merge-add' with multiple points on stack", "merge-add");
   TEST1(true, "`tl report' with one entry in log", "report");
   TEST2(false, "`tl unlog' 2nd log entry with only one entry in log", "unlog",
-    "2");
+        "2");
   TEST2(true, "`tl unlog' 1st log entry", "unlog", "1");
   TEST2(false, "`tl unlog' 1st log entry again", "unlog", "1");
   TEST1(true, "`tl report' with empty log", "report");
