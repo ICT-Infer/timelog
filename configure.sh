@@ -75,8 +75,8 @@ test: all build/unit/test-runner
 	#TZ=Europe/Oslo ./build/regression/test-runner ${OUTDIR}/bin/tl
 	TZ=Europe/Oslo ./build/unit/test-runner ${OUTDIR}/bin/tl
 
-.PHONY: unit/test-runner
-build/test-runner:
+.PHONY: build/unit/test-runner
+build/unit/test-runner:
 	(cd tests && ./make.sh)
 
 .PHONY: clean
