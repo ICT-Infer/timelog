@@ -22,7 +22,6 @@
 #include <db.h>
 #include <errno.h>
 #include <fcntl.h>
-#include <inttypes.h>
 #include <limits.h>
 #include <stdbool.h>
 #include <stdio.h>
@@ -419,8 +418,8 @@ int cmd_unlog(int cargc, char **cargv, const char *pname, const char *cmd,
   }
 
   /* TODO: Determine maximum value of the dbopen key. */
-  row = strtoumax(cargv[1], &cargv[strlen(cargv[1])], 10);
-  if (row == UINTMAX_MAX && errno == ERANGE)
+  row = strtoul(cargv[1], &cargv[strlen(cargv[1])], 10);
+  if (row == ULONG_MAX && errno == ERANGE)
   {
     fprintf(stderr, "%s: %s: Row number out of range.\n", pname, cmd);
     return 3;
