@@ -43,6 +43,9 @@ noteable pertaining to building and running saas-by-erik/timelog.)
 * [#4](https://github.com/saas-by-erik/timelog/issues/4):
   The tests only check `tl` execution return values.
   They need to be rewritten so that they additionally test the actual outcome.
+* [#13](https://github.com/saas-by-erik/timelog/issues/13):
+  Unlog of entries e\_n..e\_m by repeatedly removing e\_n
+  requires (m - n + 2) instead of (m - n + 1) runs.
 * [#5](https://github.com/saas-by-erik/timelog/issues/5):
   Timelogs are tied to the endianness of the host they were generated on.
   Endianness to use when reading and writing timelog files should be chosen so
