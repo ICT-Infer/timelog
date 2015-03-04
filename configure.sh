@@ -71,11 +71,13 @@ build/oobj/: build/
 	test -d build/oobj/ || mkdir build/oobj/
 
 .PHONY: test
-test: all build/tests
-	TZ=Europe/Oslo ./build/tests ${OUTDIR}/bin/tl
+test: all build/unit/test-runner
+	#TZ=Europe/Oslo ./build/regression/test-runner ${OUTDIR}/bin/tl
+	TZ=Europe/Oslo ./build/unit/test-runner ${OUTDIR}/bin/tl
 
-build/tests: src/tests.c build/
-	cc -Wall -ansi -pedantic -O0 -g -o build/tests src/tests.c
+.PHONY: unit/test-runner
+build/test-runner:
+	(cd tests && ./make.sh)
 
 .PHONY: clean
 clean:
@@ -84,30 +86,4 @@ clean:
 .PHONY: clean-all
 clean-all: clean
 	rm -rf ${OUTDIR}/
-
-.PHONY: pretty
-pretty:
-	echo | clang-format >/dev/null # Instead of \`which' because on
-	                               # Mac OS X 10.4.11, \`which'
-	                               # exits with 0 regardless of
-	                               # whether or not the program was found.
-	test -d fmt/ || mkdir fmt/
-	test -d fmt/include/ || mkdir fmt/include/
-	clang-format src/timelog.c > fmt/timelog.c
-	diff src/timelog.c fmt/timelog.c >/dev/null \\
-		&& rm fmt/timelog.c \\
-		|| mv fmt/timelog.c src/timelog.c
-	clang-format src/tl.c > fmt/tl.c
-	diff src/tl.c fmt/tl.c >/dev/null \\
-		&& rm fmt/tl.c \\
-		|| mv fmt/tl.c src/tl.c
-	clang-format src/include/timelog.h > fmt/include/timelog.h
-	diff src/include/timelog.h fmt/include/timelog.h >/dev/null \\
-		&& rm fmt/include/timelog.h \\
-		|| mv fmt/include/timelog.h src/include/timelog.h
-	clang-format src/tests.c > fmt/tests.c
-	diff src/tests.c fmt/tests.c >/dev/null \\
-		&& rm fmt/tests.c \\
-		|| mv fmt/tests.c src/tests.c
-	rm -rf fmt/
 EOF
