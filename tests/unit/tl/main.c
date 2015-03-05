@@ -1,6 +1,5 @@
 #include "unit/tl.h"
 
-#define _WITH_DPRINTF
 #include <stdio.h>
 
 int countnumtests(const unit *cur)
