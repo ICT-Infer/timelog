@@ -1,9 +1,11 @@
 #!/usr/bin/env sh
 
-OUTDIR=$( pwd )/debug
+OUTDIR=debug
 host_os=$( uname -s )
 
 cat >Makefile <<EOF
+OBJS_TEST_UNIT_TL = $( cd src && find tests/unit/tl/ -type f | sort | sed -e 's/^/build\//' -e 's/\.c$/.o/' | xargs )
+
 .PHONY: all
 EOF
 
@@ -71,13 +73,30 @@ build/oobj/: build/
 	test -d build/oobj/ || mkdir build/oobj/
 
 .PHONY: test
-test: all build/unit/test-runner
-	#TZ=Europe/Oslo ./build/regression/test-runner ${OUTDIR}/bin/tl
-	TZ=Europe/Oslo ./build/unit/test-runner ${OUTDIR}/bin/tl
+test: all build/test-runner-regression-timelog build/test-runner-unit-timelog build/test-runner-regression-tl build/test-runner-unit-tl
+	#./build/test-runner-regression-timelog
+	#./build/test-runner-unit-timelog
+	#./build/test-runner-regression-tl
+	./build/test-runner-unit-tl
 
-.PHONY: build/unit/test-runner
-build/unit/test-runner:
-	(cd tests && ./make.sh)
+build/test-runner-regression-timelog:
+	#TODO
+
+build/test-runner-unit-timelog:
+	#TODO
+
+build/test-runner-regression-tl:
+	#TODO
+
+build/test-runner-unit-tl: \$(OBJS_TEST_UNIT_TL)
+	cc -c -Wall -ansi -pedantic -O0 -g -Isrc/tests/include/ \\
+	  \$(.ALLSRC) -o build/test-runner-unit-tl
+
+\$(OBJS_TEST_UNIT_TL): \$(.PREFIX).c build/tests/unit/tl/
+	cc -c -Wall -ansi -pedantic -O0 -g -Isrc/tests/include/ -o \$(.TARGET) \$(.ALLSRC)
+
+build/tests/unit/tl/:
+	test -d build/tests/unit/tl/ || mkdir -p build/tests/unit/tl/
 
 .PHONY: clean
 clean:
