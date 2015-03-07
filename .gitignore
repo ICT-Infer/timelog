@@ -1,3 +1,4 @@
+GNUmakefile
 config.mk
 debug/
 dist/

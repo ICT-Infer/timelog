@@ -6,3 +6,5 @@ echo DARWIN= >config.mk
 else
 :>config.mk
 fi
+
+patch -o GNUmakefile BSDmakefile GNUmakefile.patch
