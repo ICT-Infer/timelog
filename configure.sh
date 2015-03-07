@@ -2,7 +2,7 @@
 
 host_os=$( uname -s )
 if [ "$host_os" = "Darwin" ] ; then
-echo DARWIN= >config.mk
+echo DARWIN=true >config.mk
 else
 :>config.mk
 fi
