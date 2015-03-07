@@ -40,6 +40,11 @@ timepoints (such as by `tl pending` and `tl report`).
 to be a list of currently open tickets regarding issues considered to be
 noteable pertaining to building and running saas-by-erik/timelog.)
 
+* [#14](https://github.com/saas-by-erik/timelog/issues/14):
+  No test target exists in makefiles.
+  I have left the README to say that you should run `make test` because
+  this target will be back soon and it's important that without tests,
+  there should be an indicator still that something is wrong.
 * [#4](https://github.com/saas-by-erik/timelog/issues/4):
   The tests only check `tl` execution return values.
   They need to be rewritten so that they additionally test the actual outcome.
