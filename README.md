@@ -45,6 +45,9 @@ noteable pertaining to building and running saas-by-erik/timelog.)
   I have left the README to say that you should run `make test` because
   this target will be back soon and it's important that without tests,
   there should be an indicator still that something is wrong.
+* [#15](https://github.com/saas-by-erik/timelog/issues/15):
+  Records need unique ID.
+  SHA-1?
 * [#4](https://github.com/saas-by-erik/timelog/issues/4):
   The tests only check `tl` execution return values.
   They need to be rewritten so that they additionally test the actual outcome.
