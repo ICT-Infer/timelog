@@ -30,6 +30,7 @@ typedef struct _tlentry
   bool iae; /* Is active entry. Clients MUST ignore this. Sorry for leaking. */
   timepoint begin;
   timepoint end;
+  unsigned char id[20]; /* SHA-1 digest of fields begin and end. */
 } tlentry;
 
 /* Information about a timelog directory and its files. */
@@ -55,5 +56,5 @@ int tps_pop(const DB *, timepoint *);
 int tle_init(tlentry *, timepoint *, timepoint *);
 recno_t tl_prev(const DB *);
 recno_t tl_head(const DB *);
-recno_t tl_insert(const DB *, tlentry *);
-int tl_drop(const DB *, recno_t);
+unsigned char *tl_insert(const DB *, tlentry *);
+int tl_drop(const DB *, unsigned char *);

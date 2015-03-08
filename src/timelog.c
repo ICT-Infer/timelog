@@ -27,6 +27,8 @@
 #include <time.h>
 #include <unistd.h>
 
+#include <openssl/evp.h>
+
 #include "timelog.h"
 
 /*
@@ -361,19 +363,21 @@ recno_t tl_head(const DB *tl)
 /*
  * Insert tlentry into time log.
  *
- * Returns row number greater than zero on success.
- * Returns zero on failure.
+ * Returns pointer to SHA-1 digest of inserted record on success.
+ * Returns NULL pointer on failure.
  */
-recno_t tl_insert(const DB *tl, tlentry *tle)
+unsigned char *tl_insert(const DB *tl, tlentry *tle)
 {
-  /* TODO MAYBE: Insert in ordered position. */
+  /* TODO: Ensure entry is not overlapping others in an invalid way. */
+  /* TODO: Insert in ordered position. */
   DBT data;
   DBT key;
   recno_t kval;
+  EVP_MD_CTX *mctx;
 
   if (tle == NULL || tle->begin.hts[0] == 0 || tle->end.hts[0] == 0)
   {
-    return 0;
+    return NULL;
   }
 
   tle->iae = true;
@@ -383,45 +387,29 @@ recno_t tl_insert(const DB *tl, tlentry *tle)
   key.size = sizeof(&kval);
   key.data = &kval;
 
+  mctx = EVP_MD_CTX_create();
+  EVP_DigestInit_ex(mctx, EVP_sha1(), NULL);
+  EVP_DigestUpdate(mctx, (const void *) &(tle->begin), sizeof(tle->begin));
+  EVP_DigestUpdate(mctx, (const void *) &(tle->end), sizeof(tle->end));
+  EVP_DigestFinal_ex(mctx, tle->id, NULL);
+  EVP_MD_CTX_destroy(mctx);
+
   if (tl->put(tl, &key, &data, R_SETCURSOR) != 0)
   {
-    return 0;
+    return NULL;
   }
 
-  return *((recno_t *)key.data);
+  return tle->id;
 }
 
 /*
- * Drop tlentry by row number from time log.
+ * Drop tlentry by ID from time log.
  *
  * Returns 0 on success.
  * Returns non-zero on failure.
  */
-int tl_drop(const DB *tl, recno_t row)
+int tl_drop(const DB *tl, unsigned char *id)
 {
-  int h = tl_head(tl);
-  fprintf(stderr, "Row: %d, Head: %d.\n", (int)row, h);
-  if (row == h)
-  {
-    /*
-     * They said in dbopen(3) that the fd returned by the fd routine is
-     * "not necessarily associated with any of the underlying files
-     *  used by the access method".
-     * TODO: Ensure the below truncation is safe.
-     */
-    struct stat sb;
-    fstat(tl->fd(tl), &sb);
-    return ftruncate(tl->fd(tl), sb.st_size - sizeof(tlentry));
-  }
-  else if (row > h)
-  {
-    return 2;
-  }
-  else
-  {
-    DBT key;
-    key.data = &row;
-    key.size = sizeof(key.data);
-    return tl->del(tl, &key, 0);
-  }
+  /* TODO */
+  return 1;
 }
