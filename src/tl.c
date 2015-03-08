@@ -334,7 +334,8 @@ int cmd_mergeadd(int cargc, char **cargv, const char *pname, const char *cmd,
   DBT key_h, key_p;
   timepoint tpt_h, tpt_p;
   tlentry tle;
-  recno_t irow;
+  unsigned char *id;
+  int i;
 
   if (cargc > 1)
   {
@@ -367,16 +368,22 @@ int cmd_mergeadd(int cargc, char **cargv, const char *pname, const char *cmd,
 
   tle_init(&tle, &tpt_h, &tpt_p);
 
-  if ((irow = tl_insert(cdtl->tl, &tle)) == 0)
+  if ((id = tl_insert(cdtl->tl, &tle)) == NULL)
   {
     return 4;
   }
-  fprintf(stderr, "Inserted row %i.\n", irow);
+
+  fprintf(stderr, "Inserted row with ID ");
+  for (i = 0 ; i < 20 ; i++)
+  {
+    fprintf(stderr, "%02x", id[i]);
+  }
+  fprintf(stderr, ".\n");
 
   /* Pop twice. */
   if (tps_pop(cdtl->tps, NULL) != 0 || tps_pop(cdtl->tps, NULL) != 0)
   {
-    if (tl_drop(cdtl->tl, irow) != 0)
+    if (tl_drop(cdtl->tl, id) != 0)
     {
       return 5;
     }
@@ -394,38 +401,8 @@ int cmd_mergeadd(int cargc, char **cargv, const char *pname, const char *cmd,
 int cmd_unlog(int cargc, char **cargv, const char *pname, const char *cmd,
               dottl *cdtl)
 {
-  int row;
-
-  if (cargc == 1)
-  {
-    fprintf(stderr, "%s: %s: Missing argument.\n\n", pname, cmd);
-    usage(pname);
-    return 1;
-  }
-  if (cargc > 2)
-  {
-    fprintf(stderr, "%s: %s: %d additional argument(s) passed. "
-                    "First: `%s'.\n\n",
-            pname, cmd, cargc - 1, cargv[1]);
-    usage(pname);
-    return 1;
-  }
-
-  if ((cdtl->tps = open_tps(cdtl->f_tps)) == NULL ||
-      (cdtl->tl = open_tl(cdtl->f_tl)) == NULL)
-  {
-    return 2;
-  }
-
-  /* TODO: Determine maximum value of the dbopen key. */
-  row = strtoul(cargv[1], &cargv[strlen(cargv[1])], 10);
-  if (row == ULONG_MAX && errno == ERANGE)
-  {
-    fprintf(stderr, "%s: %s: Row number out of range.\n", pname, cmd);
-    return 3;
-  }
-
-  return tl_drop(cdtl->tl, (recno_t)row);
+  /* TODO. */
+  return 1;
 }
 
 /*
