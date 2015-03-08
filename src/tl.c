@@ -373,7 +373,7 @@ int cmd_mergeadd(int cargc, char **cargv, const char *pname, const char *cmd,
     return 4;
   }
 
-  fprintf(stderr, "Inserted row with ID ");
+  fprintf(stderr, "Inserted entry with ID ");
   for (i = 0 ; i < 20 ; i++)
   {
     fprintf(stderr, "%02x", id[i]);
