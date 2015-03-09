@@ -30,27 +30,12 @@ all: directories $(OUTDIR)/bin/tl
 .PHONY: directories
 directories: $(WORKDIR)/obj $(OUTDIR)/include $(OUTDIR)/lib $(OUTDIR)/bin
 
-$(WORKDIR)/obj: $(WORKDIR)
-	mkdir $@
-
-$(WORKDIR):
-	mkdir $@
-
-$(OUTDIR)/include: $(OUTDIR)
-	mkdir $@
-
-$(OUTDIR)/lib: $(OUTDIR)
-	mkdir $@
-
-$(OUTDIR)/bin: $(OUTDIR)
-	mkdir $@
-
-$(OUTDIR):
-	mkdir $@
+$(WORKDIR)/obj $(OUTDIR)/include $(OUTDIR)/lib $(OUTDIR)/bin:
+	mkdir -p $@
 
 .PHONY: clean
 clean:
-	rm -rf build
+	rm -rf work
 	rm -rf $(OUTDIR)
 
 #
