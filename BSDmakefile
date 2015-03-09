@@ -35,7 +35,7 @@ $(WORKDIR)/obj $(OUTDIR)/include $(OUTDIR)/lib $(OUTDIR)/bin:
 
 .PHONY: clean
 clean:
-	rm -rf work
+	rm -rf $(WORKDIR)
 	rm -rf $(OUTDIR)
 
 #
