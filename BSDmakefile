@@ -46,10 +46,10 @@ $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(OUTDIR)/lib/libtimelog.$(LIBTIMELOG
 	ln -s libtimelog.$(LIBTIMELOGVEREXT) $@
 
 $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGVEREXT): $(WORKDIR)/obj/timelog.o
-	cc $(LIBTIMELOGSHLIB) -o $@ $(WORKDIR)/obj/timelog.o -lcrypto
+	$(CC) $(LIBTIMELOGSHLIB) -o $@ $(WORKDIR)/obj/timelog.o -lcrypto
 
 $(WORKDIR)/obj/timelog.o: $(OUTDIR)/include/timelog.h
-	cc -I$(OUTDIR)/include -fPIC $(CFLAGS) -o $@ -c src/timelog.c
+	$(CC) -I$(OUTDIR)/include -fPIC $(CFLAGS) -o $@ -c src/timelog.c
 
 $(OUTDIR)/include/timelog.h: src/include/timelog.h
 	cp src/include/timelog.h $@
