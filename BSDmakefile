@@ -38,6 +38,11 @@ clean:
 	rm -rf $(WORKDIR)
 	rm -rf $(OUTDIR)
 
+.PHONY: confclean
+confclean:
+	rm -f GNUmakefile
+	rm -f conf.mk
+
 #
 # libtimelog
 #
