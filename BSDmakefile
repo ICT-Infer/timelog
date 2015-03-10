@@ -36,12 +36,15 @@ $(WORKDIR)/obj $(OUTDIR)/include $(OUTDIR)/lib $(OUTDIR)/bin:
 .PHONY: clean
 clean:
 	rm -rf $(WORKDIR)
-	rm -rf $(OUTDIR)
 
 .PHONY: confclean
-confclean:
+confclean: clean
 	rm -f GNUmakefile
 	rm -f conf.mk
+
+.PHONY: distclean
+distclean: clean
+	rm -rf $(OUTDIR)
 
 #
 # libtimelog
