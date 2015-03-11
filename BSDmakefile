@@ -12,11 +12,8 @@ OUTDIR=dist
 
 .ifdef DARWIN
 LIBTIMELOGEXT=dylib
-LIBTIMELOGSHLIB=-dynamiclib -Wl,-install_name,@loader_path/../lib/libtimelog.$${LIBTIMELOGVEREXT}
-TIMELOGRELOC=
 .else
 LIBTIMELOGEXT=so
-LIBTIMELOGSHLIB=-shared -Wl,-soname,libtimelog.$${LIBTIMELOGVEREXT}
 TIMELOGRELOC=-Wl,-z,origin,-rpath='$$ORIGIN/../lib/'
 .endif
 
@@ -52,12 +49,12 @@ distclean: clean
 
 $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(WORKDIR)/obj/timelog.o
 .ifdef DARWIN
-	$(CC) $(LIBTIMELOGSHLIB) -o $(OUTDIR)/lib/libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINUSCLE version.h | cut -d' ' -f3).dylib $(WORKDIR)/obj/timelog.o -lcrypto
+	$(CC) -dynamiclib -Wl,-install_name,@loader_path/../lib/libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).dylib -o $(OUTDIR)/lib/libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINUSCLE version.h | cut -d' ' -f3).dylib $(WORKDIR)/obj/timelog.o -lcrypto
 	ln -s libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINUSCLE version.h | cut -d' ' -f3).dylib $(OUTDIR)/lib/libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).dylib
 	ln -s libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).dylib $(OUTDIR)/lib/libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).dylib
 	ln -s libtimelog.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).dylib $@
 .else
-	$(CC) $(LIBTIMELOGSHLIB) -o $(OUTDIR)/lib/libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINUSCLE version.h | cut -d' ' -f3) $(WORKDIR)/obj/timelog.o -lcrypto
+	$(CC) -shared -Wl,-soname,libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3) -o $(OUTDIR)/lib/libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINUSCLE version.h | cut -d' ' -f3) $(WORKDIR)/obj/timelog.o -lcrypto
 	ln -s libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINUSCLE version.h | cut -d' ' -f3) $(OUTDIR)/lib/libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3)
 	ln -s libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3).$$(grep TIMELOGVERSIONMINOR version.h | cut -d' ' -f3) $(OUTDIR)/lib/libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3)
 	ln -s libtimelog.so.$$(grep TIMELOGVERSIONMAJOR version.h | cut -d' ' -f3) $@
