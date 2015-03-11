@@ -24,13 +24,18 @@ test -z "${repo_status}"
 if [ $? -ne 0 ] ; then status=" +${repo_status}" ; fi
 
 # TODO: Major, minor, minuscle
-cat >_version.h <<EOF
-#define TIMELOGVERSIONSTRING "${verstr} (${branchname}${status})"
-#define TIMELOGVERSIONMAJOR ${vermajor}
-#define TIMELOGVERSIONMINOR ${verminor}
-#define TIMELOGVERSIONMINUSCLE ${verminuscle}
+cat >_timelog_version.h <<EOF
+#ifndef TIMELOG_VERSION_H
+#define TIMELOG_VERSION_H
+
+#define TIMELOG_VERSION_STRING "${verstr} (${branchname}${status})"
+#define TIMELOG_VERSION_MAJOR ${vermajor}
+#define TIMELOG_VERSION_MINOR ${verminor}
+#define TIMELOG_VERSION_MINUSCLE ${verminuscle}
+
+#endif
 EOF
 
-diff version.h _version.h 2>&1 >/dev/null \
-  && rm _version.h \
-  || mv _version.h version.h
+diff timelog_version.h _timelog_version.h 2>&1 >/dev/null \
+  && rm _timelog_version.h \
+  || mv _timelog_version.h timelog_version.h

@@ -14,6 +14,9 @@
  * OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
  */
 
+#ifndef TIMELOG_H
+#define TIMELOG_H
+
 /* Point in time. */
 typedef struct _timepoint
 {
@@ -58,3 +61,5 @@ recno_t tl_prev(const DB *);
 recno_t tl_head(const DB *);
 unsigned char *tl_insert(const DB *, tlentry *);
 int tl_drop(const DB *, unsigned char *);
+
+#endif

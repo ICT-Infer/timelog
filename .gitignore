@@ -4,5 +4,5 @@
 /config.mk
 /debug/
 /dist/
-/version.h
+/timelog_version.h
 /work/
