@@ -18,10 +18,10 @@ TIMELOGRELOC=-Wl,-z,origin,-rpath='$$ORIGIN/../lib/'
 .endif
 
 .PHONY: all
-all: directories $(OUTDIR)/bin/tl
+all: version directories $(OUTDIR)/bin/tl
 
-.PHONY: timelog_version.h
-timelog_version.h:
+.PHONY: version
+version:
 	./version.sh
 
 .PHONY: directories
@@ -48,6 +48,7 @@ distclean: clean
 #
 
 $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(WORKDIR)/obj/timelog.o
+	rm -f $(OUTDIR)/lib/libtimelog.*
 .ifdef DARWIN
 	$(CC) -dynamiclib -Wl,-install_name,@loader_path/../lib/libtimelog.$$(grep TIMELOG_VERSION_MAJOR timelog_version.h | cut -d' ' -f3).dylib -o $(OUTDIR)/lib/libtimelog.$$(grep TIMELOG_VERSION_MAJOR timelog_version.h | cut -d' ' -f3).$$(grep TIMELOG_VERSION_MINOR timelog_version.h | cut -d' ' -f3).$$(grep TIMELOG_VERSION_MINUSCLE timelog_version.h | cut -d' ' -f3).dylib $(WORKDIR)/obj/timelog.o -lcrypto
 	ln -s libtimelog.$$(grep TIMELOG_VERSION_MAJOR timelog_version.h | cut -d' ' -f3).$$(grep TIMELOG_VERSION_MINOR timelog_version.h | cut -d' ' -f3).$$(grep TIMELOG_VERSION_MINUSCLE timelog_version.h | cut -d' ' -f3).dylib $(OUTDIR)/lib/libtimelog.$$(grep TIMELOG_VERSION_MAJOR timelog_version.h | cut -d' ' -f3).$$(grep TIMELOG_VERSION_MINOR timelog_version.h | cut -d' ' -f3).dylib
