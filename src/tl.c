@@ -87,6 +87,7 @@ void usage(const char *pname)
   fprintf(stderr, " %s merge-add\n", pname);
   fprintf(stderr, " %s unlog [-d] <id>\n", pname);
   fprintf(stderr, " %s report\n", pname);
+  fprintf(stderr, " %s version\n", pname);
 }
 
 /*
@@ -428,6 +429,7 @@ int main(int argc, char *argv[])
       {"merge-add", &cmd_mergeadd},
       {"unlog", &cmd_unlog},
       {"report", &cmd_dummy},
+      {"version", &cmd_dummy},
   };
   cmd *cmd_cur;
 
