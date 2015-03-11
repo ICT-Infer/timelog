@@ -1,7 +1,7 @@
+*.db
+*.swp
 /GNUmakefile
 /config.mk
 /debug/
 /dist/
 /work/
-*.db
-*.swp
