@@ -61,11 +61,11 @@ $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(WORKDIR)/obj/timelog.o
 	ln -s libtimelog.so.$$(grep TIMELOG_VERSION_MAJOR timelog_version.h | cut -d' ' -f3) $@
 .endif
 
-$(WORKDIR)/obj/timelog.o: $(OUTDIR)/include/timelog.h
+$(WORKDIR)/obj/timelog.o: timelog_version.h $(OUTDIR)/include/timelog.h
 	$(CC) -I$(OUTDIR)/include -fPIC $(CFLAGS) -o $@ -c src/timelog.c
 
-$(OUTDIR)/include/timelog.h: timelog_version.h src/include/timelog.h
-	cat timelog_version.h src/include/timelog.h > $@
+$(OUTDIR)/include/timelog.h: src/include/timelog.h
+	cp src/include/timelog.h $@
 
 #
 # tl

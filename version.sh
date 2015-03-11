@@ -1,7 +1,7 @@
 #!/usr/bin/env sh
 
 repo_version=$( git describe )
-verstr=${repo_version:-0.b.c-NaN-gbadf00d}
+verstr=${repo_version:-0.0.0-NaN-gbadf00d}
 vermajor=${verstr%%.*}
 tmp=${verstr#*.}
 verminor=${tmp%%.*}

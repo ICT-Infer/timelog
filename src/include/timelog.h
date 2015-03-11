@@ -17,6 +17,15 @@
 #ifndef TIMELOG_H
 #define TIMELOG_H
 
+/* libtimelog version */
+typedef struct _libtimelogversion
+{
+  const char full[80];
+  const int major;
+  const int minor;
+  const int minuscle;
+} libtimelogversion;
+
 /* Point in time. */
 typedef struct _timepoint
 {
