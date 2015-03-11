@@ -11,7 +11,7 @@ OUTDIR=dist
 .endif
 
 .ifdef DARWIN
-LIBTIMLOGEXT=dylib
+LIBTIMELOGEXT=dylib
 LIBTIMELOGSHLIB=-dynamiclib -Wl,-install_name,@loader_path/../lib/libtimelog.$${LIBTIMELOGVEREXT}
 TIMELOGRELOC=
 .else
