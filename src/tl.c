@@ -80,6 +80,7 @@ char **tpt_ppprint(const timepoint *tpt, char **buf)
 void usage(const char *pname)
 {
   fprintf(stderr, "Usage:\n");
+  fprintf(stderr, " %s version\n", pname);
   fprintf(stderr, " %s init\n", pname);
   fprintf(stderr, " %s timepoint [-l <loc>] [-m <msg>] [-t <ts>]\n", pname);
   fprintf(stderr, " %s pending\n", pname);
@@ -87,7 +88,6 @@ void usage(const char *pname)
   fprintf(stderr, " %s merge-add\n", pname);
   fprintf(stderr, " %s unlog [-d] <id>\n", pname);
   fprintf(stderr, " %s report\n", pname);
-  fprintf(stderr, " %s version\n", pname);
 }
 
 /*
@@ -422,6 +422,7 @@ int main(int argc, char *argv[])
 
   /* Commands. */
   cmd cmds[] = {
+      {"version", &cmd_dummy},
       {"init", &cmd_init},
       {"timepoint", &cmd_timepoint},
       {"pending", &cmd_pending},
@@ -429,7 +430,6 @@ int main(int argc, char *argv[])
       {"merge-add", &cmd_mergeadd},
       {"unlog", &cmd_unlog},
       {"report", &cmd_dummy},
-      {"version", &cmd_dummy},
   };
   cmd *cmd_cur;
 
