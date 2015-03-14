@@ -74,3 +74,18 @@ $(OUTDIR)/include/timelog.h: src/include/timelog.h
 $(OUTDIR)/bin/tl: $(OUTDIR)/include/timelog.h $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT) src/tl.c
 	$(CC) -I$(OUTDIR)/include -L$(OUTDIR)/lib $(TIMELOGRELOC) $(CFLAGS) \
 	  -o $@ src/tl.c -ltimelog
+
+#
+# tests
+#
+
+.PHONY: test
+test: test-tl
+
+.PHONY: test-tl
+test-tl: $(WORKDIR)/test-tl-unit
+	$(WORKDIR)/test-tl-unit
+
+$(WORKDIR)/test-tl-unit: src/tests/unit/tl/*.c
+	$(CC) -Isrc/tests/include/ $(CFLAGS) \
+	  -o $@ src/tests/unit/tl/*.c
