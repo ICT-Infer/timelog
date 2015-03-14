@@ -73,3 +73,17 @@ should be created for these issues.
 ```
 ./configure.sh && make test
 ```
+
+## Cleaning
+
+### Regular cleaning
+
+```
+make clean
+```
+
+### Full cleaning
+
+```
+make distclean confclean
+```
