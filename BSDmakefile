@@ -31,12 +31,13 @@ $(WORKDIR)/obj $(OUTDIR)/include $(OUTDIR)/lib $(OUTDIR)/bin:
 
 .PHONY: clean
 clean:
+	rm -f timelog_version.h
 	rm -rf $(WORKDIR)
 
 .PHONY: confclean
 confclean: clean
+	rm -f config.mk
 	rm -f GNUmakefile
-	rm -f conf.mk
 
 .PHONY: distclean
 distclean: clean
