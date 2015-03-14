@@ -20,7 +20,7 @@ TIMELOGRELOC=-Wl,-z,origin,-rpath='$$ORIGIN/../lib/'
 .endif
 
 .PHONY: all
-all: version $(OUTDIR)/bin/tl
+all: $(DIRS) version $(OUTDIR)/bin/tl
 
 .PHONY: version
 version:
@@ -47,7 +47,7 @@ distclean: clean
 # libtimelog
 #
 
-$(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(DIRS) $(WORKDIR)/obj/timelog.o
+$(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(WORKDIR)/obj/timelog.o
 	rm -f $(OUTDIR)/lib/libtimelog.*
 .ifdef DARWIN
 	$(CC) -dynamiclib -Wl,-install_name,@loader_path/../lib/libtimelog.$$(grep TIMELOG_VERSION_MAJOR timelog_version.h | cut -d' ' -f3).dylib -o $(OUTDIR)/lib/libtimelog.$$(grep TIMELOG_VERSION_MAJOR timelog_version.h | cut -d' ' -f3).$$(grep TIMELOG_VERSION_MINOR timelog_version.h | cut -d' ' -f3).$$(grep TIMELOG_VERSION_MINUSCLE timelog_version.h | cut -d' ' -f3).dylib $(WORKDIR)/obj/timelog.o -lcrypto
@@ -71,7 +71,7 @@ $(OUTDIR)/include/timelog.h: src/include/timelog.h
 # tl
 #
 
-$(OUTDIR)/bin/tl: $(DIRS) $(OUTDIR)/include/timelog.h $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT) src/tl.c
+$(OUTDIR)/bin/tl: $(OUTDIR)/include/timelog.h $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT) src/tl.c
 	$(CC) -I$(OUTDIR)/include -L$(OUTDIR)/lib $(TIMELOGRELOC) $(CFLAGS) \
 	  -o $@ src/tl.c -ltimelog
 
@@ -80,7 +80,7 @@ $(OUTDIR)/bin/tl: $(DIRS) $(OUTDIR)/include/timelog.h $(OUTDIR)/lib/libtimelog.$
 #
 
 .PHONY: test
-test: version test-tl
+test: $(DIRS) version test-tl
 
 .PHONY: test-tl
 test-tl: $(OUTDIR)/bin/tl $(WORKDIR)/test-tl-unit
