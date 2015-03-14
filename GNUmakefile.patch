@@ -1,5 +1,5 @@
---- BSDmakefile	2015-03-14 16:32:53.000000000 +0100
-+++ GNUmakefile	2015-03-14 16:34:56.000000000 +0100
+--- BSDmakefile	Sat Mar 14 16:53:32 2015
++++ GNUmakefile	Sat Mar 14 16:53:39 2015
 @@ -1,23 +1,23 @@
 -.include "config.mk"
 +include config.mk
@@ -30,10 +30,10 @@
 +endif
  
  .PHONY: all
- all: version $(OUTDIR)/bin/tl
+ all: $(DIRS) version $(OUTDIR)/bin/tl
 @@ -49,17 +49,17 @@
  
- $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(DIRS) $(WORKDIR)/obj/timelog.o
+ $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(WORKDIR)/obj/timelog.o
  	rm -f $(OUTDIR)/lib/libtimelog.*
 -.ifdef DARWIN
 +ifdef DARWIN
