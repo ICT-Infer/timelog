@@ -22,7 +22,7 @@ int countnumtests(const unit *cur)
 int main ()
 {
   int i, r = 0, s = 0, p = 0, f = 0;
-  const unit *units[] = {&init, &mergeadd, &pending, &popdrop, &report, &timepoint, &unlog};
+  const unit *units[] = {&version, &init, &mergeadd, &pending, &popdrop, &report, &timepoint, &unlog};
 
   for (i = 0; i < sizeof(units) / sizeof(units[0]); i++)
   {
