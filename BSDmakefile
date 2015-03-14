@@ -72,5 +72,5 @@ $(OUTDIR)/include/timelog.h: src/include/timelog.h
 #
 
 $(OUTDIR)/bin/tl: $(OUTDIR)/include/timelog.h $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT) src/tl.c
-	$(CC) -I${OUTDIR}/include -L${OUTDIR}/lib $(TIMELOGRELOC) $(CFLAGS) \
+	$(CC) -I$(OUTDIR)/include -L$(OUTDIR)/lib $(TIMELOGRELOC) $(CFLAGS) \
 	  -o $@ src/tl.c -ltimelog
