@@ -80,7 +80,7 @@ $(OUTDIR)/bin/tl: $(DIRS) $(OUTDIR)/include/timelog.h $(OUTDIR)/lib/libtimelog.$
 #
 
 .PHONY: test
-test: test-tl
+test: version test-tl
 
 .PHONY: test-tl
 test-tl: $(OUTDIR)/bin/tl $(WORKDIR)/test-tl-unit
