@@ -22,12 +22,12 @@ TIMELOGRELOC=-Wl,-z,origin,-rpath='$$ORIGIN/../lib/'
 .PHONY: all
 all: $(DIRS) version $(OUTDIR)/bin/tl
 
+$(DIRS):
+	mkdir -p $@
+
 .PHONY: version
 version:
 	./version.sh
-
-$(WORKDIR)/obj $(OUTDIR)/include $(OUTDIR)/lib $(OUTDIR)/bin:
-	mkdir -p $@
 
 .PHONY: clean
 clean:
