@@ -29,7 +29,15 @@
 
 #include <openssl/evp.h>
 
+#include "timelog_version.h"
 #include "timelog.h"
+
+const char verstr[] = TIMELOG_VERSION_STRING;
+
+char *timelog_libver()
+{
+  return verstr;
+}
 
 /*
  * Default dottl.

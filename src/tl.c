@@ -32,6 +32,7 @@
 
 /* TODO: Determine all places where we should be using errno. */
 
+#include "timelog_version.h"
 #include "timelog.h"
 
 /* Holds a command name and the function to call. */
@@ -100,6 +101,19 @@ int cmd_dummy(int cargc, char **cargv, const char *pname, const char *cmd,
 {
   fprintf(stderr, "%s: %s: Not implemented.\n", pname, cmd);
   return 1;
+}
+
+/*
+ * Command: version
+ *
+ * Report version.
+ */
+int cmd_version(int cargc, char **cargv, const char *pname, const char *cmd,
+                dottl *cdtl)
+{
+  printf("tl version " TIMELOG_VERSION_STRING "\n");
+  printf("libtimelog version %s \n", timelog_libver());
+  return 0;
 }
 
 /*
@@ -422,7 +436,7 @@ int main(int argc, char *argv[])
 
   /* Commands. */
   cmd cmds[] = {
-      {"version", &cmd_dummy},
+      {"version", &cmd_version},
       {"init", &cmd_init},
       {"timepoint", &cmd_timepoint},
       {"pending", &cmd_pending},
