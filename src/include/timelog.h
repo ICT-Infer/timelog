@@ -55,7 +55,7 @@ typedef struct _dottl
   DB *tl;            /* Set by certain libtimelog functions. */
 } dottl;
 
-char *timelog_libver();
+const char *timelog_libver();
 dottl dottl_default(void);
 int tl_init(dottl *);
 DB *open_tps(const char *);

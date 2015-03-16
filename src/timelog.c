@@ -34,7 +34,7 @@
 
 const char verstr[] = TIMELOG_VERSION_STRING;
 
-char *timelog_libver()
+const char *timelog_libver()
 {
   return verstr;
 }
