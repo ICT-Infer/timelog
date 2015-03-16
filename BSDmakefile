@@ -62,7 +62,7 @@ $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT): $(WORKDIR)/obj/timelog.o
 .endif
 
 $(WORKDIR)/obj/timelog.o: timelog_version.h $(OUTDIR)/include/timelog.h
-	$(CC) -I$(OUTDIR)/include -fPIC $(CFLAGS) -o $@ -c src/timelog.c
+	$(CC) -I. -I$(OUTDIR)/include -fPIC $(CFLAGS) -o $@ -c src/timelog.c
 
 $(OUTDIR)/include/timelog.h: src/include/timelog.h
 	cp src/include/timelog.h $@
@@ -72,8 +72,8 @@ $(OUTDIR)/include/timelog.h: src/include/timelog.h
 #
 
 $(OUTDIR)/bin/tl: $(OUTDIR)/include/timelog.h $(OUTDIR)/lib/libtimelog.$(LIBTIMELOGEXT) src/tl.c
-	$(CC) -I$(OUTDIR)/include -L$(OUTDIR)/lib $(TIMELOGRELOC) $(CFLAGS) \
-	  -o $@ src/tl.c -ltimelog
+	$(CC) -I. -I$(OUTDIR)/include -L$(OUTDIR)/lib $(TIMELOGRELOC) \
+	  $(CFLAGS) -o $@ src/tl.c -ltimelog
 
 #
 # tests

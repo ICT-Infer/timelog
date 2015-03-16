@@ -1,5 +1,5 @@
---- BSDmakefile	Sat Mar 14 16:53:32 2015
-+++ GNUmakefile	Sat Mar 14 16:53:39 2015
+--- BSDmakefile	2015-03-16 19:10:26.000000000 +0100
++++ GNUmakefile	2015-03-16 19:10:28.000000000 +0100
 @@ -1,23 +1,23 @@
 -.include "config.mk"
 +include config.mk
@@ -51,4 +51,4 @@
 +endif
  
  $(WORKDIR)/obj/timelog.o: timelog_version.h $(OUTDIR)/include/timelog.h
- 	$(CC) -I$(OUTDIR)/include -fPIC $(CFLAGS) -o $@ -c src/timelog.c
+ 	$(CC) -I. -I$(OUTDIR)/include -fPIC $(CFLAGS) -o $@ -c src/timelog.c
