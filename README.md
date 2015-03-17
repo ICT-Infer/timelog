@@ -30,4 +30,5 @@ $ cd atl/
 $ export EDITOR=vim # Set it to your prefered editor.
 $ $EDITOR atl/settings.py # Edit SECRET_KEY and TIME_ZONE.
 $ python3 manage.py migrate
+$ python3 manage.py runserver 0.0.0.0:8000 &
 ```
