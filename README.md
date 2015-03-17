@@ -32,6 +32,7 @@ $ cd atl/atl/
 $ export EDITOR=vim # Set it to your prefered editor.
 $ $EDITOR atl/settings.py # Edit SECRET_KEY and TIME_ZONE.
 $ python3 manage.py migrate
+$ python3 manage.py createsuperuser # it will suggest naming the superuser 'atl'. Let it.
 $ python3 manage.py runserver 0.0.0.0:8000 &
 ```
 
@@ -44,7 +45,6 @@ This continues in the session that we began above when we did the setup.
 We are not yet dealing with other users.
 
 ```
-$ python3 manage.py createsuperuser
 $ python3 manage.py shell
 ```
 
