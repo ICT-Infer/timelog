@@ -1,5 +1,9 @@
 # atl - Alternate Timelog
 
+An alternative to my [saas-by-erik/timelog](https://github.com/saas-by-erik/timelog).
+
+Made with great help from https://docs.djangoproject.com/en/1.7/intro/tutorial01/
+
 Currently a work in progress.
 
 ## Setup
