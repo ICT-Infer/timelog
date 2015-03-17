@@ -1,2 +1,1 @@
-# atl
-atl - Alternate Timelog
+# atl - Alternate Timelog
