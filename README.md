@@ -7,7 +7,8 @@ Currently a work in progress.
 Describing the setup procedure using Debian GNU/Linux 7.
 
 ```
-# apt-get install postgresql
+# apt-get install postgresql libpq-dev python3-pip
+# pip-3.2 install django psycopg2
 # adduser atl
 # su - postgresql
 $ psql
