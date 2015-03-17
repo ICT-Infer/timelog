@@ -24,9 +24,7 @@ CREATE DATABASE atl OWNER atl;
 $ ^D
 # su - atl
 $ git clone https://github.com/erikano/atl.git
-$ cd atl/
-$ psql < atl.sql
-$ cd atl/
+$ cd atl/atl/
 $ export EDITOR=vim # Set it to your prefered editor.
 $ $EDITOR atl/settings.py # Edit SECRET_KEY and TIME_ZONE.
 $ python3 manage.py migrate
