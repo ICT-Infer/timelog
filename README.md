@@ -26,4 +26,8 @@ $ ^D
 $ git clone https://github.com/erikano/atl.git
 $ cd atl/
 $ psql < atl.sql
+$ cd atl/
+$ export EDITOR=vim # Set it to your prefered editor.
+$ $EDITOR atl/settings.py # Edit SECRET_KEY and TIME_ZONE.
+$ python3 manage.py migrate
 ```
