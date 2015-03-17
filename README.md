@@ -34,3 +34,28 @@ $ $EDITOR atl/settings.py # Edit SECRET_KEY and TIME_ZONE.
 $ python3 manage.py migrate
 $ python3 manage.py runserver 0.0.0.0:8000 &
 ```
+
+## Usage from command-line
+
+Since the web UI has not yet been created, here is some initial basic usage.
+
+This continues in the session that we began above when we did the setup.
+
+We are not yet dealing with other users.
+
+```
+$ python3 manage.py createsuperuser
+$ python3 manage.py shell
+```
+
+```
+from atl_app.models import Project, Entry
+from django.utils import timezone
+p = Project(name='Example')
+p.save()
+from django.contrib.auth.models import User
+u = User.objects.get(username='atl')
+e = Entry(user=u, project=p)
+e.save()
+^D
+```
