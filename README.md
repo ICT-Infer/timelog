@@ -92,7 +92,7 @@ e.save()
 ^D
 ```
 
-## Usage with default Django administration web interface
+## Usage with default Django admin web interface
 
 You *could* begin using atl right now at `http://<host or IP>:8000/admin/atl/`. It's not great but it's better than nothing and better than using it through the shell like above.
 
