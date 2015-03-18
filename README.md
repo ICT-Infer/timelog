@@ -62,8 +62,8 @@ $ patch -p1 <<EOF
 EOF
 $ export EDITOR=vim # Set it to your prefered editor.
 $ $EDITOR serve/settings.py # Edit TIME_ZONE.
-$ python3 manage.py migrate
 $ python3 manage.py makemigrations atl
+$ python3 manage.py migrate
 $ python3 manage.py createsuperuser # it will suggest using name 'atl'. Let it.
 $ python3 manage.py runserver 0.0.0.0:8000 &
 ```
