@@ -87,7 +87,7 @@ c = Category(name='Example')
 c.save()
 from django.contrib.auth.models import User
 u = User.objects.get(username='atl')
-e = Entry(user=u, category=c)
+e = Entry(user=u, category=c, t_begin=timezone.now())
 e.save()
 ^D
 ```
