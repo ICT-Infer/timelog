@@ -55,7 +55,7 @@ $ patch -p1 <<EOF
 +        'USER': 'atl',
 +        'PASSWORD': '',
 +        'HOST': ''
-+  }
++    }
  }
  
  # Internationalization
