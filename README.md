@@ -95,5 +95,5 @@ e.save()
 ## Updating
 
 ```
-$ cd ~/serve/atl && git pull && python3 manage.py makemigrations atl
+$ cd ~/serve/atl && git pull && python3 ../manage.py makemigrations atl
 ```
