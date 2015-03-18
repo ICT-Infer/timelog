@@ -2,7 +2,7 @@ from django.conf import settings
 from django.db import models
 
 class Category(models.Model):
-  parent = models.ForeignKey("self", null=True)
+  parent = models.ForeignKey("self", null=True, blank=True)
   name = models.CharField(max_length=255)
   description = models.CharField(max_length=255, blank=True)
 
@@ -14,9 +14,9 @@ class Category(models.Model):
 
 class Entry(models.Model):
   user = models.ForeignKey(settings.AUTH_USER_MODEL)
-  category = models.ForeignKey(Category, null=True)
-  t_begin = models.DateTimeField('t_begin', null=True)
-  t_end = models.DateTimeField('t_end', null=True)
+  category = models.ForeignKey(Category, null=True, blank=True)
+  t_begin = models.DateTimeField('t_begin', null=True, blank=True)
+  t_end = models.DateTimeField('t_end', null=True, blank=True)
   description = models.CharField(max_length=255, blank=True)
 
   def __str__(self):
