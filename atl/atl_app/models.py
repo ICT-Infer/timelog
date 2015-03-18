@@ -12,3 +12,6 @@ class Entry(models.Model):
   t_begin = models.DateTimeField('t_begin', null=True)
   t_end = models.DateTimeField('t_end', null=True)
   description = models.CharField(max_length=255, blank=True)
+
+  class Meta:
+    verbose_name_plural = 'entries'
