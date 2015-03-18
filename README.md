@@ -80,13 +80,13 @@ $ python3 manage.py shell
 ```
 
 ```
-from atl.models import Project, Entry
+from atl.models import Category, Entry
 from django.utils import timezone
-p = Project(name='Example')
-p.save()
+c = Category(name='Example')
+c.save()
 from django.contrib.auth.models import User
 u = User.objects.get(username='atl')
-e = Entry(user=u, project=p)
+e = Entry(user=u, category=c)
 e.save()
 ^D
 ```
