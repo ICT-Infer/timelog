@@ -10,7 +10,7 @@ Currently a work in progress.
 
 ## Compatibility
 
-Compatible with Django 1.7+.
+Compatible with Django 1.7+. Requires Python 3.
 
 ## Setup
 
