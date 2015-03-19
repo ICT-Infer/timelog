@@ -80,11 +80,11 @@ $ python3 manage.py shell
 
 ```
 from timelog.models import Category, Entry
-from django.utils import timezone
 c = Category(name='Example')
 c.save()
 from django.contrib.auth.models import User
 u = User.objects.get(username='timelog')
+from django.utils import timezone
 e = Entry(user=u, category=c, t_begin=timezone.now())
 e.save()
 exit()
