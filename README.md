@@ -8,6 +8,10 @@ Made with great help from https://docs.djangoproject.com/en/1.7/intro/tutorial01
 
 Currently a work in progress.
 
+## Compatibility
+
+Compatible with Django 1.7+.
+
 ## Setup
 
 Describing the setup procedure using Debian GNU/Linux 7.
