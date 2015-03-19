@@ -1,4 +1,4 @@
-# django-atl - Alternate Timelog
+# django-timelog
 
 An alternative to my [saas-by-erik/timelog](https://github.com/saas-by-erik/timelog).
 
@@ -13,23 +13,23 @@ Describing the setup procedure using Debian GNU/Linux 7.
 ```
 # apt-get install postgresql libpq-dev python3-pip
 # pip-3.2 install django psycopg2
-# adduser atl
+# adduser timelog
 # su - postgresql
 $ psql
 ```
 
 ```
-CREATE USER atl;
-CREATE DATABASE atl OWNER atl;
+CREATE USER timelog;
+CREATE DATABASE timelog OWNER timelog;
 \q
 ```
 
 ```
 $ ^D
-# su - atl
+# su - timelog
 $ django-admin.py startproject serve
 $ cd serve/
-$ git clone https://github.com/erikano/django-atl.git atl/
+$ git clone https://github.com/erikano/django-timelog.git timelog/
 $ patch -p1 <<EOF
 --- a/serve/settings.py	2015-03-18 13:23:39.205531734 +0000
 +++ b/serve/settings.py	2015-03-18 13:27:48.505534237 +0000
@@ -37,7 +37,7 @@ $ patch -p1 <<EOF
      'django.contrib.sessions',
      'django.contrib.messages',
      'django.contrib.staticfiles',
-+    'atl',
++    'timelog',
  )
  
  MIDDLEWARE_CLASSES = (
@@ -51,8 +51,8 @@ $ patch -p1 <<EOF
 -    }
 +    'default': {
 +        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-+        'NAME': 'atl',
-+        'USER': 'atl',
++        'NAME': 'timelog',
++        'USER': 'timelog',
 +        'PASSWORD': '',
 +        'HOST': ''
 +    }
@@ -62,9 +62,9 @@ $ patch -p1 <<EOF
 EOF
 $ export EDITOR=vim # Set it to your prefered editor.
 $ $EDITOR serve/settings.py # Edit TIME_ZONE.
-$ python3 manage.py makemigrations atl
+$ python3 manage.py makemigrations timelog
 $ python3 manage.py migrate
-$ python3 manage.py createsuperuser # it will suggest using name 'atl'. Let it.
+$ python3 manage.py createsuperuser # it will suggest using name 'timelog'. Let it.
 $ python3 manage.py runserver 0.0.0.0:8000 &
 ```
 
@@ -81,12 +81,12 @@ $ python3 manage.py shell
 ```
 
 ```
-from atl.models import Category, Entry
+from timelog.models import Category, Entry
 from django.utils import timezone
 c = Category(name='Example')
 c.save()
 from django.contrib.auth.models import User
-u = User.objects.get(username='atl')
+u = User.objects.get(username='timelog')
 e = Entry(user=u, category=c, t_begin=timezone.now())
 e.save()
 ^D
@@ -94,10 +94,15 @@ e.save()
 
 ## Usage with default Django admin web interface
 
-You *could* begin using atl right now at `http://<host or IP>:8000/admin/atl/`. It's not great but it's better than nothing and better than using it through the shell like above.
+You *could* begin using django-timelog right now at
+`http://<host or IP>:8000/admin/timelog/`.
+It's not great but it's better than nothing
+and better than using it through the shell like above.
 
 ## Updating
 
 ```
-$ cd ~/serve/atl && git pull && python3 ../manage.py makemigrations atl
+$ cd ~/serve/timelog \
+  && git pull \
+  && python3 ../manage.py makemigrations timelog
 ```
