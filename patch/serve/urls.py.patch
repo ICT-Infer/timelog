@@ -1,0 +1,8 @@
+--- a/serve/urls.py	2015-03-19 13:48:39.181529631 +0000
++++ b/serve/urls.py	2015-03-19 13:49:13.449530030 +0000
+@@ -7,4 +7,5 @@
+     # url(r'^blog/', include('blog.urls')),
+ 
+     url(r'^admin/', include(admin.site.urls)),
++    url(r'^timelog/', include('timelog.urls')),
+ )
