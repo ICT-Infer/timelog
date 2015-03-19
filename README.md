@@ -1,6 +1,6 @@
 # django-timelog
 
-Django Timelog App. Timesheet time tracking for a person or group of people.
+Django Timelog App. Time sheet time tracking for a person or group of people.
 
 An alternative to my [saas-by-erik/timelog](https://github.com/saas-by-erik/timelog).
 
