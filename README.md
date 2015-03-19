@@ -27,7 +27,7 @@ CREATE DATABASE timelog OWNER timelog;
 ```
 
 ```
-$ ^D
+$ exit
 # su - timelog
 $ django-admin.py startproject serve
 $ cd serve/
@@ -87,7 +87,7 @@ from django.contrib.auth.models import User
 u = User.objects.get(username='timelog')
 e = Entry(user=u, category=c, t_begin=timezone.now())
 e.save()
-^D
+exit()
 ```
 
 ## Usage with default Django admin web interface
