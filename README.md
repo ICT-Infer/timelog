@@ -96,7 +96,7 @@ e.save()
 
 ## Usage with default Django admin web interface
 
-You *could* begin using django-timelog right now at
+You *could* begin entering data into django-timelog right now at
 `http://<host or IP>:8000/admin/timelog/`.
 It's not great but it's better than nothing
 and better than using it through the shell like above.
