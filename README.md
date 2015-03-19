@@ -18,7 +18,7 @@ Describing the setup procedure using Debian GNU/Linux 7.
 
 ```
 # apt-get install postgresql libpq-dev python3-dateutil python3-pip
-# pip-3.2 install django psycopg2
+# pip-3.2 install django psycopg2 pytz
 # adduser timelog
 # su - postgresql
 $ psql
