@@ -35,9 +35,10 @@ def sheets(req, cat_id):
 
   if (not errors):
     try:
-      begin = datetime.datetime(year, month, 1, 0, 0, 0)\
-              .replace(tzinfo=t_now.tzinfo)
+      begin = datetime.datetime(year, month, 1, 0, 0, 0)
       end = begin + relativedelta(months=1)
+      begin = timezone.make_aware(begin, t_now.tzinfo)
+      end = timezone.make_aware(end, t_now.tzinfo)
     except ValueError as e:
       errors.append(str(e))
 
