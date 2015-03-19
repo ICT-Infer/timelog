@@ -33,8 +33,8 @@ $ django-admin.py startproject serve
 $ cd serve/
 $ git clone https://github.com/erikano/django-timelog.git timelog/
 $ patch -p1 <<EOF
---- a/serve/settings.py	2015-03-18 13:23:39.205531734 +0000
-+++ b/serve/settings.py	2015-03-18 13:27:48.505534237 +0000
+--- a/serve/settings.py	2015-03-19 00:40:02.253528784 +0000
++++ b/serve/settings.py	2015-03-19 00:42:52.749530743 +0000
 @@ -36,6 +36,7 @@
      'django.contrib.sessions',
      'django.contrib.messages',
@@ -43,24 +43,20 @@ $ patch -p1 <<EOF
  )
  
  MIDDLEWARE_CLASSES = (
-@@ -57,10 +58,13 @@
- # https://docs.djangoproject.com/en/1.7/ref/settings/#databases
+@@ -58,8 +59,11 @@
  
  DATABASES = {
--    'default': {
+     'default': {
 -        'ENGINE': 'django.db.backends.sqlite3',
 -        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
--    }
-+    'default': {
 +        'ENGINE': 'django.db.backends.postgresql_psycopg2',
 +        'NAME': 'timelog',
 +        'USER': 'timelog',
 +        'PASSWORD': '',
 +        'HOST': ''
-+    }
+     }
  }
  
- # Internationalization
 EOF
 $ export EDITOR=vim # Set it to your prefered editor.
 $ $EDITOR serve/settings.py # Edit TIME_ZONE.
