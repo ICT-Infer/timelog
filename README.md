@@ -17,7 +17,7 @@ Compatible with Django 1.7+. Requires Python 3.
 Describing the setup procedure using Debian GNU/Linux 7.
 
 ```
-# apt-get install postgresql libpq-dev python3-pip
+# apt-get install postgresql libpq-dev python3-dateutil python3-pip
 # pip-3.2 install django psycopg2
 # adduser timelog
 # su - postgresql
@@ -37,6 +37,7 @@ $ django-admin.py startproject serve
 $ cd serve/
 $ git clone https://github.com/erikano/django-timelog.git timelog/
 $ patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch
+$ patch -p2 -d serve/ < timelog/patch/serve/urls.py.patch
 $ export EDITOR=vim # Set it to your prefered editor.
 $ $EDITOR serve/settings.py # Edit TIME_ZONE.
 $ python3 manage.py makemigrations timelog
