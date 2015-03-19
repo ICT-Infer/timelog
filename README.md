@@ -17,7 +17,7 @@ Compatible with Django 1.7+. Requires Python 3.
 Describing the setup procedure using Debian GNU/Linux 7.
 
 ```
-# apt-get install postgresql libpq-dev python3-dateutil python3-pip
+# apt-get install python3-dateutil python3-pip postgresql libpq-dev
 # pip-3.2 install django pytz psycopg2
 # adduser timelog
 # su - postgresql
