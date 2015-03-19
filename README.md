@@ -53,7 +53,7 @@ $ patch -p1 <<EOF
 +        'NAME': 'timelog',
 +        'USER': 'timelog',
 +        'PASSWORD': '',
-+        'HOST': ''
++        'HOST': '',
      }
  }
  
