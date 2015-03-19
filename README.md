@@ -102,5 +102,6 @@ and better than using it through the shell like above.
 ```
 $ cd ~/serve/timelog \
   && git pull \
-  && python3 ../manage.py makemigrations timelog
+  && python3 ../manage.py makemigrations timelog \
+  && python3 ../manage.py migrate
 ```
