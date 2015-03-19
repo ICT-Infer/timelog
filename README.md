@@ -50,12 +50,10 @@ $ python3 manage.py runserver 0.0.0.0:8000 &
 
 Since the web UI has not yet been created, here is some initial basic usage.
 
-This continues in the session that we began above when we did the setup.
-
 We are not yet dealing with other users.
 
 ```
-$ python3 manage.py shell
+$ python3 ~/serve/manage.py shell
 ```
 
 ```
