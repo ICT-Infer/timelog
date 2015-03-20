@@ -10,7 +10,9 @@ Currently a work in progress.
 
 ## Compatibility, requirements, dependencies
 
-Compatible with Django 1.7+. Requires Python 3. Other dependencies are listed in the *setup* section below.
+Compatible with Django 1.7+. Requires Python 3.
+
+Other dependencies are listed in the *setup* section below.
 
 ## Setup
 
