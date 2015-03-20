@@ -8,9 +8,9 @@ Made with great help from https://docs.djangoproject.com/en/1.7/intro/tutorial01
 
 Currently a work in progress.
 
-## Compatibility
+## Compatibility, requirements, dependencies
 
-Compatible with Django 1.7+. Requires Python 3.
+Compatible with Django 1.7+. Requires Python 3. Other dependencies are listed in the *setup* section below.
 
 ## Setup
 
