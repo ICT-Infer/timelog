@@ -51,7 +51,7 @@ def sheets(req, cat_id):
 
   ctx = {
     # TODO: Actual category name instead of "Category <ID>" in title.
-    'title': "Category %s time sheet, %s %s" \
+    'title': "Category %s, %s %s" \
       % (str(cat_id), begin.strftime("%B"), str(begin.year)),
     'cat_id': cat_id,
     'begin': begin,
