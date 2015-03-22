@@ -2,6 +2,7 @@ from django.http import HttpResponse
 from django.utils import timezone
 import datetime
 from dateutil.relativedelta import relativedelta
+from django.shortcuts import render
 
 # {base}/
 def index(req):
@@ -46,9 +47,17 @@ def sheets(req, cat_id):
   if (errors):
     for err in errors:
       res += '<p class="err">' + err + '</p>'
-  else:
-    res = "Time sheet for category %s " % cat_id + \
-          "in range [%s, %s), " % (str(begin), str(end)) + \
-          "time zone %s." % timezone.get_current_timezone_name()
+    return HttpResponse(res)
 
-  return HttpResponse(res)
+  ctx = {
+    # TODO: Actual category name instead of "Category <ID>" in title.
+    'title': "Category %s time sheet, %s %s" \
+      % (str(cat_id), begin.strftime("%B"), str(begin.year)),
+    'cat_id': cat_id,
+    'begin': begin,
+    'end': end,
+    's_begin': str(begin),
+    's_end': str(end),
+    'tz': timezone.get_current_timezone_name(),
+  }
+  return render(req, 'sheets/n.htm', ctx)
