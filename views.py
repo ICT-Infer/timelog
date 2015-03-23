@@ -8,40 +8,33 @@ from django.shortcuts import render
 def index(req):
   return HttpResponse("Timelog index.")
 
-# {base}/sheets/{cat_id}/
-def sheets(req, cat_id):
+# {base}/sheets/tl-{cat_id}-{year}-{month}.htm
+def sheets(req, arg_cat_id, arg_year, arg_month):
+  cat_id = int(arg_cat_id)
+  year = int(arg_year)
+  month = int(arg_month)
+
   errors = []
 
-  # GET parameters
-  gp_year = req.GET.get('year', None)
-  gp_month = req.GET.get('month', None)
+  # Options from GET parameters
+  # TODO: Handle invalid values.
+  # TODO: Separate input handling from rest of function.
+  opt = {}
+  opt['recurse'] = int(req.GET.get('recurse', 1))
+  opt['own_only'] = int(req.GET.get('own-entries-only', 0))
+  opt['grp_cat'] = int(req.GET.get('group-by-category', 0))
+  opt['grp_psn'] = int(req.GET.get('group-by-person', 0))
+  opt['grp_week'] = int(req.GET.get('group-by-week', 1))
 
   t_now = timezone.localtime(timezone.now())
 
-  if (gp_year):
-    try:
-      year = int(gp_year)
-    except ValueError:
-      errors.append("Requested year invalid.")
-  else:
-    year = t_now.year
-
-  if (gp_month):
-    try:
-      month = int(gp_month)
-    except ValueError:
-      errors.append("Requested month invalid.")
-  else:
-    month = t_now.month
-
-  if (not errors):
-    try:
-      begin = datetime.datetime(year, month, 1, 0, 0, 0)
-      end = begin + relativedelta(months=1)
-      begin = timezone.make_aware(begin, t_now.tzinfo)
-      end = timezone.make_aware(end, t_now.tzinfo)
-    except ValueError as e:
-      errors.append(str(e))
+  try:
+    begin = datetime.datetime(year, month, 1, 0, 0, 0)
+    end = begin + relativedelta(months=1)
+    begin = timezone.make_aware(begin, t_now.tzinfo)
+    end = timezone.make_aware(end, t_now.tzinfo)
+  except ValueError as e:
+    errors.append(str(e))
 
   res = ''
   if (errors):
@@ -51,6 +44,7 @@ def sheets(req, cat_id):
 
   ctx = {
     # TODO: Actual category name instead of "Category <ID>" in title.
+    'opt': opt,
     'title': "Category %s, %s %s" \
       % (str(cat_id), begin.strftime("%B"), str(begin.year)),
     'cat_id': cat_id,
@@ -60,4 +54,4 @@ def sheets(req, cat_id):
     's_end': str(end),
     'tz': timezone.get_current_timezone_name(),
   }
-  return render(req, 'sheets/n.htm', ctx)
+  return render(req, 'sheets/tl-cat_id-year-month.htm', ctx)
