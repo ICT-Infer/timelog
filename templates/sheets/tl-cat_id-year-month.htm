@@ -9,8 +9,8 @@
 <h1>Timelog</h1>
 <h2>Time sheets</h2>
 </header>
-<!-- TODO: form action -->
-<form id="navigation" method="POST">
+<!-- TODO: Replace hardcoded base part of form action URL. -->
+<form action="/timelog/redir/sheet.htm?{{ query_str }}" id="navigation" method="POST">
 <label for="category">Category</label>
 <select name="category" id="category">
   <option value="{{ cat_id }}">{{ cat_id }}</option>

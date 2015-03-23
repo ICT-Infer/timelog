@@ -47,6 +47,7 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
   ctx = {
     # TODO: Actual category name instead of "Category <ID>" in title.
     'req': req,
+    'query_str': req.GET.urlencode(),
     'opt': opt,
     'title': "Category %s, %s %s" \
       % (str(cat_id), begin.strftime("%B"), str(begin.year)),
