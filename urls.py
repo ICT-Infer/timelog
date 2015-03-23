@@ -3,5 +3,5 @@ from timelog import views
 
 urlpatterns = patterns('',
   url(r'^$', views.index, name='index'),
-  url(r'^sheets/(?P<cat_id>\d+)/$', views.sheets, name='sheets'),
+  url(r'^sheets/tl-(?P<arg_cat_id>\d+)-(?P<arg_year>\d+)-(?P<arg_month>\d{2})\.htm$', views.sheets, name='sheets'),
 )

@@ -1,0 +1,54 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{{ title }} - Time sheets - Timelog</title>
+</head>
+<body>
+<header>
+<h1>Timelog</h1>
+<h2>Time sheets</h2>
+</header>
+<!-- TODO: form action -->
+<form id="navigation" method="POST">
+<label for="category">Category</label>
+<select name="category" id="category">
+  <option value="{{ cat_id }}">{{ cat_id }}</option>
+</select>
+<label for="year">Year</label>
+<select name="year" id="year">
+  <option value="{{ begin.year }}">{{ begin.year }}</option>
+</select>
+<label for="month">Month</label>
+<select name="month" id="month">
+  <option value="{{ begin.month }}">{{ begin.month }}</option>
+</select>
+<button type="submit">Navigate</button>
+</form>
+<form id="options" method="GET">
+<label for="recurse">Recurse</label>
+<input type="checkbox" name="recurse" id="recurse"
+  value="1" {% if opt.recurse %}checked{% endif %} />
+<label for="own-entries-only">List own entries only</label>
+<input type="checkbox" name="own-entries-only" id="own-entries-only"
+  value="1" {% if opt.own_only %}checked{% endif %} />
+<fieldset id="grouping">
+<legend>Grouping</legend>
+<label for="group-by-category">Category</label>
+<input type="checkbox" name="group-by-category" id="group-by-category"
+  value="1" {% if opt.grp_cat %}checked{% endif %} />
+<label for="group-by-person">Person</label>
+<input type="checkbox" name="group-by-person" id="group-by-person"
+  value="1" {% if opt.grp_psn %}checked{% endif %} />
+<label for="group-by-week">Week</label>
+<input type="checkbox" name="group-by-week" id="group-by-week"
+  value="1" {% if opt.grp_week %}checked{% endif %} />
+</fieldset>
+<button type="submit">Update view</button>
+</form>
+<!-- TODO: Log in/log out -->
+<a href="">Log out</a>
+<h1>{{ title }}</h1>
+<p>Range [{{ s_begin }}, {{ s_end }}), time zone {{ tz }}.</p>
+</body>
+</html>
