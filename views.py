@@ -20,11 +20,13 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
   # TODO: Handle invalid values.
   # TODO: Separate input handling from rest of function.
   opt = {}
-  opt['recurse'] = int(req.GET.get('recurse', 1))
+  opt['no-default-true'] = int(req.GET.get('no-default-true', 0))
+  opt_default_true = True and not opt['no-default-true']
+  opt['recurse'] = int(req.GET.get('recurse', opt_default_true))
   opt['own_only'] = int(req.GET.get('own-entries-only', 0))
   opt['grp_cat'] = int(req.GET.get('group-by-category', 0))
   opt['grp_psn'] = int(req.GET.get('group-by-person', 0))
-  opt['grp_week'] = int(req.GET.get('group-by-week', 1))
+  opt['grp_week'] = int(req.GET.get('group-by-week', opt_default_true))
 
   t_now = timezone.localtime(timezone.now())
 

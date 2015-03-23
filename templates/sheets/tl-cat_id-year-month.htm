@@ -26,6 +26,7 @@
 <button type="submit">Navigate</button>
 </form>
 <form id="options" method="GET">
+<input type="hidden" name="no-default-true" value="1" />
 <label for="recurse">Recurse</label>
 <input type="checkbox" name="recurse" id="recurse"
   value="1" {% if opt.recurse %}checked{% endif %} />
