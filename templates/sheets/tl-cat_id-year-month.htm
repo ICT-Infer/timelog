@@ -24,7 +24,8 @@
   <option value="{{ begin.month }}">{{ begin.month }}</option>
 </select>
 <button type="submit">Navigate</button>
-<a title="Add a new category or entry." href="">+</a>
+<!-- TODO: Make add-new initiate adding new category/entry. -->
+<a id="add-new" title="Add a new category or entry." href="">+</a>
 </form>
 <form id="options" method="GET">
 <label for="no-recurse">No recurse</label>
@@ -46,10 +47,10 @@
   value="1" {% if opt.grp_week %}checked{% endif %} />
 </fieldset>
 <button type="submit">Update view</button>
-<a title="Reset option values to their defaults." href="{{ req.path }}">Reset to default values</a>
+<a id="opt-defaults" title="Reset option values to their defaults." href="{{ req.path }}">Reset to default values</a>
 </form>
 <!-- TODO: Log in/log out -->
-<a href="">Log out</a>
+<a id="log-out" href="">Log out</a>
 <h1>{{ title }}</h1>
 <p>Range [{{ s_begin }}, {{ s_end }}), time zone {{ tz }}.</p>
 </body>
