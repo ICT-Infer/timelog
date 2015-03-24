@@ -20,6 +20,9 @@ def sheets_format_dispatcher (req, ctx, arg_fmt_ext):
     return sheets_format_htm(req, ctx)
   elif arg_fmt_ext == 'json':
     return sheets_format_json(req, ctx)
+  else:
+    res_str = "Unknown file format extension `.%s'." % arg_fmt_ext
+    return HttpResponse(res_str, status=404)
 
 # {base}/hours/sheets/sheet-{cat_id}-{year}-{month}.htm
 def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
