@@ -93,6 +93,7 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['end'] = end
     ctx_tmp['s_begin'] = str(begin)
     ctx_tmp['s_end'] = str(end)
+    ctx_tmp['s_now'] = str(t_now)
     ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
   if (errors):
