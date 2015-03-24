@@ -52,13 +52,17 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
   except ValueError as e:
     errors.append(str(e))
 
-  res = ''
-  if (errors):
-    for err in errors:
-      res += '<p class="err">' + err + '</p>'
-    return HttpResponse(res)
-
   view_data = {}
+
+  if (errors):
+    view_data['status'] = 'error'
+    view_data['errors'] = errors
+
+    ctx = {'view_data': view_data}
+
+    return sheets_format_dispatcher(req, ctx, arg_fmt_ext)
+
+  view_data['status'] = 'ok'
 
   # TODO: Limit entries to current range.
   # TODO: Grouping
@@ -92,4 +96,4 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
     'view_data': view_data,
   }
 
-  return sheets_format_dispatcher(req, ctx, arg_fmt_ext) #
+  return sheets_format_dispatcher(req, ctx, arg_fmt_ext)
