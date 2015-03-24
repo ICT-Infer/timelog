@@ -62,7 +62,7 @@
   <th>Date</th>
   <th>Begin</th>
   <th>End</th>
-  {% if not opt.own_only %}<th>User</th>{% endif %}
+  {% if not opt.own_only and not opt.grp_psn %}<th>User</th>{% endif %}
   {% if not opt.grp_cat %}<th>Category</th>{% endif %}
   <th>Duration</th>
 </tr>
@@ -70,13 +70,13 @@
 <tbody>
 <!-- TODO: Split entries crossing days into multiple rows -- one per day. -->
 <!-- TODO: Entry time zones. -->
-{% for v_entry in v_entries %}
+{% for entry in view_data.entries %}
 <tr>
-  <td>{{ v_entry.date }}</td>
-  <td>{{ v_entry.t_begin }}</td>
-  <td>{{ v_entry.t_end }}</td>
-  {% if not opt.own_only %}<td>{{ v_entry.user }}</td>{% endif %}
-  {% if not opt.grp_cat %}<td>{{ v_entry.category }}</td>{% endif %}
+  <td>{{ entry.date }}</td>
+  <td>{{ entry.t_begin }}</td>
+  <td>{{ entry.t_end }}</td>
+  {% if not opt.own_only %}<td>{{ entry.user }}</td>{% endif %}
+  {% if not opt.grp_cat %}<td>{{ entry.category }}</td>{% endif %}
 </tr>
 {% endfor %}
 </tbody>
