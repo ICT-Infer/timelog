@@ -3,6 +3,7 @@ from django.utils import timezone
 import datetime
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
+from timelog.models import Category, Entry
 
 # {base}/
 def index(req):
@@ -42,6 +43,21 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
       res += '<p class="err">' + err + '</p>'
     return HttpResponse(res)
 
+  # TODO: Limit entries to current range.
+  # TODO: Grouping
+  # TODO: Sorting
+  # TODO: Splitting
+  db_entries = Entry.objects.filter()
+  v_entries = []
+  for db_entry in db_entries:
+    v_entry = {}
+    v_entry['date'] = db_entry.t_begin.strftime("%Y-%m-%d")
+    v_entry['t_begin'] = db_entry.t_begin.strftime("%H:%M:%S")
+    v_entry['t_end'] = db_entry.t_end.strftime("%H:%M:%S")
+    v_entry['category'] = str(db_entry.category)
+    v_entry['user'] = str(db_entry.user)
+    v_entries.append(v_entry)
+
   ctx = {
     # TODO: Actual category name instead of "Category <ID>" in title.
     'req': req,
@@ -55,5 +71,6 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
     's_begin': str(begin),
     's_end': str(end),
     'tz': timezone.get_current_timezone_name(),
+    'v_entries': v_entries,
   }
   return render(req, 'sheets/tl-cat_id-year-month.htm', ctx)
