@@ -53,47 +53,51 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
     errors.append(str(e))
 
   view_data = {}
+  ctx_tmp = {}
+
+  if (not errors):
+    # TODO: Limit entries to current range.
+    # TODO: Grouping
+    # TODO: Sorting
+    # TODO: Splitting
+
+    db_entries = Entry.objects.filter()
+
+    v_entries = []
+
+    for db_entry in db_entries:
+      v_entry = {}
+      v_entry['date'] = db_entry.t_begin.strftime("%Y-%m-%d")
+      v_entry['t_begin'] = db_entry.t_begin.strftime("%H:%M:%S")
+      v_entry['t_end'] = db_entry.t_end.strftime("%H:%M:%S")
+      v_entry['category'] = str(db_entry.category)
+      v_entry['user'] = str(db_entry.user)
+      v_entries.append(v_entry)
+
+    try:
+      # TODO: Actual category name instead of "Category <ID>" in title.
+      ctx_tmp['title'] = "Category %s, %s %s" \
+          % (str(cat_id), begin.strftime("%B"), str(begin.year))
+    except ValueError as e:
+      errors.append(str(e))
+
+    ctx_tmp['query_str'] = req.GET.urlencode()
+    ctx_tmp['opt'] = opt
+    ctx_tmp['cat_id'] = cat_id
+    ctx_tmp['begin'] = begin
+    ctx_tmp['end'] = end
+    ctx_tmp['s_begin'] = str(begin)
+    ctx_tmp['s_end'] = str(end)
+    ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
   if (errors):
     view_data['status'] = 'error'
     view_data['errors'] = errors
-
-    ctx = {'view_data': view_data}
-
-    return sheets_format_dispatcher(req, ctx, arg_fmt_ext)
-
-  view_data['status'] = 'ok'
-
-  # TODO: Limit entries to current range.
-  # TODO: Grouping
-  # TODO: Sorting
-  # TODO: Splitting
-  db_entries = Entry.objects.filter()
-  v_entries = []
-  for db_entry in db_entries:
-    v_entry = {}
-    v_entry['date'] = db_entry.t_begin.strftime("%Y-%m-%d")
-    v_entry['t_begin'] = db_entry.t_begin.strftime("%H:%M:%S")
-    v_entry['t_end'] = db_entry.t_end.strftime("%H:%M:%S")
-    v_entry['category'] = str(db_entry.category)
-    v_entry['user'] = str(db_entry.user)
-    v_entries.append(v_entry)
-
-  view_data['entries'] = v_entries
-
-  ctx = {
-    # TODO: Actual category name instead of "Category <ID>" in title.
-    'query_str': req.GET.urlencode(),
-    'opt': opt,
-    'title': "Category %s, %s %s" \
-      % (str(cat_id), begin.strftime("%B"), str(begin.year)),
-    'cat_id': cat_id,
-    'begin': begin,
-    'end': end,
-    's_begin': str(begin),
-    's_end': str(end),
-    'tz': timezone.get_current_timezone_name(),
-    'view_data': view_data,
-  }
+    ctx = None
+  else:
+    view_data['status'] = 'ok'
+    view_data['entries'] = v_entries
+    ctx_tmp['view_data'] = view_data
+    ctx = ctx_tmp
 
   return sheets_format_dispatcher(req, ctx, arg_fmt_ext)
