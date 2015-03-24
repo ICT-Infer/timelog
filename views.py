@@ -15,7 +15,7 @@ def sheets_format_htm (req, ctx):
     for err in ctx['view_data']['errors']:
       res += '<p class="err">' + err + '</p>'
     return HttpResponse(res, status=500)
-  return render(req, 'sheets/tl-cat_id-year-month.htm', ctx)
+  return render(req, 'hours/sheets/sheet-cat_id-year-month.htm', ctx)
 
 def sheets_format_json (req, ctx):
   return JsonResponse(ctx['view_data'])
