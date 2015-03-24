@@ -51,7 +51,35 @@
 </form>
 <!-- TODO: Log in/log out -->
 <a id="log-out" href="">Log out</a>
-<h1>{{ title }}</h1>
+<!-- TODO: Use name of person where it now says just "User real name". -->
+<h1>{{ title }}{% if opt.own_only %} (User real name){% endif %}</h1>
 <p>Range [{{ s_begin }}, {{ s_end }}), time zone {{ tz }}.</p>
+<!-- TODO: Grouping -->
+<!-- TODO: Decide where and how to include comments. -->
+<table>
+<thead>
+<tr>
+  <th>Date</th>
+  <th>Begin</th>
+  <th>End</th>
+  {% if not opt.own_only %}<th>User</th>{% endif %}
+  {% if not opt.grp_cat %}<th>Category</th>{% endif %}
+  <th>Duration</th>
+</tr>
+</thead>
+<tbody>
+<!-- TODO: Split entries crossing days into multiple rows -- one per day. -->
+<!-- TODO: Entry time zones. -->
+{% for v_entry in v_entries %}
+<tr>
+  <td>{{ v_entry.date }}</td>
+  <td>{{ v_entry.t_begin }}</td>
+  <td>{{ v_entry.t_end }}</td>
+  {% if not opt.own_only %}<td>{{ v_entry.user }}</td>{% endif %}
+  {% if not opt.grp_cat %}<td>{{ v_entry.category }}</td>{% endif %}
+</tr>
+{% endfor %}
+</tbody>
+</table>
 </body>
 </html>
