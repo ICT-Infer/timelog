@@ -22,7 +22,7 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
   opt = {}
   opt['no-default-true'] = int(req.GET.get('no-default-true', 0))
   opt_default_true = True and not opt['no-default-true']
-  opt['recurse'] = int(req.GET.get('recurse', opt_default_true))
+  opt['no_recurse'] = int(req.GET.get('no-recurse', 0))
   opt['own_only'] = int(req.GET.get('own-entries-only', 0))
   opt['grp_cat'] = int(req.GET.get('group-by-category', 0))
   opt['grp_psn'] = int(req.GET.get('group-by-person', 0))

@@ -27,9 +27,9 @@
 </form>
 <form id="options" method="GET">
 <input type="hidden" name="no-default-true" value="1" />
-<label for="recurse">Recurse</label>
-<input type="checkbox" name="recurse" id="recurse"
-  value="1" {% if opt.recurse %}checked{% endif %} />
+<label for="no-recurse">No recurse</label>
+<input type="checkbox" name="no-recurse" id="no-recurse"
+  value="1" {% if opt.no_recurse %}checked{% endif %} />
 <label for="own-entries-only">List own entries only</label>
 <input type="checkbox" name="own-entries-only" id="own-entries-only"
   value="1" {% if opt.own_only %}checked{% endif %} />
