@@ -24,7 +24,7 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
   opt['own_only'] = int(req.GET.get('own-entries-only', 0))
   opt['grp_cat'] = int(req.GET.get('group-by-category', 0))
   opt['grp_psn'] = int(req.GET.get('group-by-person', 0))
-  opt['no_grp_week'] = int(req.GET.get('no-group-by-week', 0))
+  opt['grp_week'] = int(req.GET.get('group-by-week', 0))
 
   t_now = timezone.localtime(timezone.now())
 

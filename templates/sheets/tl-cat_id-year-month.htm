@@ -40,9 +40,9 @@
 <label for="group-by-person">Person</label>
 <input type="checkbox" name="group-by-person" id="group-by-person"
   value="1" {% if opt.grp_psn %}checked{% endif %} />
-<label for="no-group-by-week">No week</label>
-<input type="checkbox" name="no-group-by-week" id="no-group-by-week"
-  value="1" {% if opt.no_grp_week %}checked{% endif %} />
+<label for="group-by-week">No week</label>
+<input type="checkbox" name="group-by-week" id="group-by-week"
+  value="1" {% if opt.grp_week %}checked{% endif %} />
 </fieldset>
 <button type="submit">Update view</button>
 <a title="Reset option values to their defaults." href="{{ req.path }}">Reset to default values</a>
