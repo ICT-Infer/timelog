@@ -26,24 +26,23 @@
 <button type="submit">Navigate</button>
 </form>
 <form id="options" method="GET">
-<input type="hidden" name="no-default-true" value="1" />
 <label for="no-recurse">No recurse</label>
 <input type="checkbox" name="no-recurse" id="no-recurse"
   value="1" {% if opt.no_recurse %}checked{% endif %} />
 <label for="own-entries-only">List own entries only</label>
 <input type="checkbox" name="own-entries-only" id="own-entries-only"
   value="1" {% if opt.own_only %}checked{% endif %} />
-<fieldset id="grouping">
-<legend>Grouping</legend>
+<fieldset id="group-by">
+<legend>Group by</legend>
 <label for="group-by-category">Category</label>
 <input type="checkbox" name="group-by-category" id="group-by-category"
   value="1" {% if opt.grp_cat %}checked{% endif %} />
 <label for="group-by-person">Person</label>
 <input type="checkbox" name="group-by-person" id="group-by-person"
   value="1" {% if opt.grp_psn %}checked{% endif %} />
-<label for="group-by-week">Week</label>
-<input type="checkbox" name="group-by-week" id="group-by-week"
-  value="1" {% if opt.grp_week %}checked{% endif %} />
+<label for="no-group-by-week">No week</label>
+<input type="checkbox" name="no-group-by-week" id="no-group-by-week"
+  value="1" {% if opt.no_grp_week %}checked{% endif %} />
 </fieldset>
 <button type="submit">Update view</button>
 <a title="Reset option values to their defaults." href="{{ req.path }}">Reset to default values</a>
