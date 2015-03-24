@@ -9,7 +9,7 @@ from timelog.models import Category, Entry
 def index(req):
   return HttpResponse("Timelog index.")
 
-# {base}/sheets/tl-{cat_id}-{year}-{month}.htm
+# {base}/hours/sheets/sheet-{cat_id}-{year}-{month}.htm
 def sheets(req, arg_cat_id, arg_year, arg_month):
   cat_id = int(arg_cat_id)
   year = int(arg_year)
