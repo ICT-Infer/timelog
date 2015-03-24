@@ -10,6 +10,11 @@ def index(req):
   return HttpResponse("Timelog index.")
 
 def sheets_format_htm (req, ctx):
+  if 'errors' in ctx['view_data'] and ctx['view_data']['errors']:
+    res = ''
+    for err in ctx['view_data']['errors']:
+      res += '<p class="err">' + err + '</p>'
+    return HttpResponse(res, status=500)
   return render(req, 'sheets/tl-cat_id-year-month.htm', ctx)
 
 def sheets_format_json (req, ctx):
@@ -91,13 +96,15 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
   if (errors):
+    view_data = {}
     view_data['status'] = 'error'
     view_data['errors'] = errors
-    ctx = None
+    ctx_tmp = {'view_data': view_data}
   else:
     view_data['status'] = 'ok'
     view_data['entries'] = v_entries
     ctx_tmp['view_data'] = view_data
-    ctx = ctx_tmp
+
+  ctx = ctx_tmp
 
   return sheets_format_dispatcher(req, ctx, arg_fmt_ext)
