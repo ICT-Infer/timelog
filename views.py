@@ -72,9 +72,16 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
 
     for db_entry in db_entries:
       v_entry = {}
-      v_entry['date'] = db_entry.t_begin.strftime("%Y-%m-%d")
-      v_entry['t_begin'] = db_entry.t_begin.strftime("%H:%M:%S")
-      v_entry['t_end'] = db_entry.t_end.strftime("%H:%M:%S")
+
+      # Date and time local to view.
+      t_begin_vl = timezone.localtime(db_entry.t_begin)
+      t_end_vl = timezone.localtime(db_entry.t_end)
+      v_entry['view_local'] = {
+        'date': t_begin_vl.strftime("%Y-%m-%d"),
+        't_begin': t_begin_vl.strftime("%H:%M:%S"),
+        't_end': t_end_vl.strftime("%H:%M:%S"),
+      }
+
       v_entry['category'] = str(db_entry.category)
       v_entry['user'] = str(db_entry.user)
       v_entries.append(v_entry)

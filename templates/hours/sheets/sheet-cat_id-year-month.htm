@@ -73,9 +73,9 @@
 <!-- TODO: Entry time zones. -->
 {% for entry in view_data.entries %}
 <tr>
-  <td>{{ entry.date }}</td>
-  <td>{{ entry.t_begin }}</td>
-  <td>{{ entry.t_end }}</td>
+  <td>{{ entry.view_local.date }}</td>
+  <td>{{ entry.view_local.t_begin }}</td>
+  <td>{{ entry.view_local.t_end }}</td>
   {% if not opt.own_only %}<td>{{ entry.user }}</td>{% endif %}
   {% if not opt.grp_cat %}<td>{{ entry.category }}</td>{% endif %}
 </tr>
