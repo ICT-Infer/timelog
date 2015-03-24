@@ -1,4 +1,4 @@
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 import datetime
 from dateutil.relativedelta import relativedelta
@@ -9,8 +9,20 @@ from timelog.models import Category, Entry
 def index(req):
   return HttpResponse("Timelog index.")
 
+def sheets_format_htm (req, ctx):
+  return render(req, 'sheets/tl-cat_id-year-month.htm', ctx)
+
+def sheets_format_json (req, ctx):
+  return JsonResponse(ctx['view_data'])
+
+def sheets_format_dispatcher (req, ctx, arg_fmt_ext):
+  if arg_fmt_ext == 'htm':
+    return sheets_format_htm(req, ctx)
+  elif arg_fmt_ext == 'json':
+    return sheets_format_json(req, ctx)
+
 # {base}/hours/sheets/sheet-{cat_id}-{year}-{month}.htm
-def sheets(req, arg_cat_id, arg_year, arg_month):
+def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
   cat_id = int(arg_cat_id)
   year = int(arg_year)
   month = int(arg_month)
@@ -43,6 +55,8 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
       res += '<p class="err">' + err + '</p>'
     return HttpResponse(res)
 
+  view_data = {}
+
   # TODO: Limit entries to current range.
   # TODO: Grouping
   # TODO: Sorting
@@ -58,9 +72,10 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
     v_entry['user'] = str(db_entry.user)
     v_entries.append(v_entry)
 
+  view_data['entries'] = v_entries
+
   ctx = {
     # TODO: Actual category name instead of "Category <ID>" in title.
-    'req': req,
     'query_str': req.GET.urlencode(),
     'opt': opt,
     'title': "Category %s, %s %s" \
@@ -71,6 +86,7 @@ def sheets(req, arg_cat_id, arg_year, arg_month):
     's_begin': str(begin),
     's_end': str(end),
     'tz': timezone.get_current_timezone_name(),
-    'v_entries': v_entries,
+    'view_data': view_data,
   }
-  return render(req, 'sheets/tl-cat_id-year-month.htm', ctx)
+
+  return sheets_format_dispatcher(req, ctx, arg_fmt_ext) #
