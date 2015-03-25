@@ -30,17 +30,23 @@ class Entry(models.Model):
     self.t_begin = timezone.make_aware(self.t_begin, timezone.get_current_timezone())
     timezone.deactivate()
 
-    self.t_end = timezone.make_naive(self.t_end, timezone.get_current_timezone())
-    timezone.activate(self.tz_end)
-    self.t_end = timezone.make_aware(self.t_end, timezone.get_current_timezone())
-    timezone.deactivate()
+    if (self.t_end):
+      self.t_end = timezone.make_naive(self.t_end, timezone.get_current_timezone())
+      timezone.activate(self.tz_end)
+      self.t_end = timezone.make_aware(self.t_end, timezone.get_current_timezone())
+      timezone.deactivate()
 
     super(Entry, self).save(*args, **kwargs)
 
   def __str__(self):
-    return str(self.user) + ', ' + str(self.category) + ' @ ' \
-      + str(self.t_begin.astimezone(pytz.timezone(self.tz_begin))) + ' (' + self.tz_begin + ') - ' \
-      + str(self.t_end.astimezone(pytz.timezone(self.tz_end))) + ' (' + self.tz_end + ')'
+    retstr = str(self.user) + ', ' + str(self.category) + ' @ ' \
+      + str(self.t_begin.astimezone(pytz.timezone(self.tz_begin))) + ' (' + self.tz_begin + ') - '
+    if (self.t_end):
+      retstr += str(self.t_end.astimezone(pytz.timezone(self.tz_end))) + ' (' + self.tz_end + ')'
+    else:
+      retstr += str(None) + ' (' + self.tz_end + ')'
+
+    return retstr
 
   class Meta:
     verbose_name_plural = 'entries'

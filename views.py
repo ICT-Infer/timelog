@@ -75,13 +75,18 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
 
       # Date and time local to view.
       t_begin_vl = timezone.localtime(db_entry.t_begin)
-      t_end_vl = timezone.localtime(db_entry.t_end)
       v_entry['view_local'] = {
         'date': t_begin_vl.strftime("%Y-%m-%d"),
         't_begin': t_begin_vl.strftime("%H:%M:%S"),
-        't_end': t_end_vl.strftime("%H:%M:%S"),
       }
-      v_entry['duration'] = str(t_end_vl - t_begin_vl)
+      if (db_entry.t_end):
+        t_end_vl = timezone.localtime(db_entry.t_end)
+        v_entry['view_local']['t_end'] = t_end_vl.strftime("%H:%M:%S")
+        v_entry['duration'] = str(t_end_vl - t_begin_vl)
+      else:
+        t_end_vl = None
+        v_entry['view_local']['t_end'] = None
+        v_entry['duration'] = None
 
       v_entry['category'] = str(db_entry.category)
       v_entry['user'] = str(db_entry.user)
