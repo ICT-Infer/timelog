@@ -22,7 +22,7 @@
   <td class="parent_id">{{ cat.parent_id }}</td>
   <td class="rec_sum_hours">{{ cat.rec_sum_hours }}</td>
   <td class="sum_hours">{{ cat.sum_hours }}</td>
-  <td class="name">{{ cat.name  }}</td>
+  <td class="name"><a href="{{ cat.detail }}">{{ cat.name  }}</a></td>
 </tr>
 {% endfor %}
 </tbody>
