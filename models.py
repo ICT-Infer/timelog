@@ -23,6 +23,19 @@ class Entry(models.Model):
   tz_end = models.CharField(max_length=255, default=str(timezone.get_current_timezone()))
   description = models.CharField(max_length=255, blank=True)
 
+  def save (self, *args, **kwargs):
+    self.t_begin = timezone.make_naive(self.t_begin, timezone.get_current_timezone())
+    timezone.activate(self.tz_begin)
+    self.t_begin = timezone.make_aware(self.t_begin, timezone.get_current_timezone())
+    timezone.deactivate()
+
+    self.t_end = timezone.make_naive(self.t_end, timezone.get_current_timezone())
+    timezone.activate(self.tz_end)
+    self.t_end = timezone.make_aware(self.t_end, timezone.get_current_timezone())
+    timezone.deactivate()
+
+    super(Entry, self).save(*args, **kwargs)
+
   def __str__(self):
     return str(self.user) + ', ' + str(self.category) + ' @ ' \
       + str(self.t_begin) + ' - ' + str(self.t_end)
