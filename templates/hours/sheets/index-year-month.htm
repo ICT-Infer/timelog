@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>{{ title }} - Time sheets - Timelog</title>
+</head>
+<body>
+<table>
+<thead>
+<tr>
+  <th>Category ID</th>
+  <th>Parent category ID</th>
+  <th>Recursive sum hours</th>
+  <th>Sum hours</th>
+  <th>Category name</th>
+</tr>
+</thead>
+<tbody>
+{% for cat in view_data.categories %}
+<tr class="categories">
+  <td class="id">{{ cat.id }}</td>
+  <td class="parent_id">{{ cat.parent_id }}</td>
+  <td class="rec_sum_hours">{{ cat.rec_sum_hours }}</td>
+  <td class="sum_hours">{{ cat.sum_hours }}</td>
+  <td class="name">{{ cat.name  }}</td>
+</tr>
+{% endfor %}
+</tbody>
+</table>
+</body>
+</html>
