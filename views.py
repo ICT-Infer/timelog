@@ -9,7 +9,24 @@ from timelog.models import Category, Entry
 def index(req):
   return HttpResponse("Timelog index.")
 
-def sheets_format_htm (req, ctx):
+# {base}/hours/sheets/sheet-{cat_slug}-{year}-{month}.{fmt_ext}
+def sheets(req, arg_year, arg_month, arg_fmt_ext):
+
+  view_data = {} 
+  v_categories = []
+  for db_cat in Category.objects.filter(parent=None):
+    v_cat = {}
+    v_cat['id'] = db_cat.id
+    v_cat['name'] = db_cat.name
+    v_categories.append(v_cat)
+  view_data['categories'] = v_categories
+
+  ctx = {
+    'view_data': view_data,
+  }
+  return render(req, 'hours/sheets/index-year-month.htm', ctx)
+
+def sheet_format_htm (req, ctx):
   if 'errors' in ctx['view_data'] and ctx['view_data']['errors']:
     res = ''
     for err in ctx['view_data']['errors']:
@@ -17,10 +34,10 @@ def sheets_format_htm (req, ctx):
     return HttpResponse(res, status=500)
   return render(req, 'hours/sheets/sheet-cat_slug-year-month.htm', ctx)
 
-def sheets_format_json (req, ctx):
+def sheet_format_json (req, ctx):
   return JsonResponse(ctx['view_data'])
 
-def sheets_format_dispatcher (req, ctx, arg_fmt_ext):
+def sheet_format_dispatcher (req, ctx, arg_fmt_ext):
   if arg_fmt_ext == 'htm':
     return sheets_format_htm(req, ctx)
   elif arg_fmt_ext == 'json':
@@ -30,7 +47,7 @@ def sheets_format_dispatcher (req, ctx, arg_fmt_ext):
     return HttpResponse(res_str, status=404)
 
 # {base}/hours/sheets/sheet-{cat_slug}-{year}-{month}.{fmt_ext}
-def sheets(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
+def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   cat_slug = arg_cat_slug
   year = int(arg_year)
   month = int(arg_month)
