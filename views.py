@@ -141,6 +141,8 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp = {'view_data': view_data}
   else:
     view_data['status'] = 'ok'
+    view_data['overview'] = "index-" + arg_year \
+                            + "-" + arg_month + "." + arg_fmt_ext
     view_data['entries'] = v_entries
     ctx_tmp['view_data'] = view_data
 
