@@ -18,6 +18,8 @@ def sheets(req, arg_year, arg_month, arg_fmt_ext):
     v_cat = {}
     v_cat['id'] = db_cat.id
     v_cat['name'] = db_cat.name
+    v_cat['detail'] = "sheet-" + db_cat.slug + "-" + arg_year \
+                      + "-" + arg_month + "." + arg_fmt_ext
     v_categories.append(v_cat)
   view_data['categories'] = v_categories
 
