@@ -1,5 +1,8 @@
 from django.conf import settings
 from django.db import models
+from unidecode import unidecode
+from django.template.defaultfilters import slugify
+import re
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 import pytz
@@ -8,6 +11,29 @@ class Category(models.Model):
   parent = models.ForeignKey("self", null=True, blank=True)
   name = models.CharField(max_length=255)
   description = models.CharField(max_length=255, blank=True)
+  slug = models.SlugField(editable=False, unique=True)
+
+  def save (self, *args, **kwargs):
+    if (not self.id):
+      self.slug = re.sub('_{2,}', '_', slugify(unidecode(self.name)).replace('-', '_'))
+      if (self.slug == ''):
+        # Not a very good default slug name but can't think of any better.
+        self.slug = "default_slug"
+
+      i = 2
+      slug_cmp = self.slug
+      try:
+        slug_dupe = Category.objects.get(slug=slug_cmp)
+        while (slug_dupe):
+          slug_cmp = self.slug + '_' + str(i)
+          slug_dupe = Category.objects.get(slug=slug_cmp)
+          i += 1
+      except Category.DoesNotExist:
+        pass
+
+      self.slug = slug_cmp
+
+    super(Category, self).save(*args, **kwargs)
 
   def __str__(self):
     return self.name
