@@ -3,6 +3,13 @@
 <head>
 <meta charset="utf-8">
 <title>{{ title }} - Time sheets - Timelog</title>
+<style>
+.entries > .view_local-t_begin,
+.entries > .view_local-t_end,
+.entries > .duration {
+  text-align: right;
+}
+</style>
 </head>
 <body>
 <header>
@@ -72,14 +79,14 @@
 <!-- TODO: Split entries crossing days into multiple rows -- one per day. -->
 <!-- TODO: Entry time zones. -->
 {% for entry in view_data.entries %}
-<tr>
-  <td>{{ entry.view_local.date }}</td>
-  <td>{{ entry.view_local.t_begin }}</td>
-  <td>{{ entry.view_local.t_end }}</td>
+<tr class="entries">
+  <td class="view_local-date">{{ entry.view_local.date }}</td>
+  <td class="view_local-t_begin">{{ entry.view_local.t_begin }}</td>
+  <td class="view_local-t_end">{{ entry.view_local.t_end }}</td>
   {% if not opt.own_only %}<td>{{ entry.user }}</td>{% endif %}
   {% if not opt.grp_cat %}<td>{{ entry.category }}</td>{% endif %}
-  <td>{{ entry.comment }}</td>
-  <td>{{ entry.duration }}</td>
+  <td class="comment">{{ entry.comment }}</td>
+  <td class="duration">{{ entry.duration }}</td>
 </tr>
 {% endfor %}
 </tbody>
