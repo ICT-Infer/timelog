@@ -15,7 +15,7 @@ def sheets_format_htm (req, ctx):
     for err in ctx['view_data']['errors']:
       res += '<p class="err">' + err + '</p>'
     return HttpResponse(res, status=500)
-  return render(req, 'hours/sheets/sheet-cat_id-year-month.htm', ctx)
+  return render(req, 'hours/sheets/sheet-cat_slug-year-month.htm', ctx)
 
 def sheets_format_json (req, ctx):
   return JsonResponse(ctx['view_data'])
@@ -29,11 +29,15 @@ def sheets_format_dispatcher (req, ctx, arg_fmt_ext):
     res_str = "Unknown file format extension `.%s'." % arg_fmt_ext
     return HttpResponse(res_str, status=404)
 
-# {base}/hours/sheets/sheet-{cat_id}-{year}-{month}.{fmt_ext}
-def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
-  cat_id = int(arg_cat_id)
+# {base}/hours/sheets/sheet-{cat_slug}-{year}-{month}.{fmt_ext}
+def sheets(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
+  cat_slug = arg_cat_slug
   year = int(arg_year)
   month = int(arg_month)
+
+  cat = Category.objects.get(slug=cat_slug)
+  cat_id = cat.id
+  cat_name = cat.name
 
   errors = []
 
@@ -93,15 +97,15 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
       v_entries.append(v_entry)
 
     try:
-      # TODO: Actual category name instead of "Category <ID>" in title.
-      ctx_tmp['title'] = "Category %s, %s %s" \
-          % (str(cat_id), begin.strftime("%B"), str(begin.year))
+      ctx_tmp['title'] = "%s, %s %s" \
+          % (cat_name, begin.strftime("%B"), str(begin.year))
     except ValueError as e:
       errors.append(str(e))
 
     ctx_tmp['query_str'] = req.GET.urlencode()
     ctx_tmp['opt'] = opt
     ctx_tmp['cat_id'] = cat_id
+    ctx_tmp['cat_name'] = cat_name
     ctx_tmp['begin'] = begin
     ctx_tmp['end'] = end
     ctx_tmp['s_begin'] = str(begin)

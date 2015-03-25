@@ -20,7 +20,7 @@ Describing the setup procedure using Debian GNU/Linux 7.
 
 ```
 # apt-get install python3-dateutil python3-pip postgresql libpq-dev
-# pip-3.2 install django pytz psycopg2
+# pip-3.2 install django pytz Unidecode psycopg2
 # adduser timelog
 # su - postgresql
 $ psql
@@ -77,9 +77,9 @@ It's not great but it's better than nothing.
 ## Time sheets
 
 Time sheets, though incomplete, can be retrieved from 
-`http://<host or IP>:8000/timelog/hours/sheets/sheet-<id>-<year>-<month>.<format>`, e.g.
-`http://<host or IP>:8000/timelog/hours/sheets/sheet-1-2015-03.htm` or
-`http://<host or IP>:8000/timelog/hours/sheets/sheet-1-2015-03.json`.
+`http://<host or IP>:8000/timelog/hours/sheets/sheet-<slug>-<year>-<month>.<format>`, e.g.
+`http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.htm` or
+`http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.json`.
 
 ## Updating
 
