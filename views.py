@@ -94,6 +94,7 @@ def sheets(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
       v_entry['category'] = str(db_entry.category)
       v_entry['user'] = str(db_entry.user)
+      v_entry['description'] = str(db_entry.description)
       v_entries.append(v_entry)
 
     try:

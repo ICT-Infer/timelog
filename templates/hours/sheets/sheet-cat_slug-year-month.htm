@@ -56,7 +56,6 @@
 <p>Range [{{ s_begin }}, {{ s_end }}), time zone {{ tz }}.</p>
 <p>Generated at {{ s_now }}.</p>
 <!-- TODO: Grouping -->
-<!-- TODO: Decide where and how to include comments. -->
 <table>
 <thead>
 <tr>
@@ -65,6 +64,7 @@
   <th>End</th>
   {% if not opt.own_only and not opt.grp_psn %}<th>User</th>{% endif %}
   {% if not opt.grp_cat %}<th>Category</th>{% endif %}
+  <th>Comment</th>
   <th>Duration</th>
 </tr>
 </thead>
@@ -78,6 +78,7 @@
   <td>{{ entry.view_local.t_end }}</td>
   {% if not opt.own_only %}<td>{{ entry.user }}</td>{% endif %}
   {% if not opt.grp_cat %}<td>{{ entry.category }}</td>{% endif %}
+  <td>{{ entry.comment }}</td>
   <td>{{ entry.duration }}</td>
 </tr>
 {% endfor %}
