@@ -39,8 +39,8 @@ class Entry(models.Model):
 
   def __str__(self):
     return str(self.user) + ', ' + str(self.category) + ' @ ' \
-      + str(self.t_begin.astimezone(pytz.timezone(self.tz_begin))) + ' - ' \
-      + str(self.t_end.astimezone(pytz.timezone(self.tz_end)))
+      + str(self.t_begin.astimezone(pytz.timezone(self.tz_begin))) + ' (' + self.tz_begin + ') - ' \
+      + str(self.t_end.astimezone(pytz.timezone(self.tz_end))) + ' (' + self.tz_end + ')'
 
   class Meta:
     verbose_name_plural = 'entries'
