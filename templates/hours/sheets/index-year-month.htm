@@ -13,6 +13,7 @@
   <th>Recursive sum hours</th>
   <th>Sum hours</th>
   <th>Category name</th>
+  <th>Description</th>
 </tr>
 </thead>
 <tbody>
@@ -23,6 +24,7 @@
   <td class="rec_sum_hours">{{ cat.rec_sum_hours }}</td>
   <td class="sum_hours">{{ cat.sum_hours }}</td>
   <td class="name"><a href="{{ cat.detail }}">{{ cat.name  }}</a></td>
+  <td class="description">{{ cat.description  }}</a></td>
 </tr>
 {% endfor %}
 </tbody>
