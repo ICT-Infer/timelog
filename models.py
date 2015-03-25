@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.db import models
+from django.utils import timezone
 
 class Category(models.Model):
   parent = models.ForeignKey("self", null=True, blank=True)
@@ -15,9 +16,11 @@ class Category(models.Model):
 class Entry(models.Model):
   user = models.ForeignKey(settings.AUTH_USER_MODEL)
   category = models.ForeignKey(Category)
-  # TODO: Store time zones for t_begin and t_end.
+  # TODO: Validate tz_begin and tz_end are valid time zones.
   t_begin = models.DateTimeField('t_begin')
+  tz_begin = models.CharField(max_length=255, default=str(timezone.get_current_timezone()))
   t_end = models.DateTimeField('t_end', null=True, blank=True)
+  tz_end = models.CharField(max_length=255, default=str(timezone.get_current_timezone()))
   description = models.CharField(max_length=255, blank=True)
 
   def __str__(self):
