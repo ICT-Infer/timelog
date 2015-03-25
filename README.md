@@ -50,8 +50,6 @@ $ python3 manage.py runserver 0.0.0.0:8000 &
 
 ## Usage from command-line
 
-Since the web UI has not yet been created, here is some initial basic usage.
-
 We are not yet dealing with other users.
 
 ```
@@ -74,8 +72,14 @@ exit()
 
 You *could* begin entering data into django-timelog right now at
 `http://<host or IP>:8000/admin/timelog/`.
-It's not great but it's better than nothing
-and better than using it through the shell like above.
+It's not great but it's better than nothing.
+
+## Time sheets
+
+Time sheets, though incomplete, can be retrieved from 
+`http://<host or IP>:8000/timelog/hours/sheets-sheet-<id>-<year>-<month>.<format>`, e.g.
+`http://<host or IP>:8000/timelog/hours/sheets-sheet-1-2015-03.htm` or
+`http://<host or IP>:8000/timelog/hours/sheets-sheet-1-2015-03.json`.
 
 ## Updating
 
