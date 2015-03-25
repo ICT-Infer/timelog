@@ -1,6 +1,7 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+import pytz
 
 class Category(models.Model):
   parent = models.ForeignKey("self", null=True, blank=True)
@@ -38,7 +39,8 @@ class Entry(models.Model):
 
   def __str__(self):
     return str(self.user) + ', ' + str(self.category) + ' @ ' \
-      + str(self.t_begin) + ' - ' + str(self.t_end)
+      + str(self.t_begin.astimezone(pytz.timezone(self.tz_begin))) + ' - ' \
+      + str(self.t_end.astimezone(pytz.timezone(self.tz_end)))
 
   class Meta:
     verbose_name_plural = 'entries'
