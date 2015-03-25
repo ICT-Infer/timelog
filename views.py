@@ -81,6 +81,7 @@ def sheets(req, arg_cat_id, arg_year, arg_month, arg_fmt_ext):
         't_begin': t_begin_vl.strftime("%H:%M:%S"),
         't_end': t_end_vl.strftime("%H:%M:%S"),
       }
+      v_entry['duration'] = str(t_end_vl - t_begin_vl)
 
       v_entry['category'] = str(db_entry.category)
       v_entry['user'] = str(db_entry.user)
