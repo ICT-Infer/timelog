@@ -73,7 +73,7 @@
   <th>End</th>
   {% if not opt.own_only and not opt.grp_psn %}<th>User</th>{% endif %}
   {% if not opt.grp_cat %}<th>Category</th>{% endif %}
-  <th>Comment</th>
+  <th>Description</th>
   <th>Duration</th>
 </tr>
 </thead>
@@ -87,7 +87,7 @@
   <td class="view_local-t_end">{% if entry.view_local.t_end %}{{ entry.view_local.t_end }}{% endif %}</td>
   {% if not opt.own_only and not opt.grp_psn %}<td>{{ entry.user }}</td>{% endif %}
   {% if not opt.grp_cat %}<td>{{ entry.category }}</td>{% endif %}
-  <td class="comment">{{ entry.comment }}</td>
+  <td class="description">{{ entry.description }}</td>
   <td class="duration">{% if entry.duration %}{{ entry.duration }}{% endif %}</td>
 </tr>
 {% endfor %}
