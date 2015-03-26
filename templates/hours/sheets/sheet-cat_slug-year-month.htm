@@ -85,8 +85,8 @@
   <td class="view_local-date">{{ entry.view_local.date }}</td>
   <td class="view_local-t_begin">{{ entry.view_local.t_begin }}</td>
   <td class="view_local-t_end">{% if entry.view_local.t_end %}{{ entry.view_local.t_end }}{% endif %}</td>
-  {% if not opt.own_only and not opt.grp_psn %}<td>{{ entry.user }}</td>{% endif %}
-  {% if not opt.grp_cat %}<td>{{ entry.category }}</td>{% endif %}
+  {% if not opt.own_only and not opt.grp_psn %}<td class="user">{{ entry.user }}</td>{% endif %}
+  {% if not opt.grp_cat %}<td class="category">{{ entry.category }}</td>{% endif %}
   <td class="description">{{ entry.description }}</td>
   <td class="duration">{% if entry.duration %}{{ entry.duration }}{% endif %}</td>
 </tr>
