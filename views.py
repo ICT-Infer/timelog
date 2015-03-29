@@ -123,6 +123,8 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     except ValueError as e:
       errors.append(str(e))
 
+    ctx_tmp['redir'] = {}
+    ctx_tmp['redir']['sheet'] = "/timelog/redir/sheet.htm"
     ctx_tmp['query_str'] = req.GET.urlencode()
     ctx_tmp['opt'] = opt
     ctx_tmp['cat_id'] = cat_id
