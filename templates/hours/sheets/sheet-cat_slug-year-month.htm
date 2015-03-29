@@ -18,8 +18,7 @@
 <h2>Hours</h2>
 <h3><a href="{{ view_data.overview }}">Time sheets</a></h3>
 </header>
-<!-- TODO: Replace hardcoded base part of form action URL. -->
-<form action="/timelog/redir/sheet.htm?{{ query_str }}" id="navigation" method="POST">
+<form action="{{ redir.sheet }}?{{ query_str }}" id="navigation" method="POST">
 <label for="category">Category</label>
 <select name="category" id="category">
   <option value="{{ cat_id }}">{{ cat_name }}</option>
