@@ -4,7 +4,7 @@ Django Timelog App. Time sheet time tracking for a person or group of people.
 
 An alternative to my [saas-by-erik/timelog](https://github.com/saas-by-erik/timelog).
 
-Made with great help from https://docs.djangoproject.com/en/1.7/intro/tutorial01/
+Made with great help from https://docs.djangoproject.com/en/1.8/intro/tutorial01/
 
 Currently a work in progress.
 
