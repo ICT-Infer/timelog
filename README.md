@@ -48,26 +48,6 @@ $ python3 manage.py createsuperuser # it will suggest using name 'timelog'. Let 
 $ python3 manage.py runserver 0.0.0.0:8000 &
 ```
 
-## Usage from command-line
-
-We are not yet dealing with other users.
-
-```
-$ python3 ~/serve/manage.py shell
-```
-
-```
-from timelog.models import Category, Entry
-c = Category(name='Example')
-c.save()
-from django.contrib.auth.models import User
-u = User.objects.get(username='timelog')
-from django.utils import timezone
-e = Entry(user=u, category=c, t_begin=timezone.now())
-e.save()
-exit()
-```
-
 ## Usage with default Django admin web interface
 
 You *could* begin entering data into django-timelog right now at
