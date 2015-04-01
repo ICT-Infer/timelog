@@ -35,7 +35,7 @@ CREATE DATABASE timelog OWNER timelog;
 ```
 $ exit
 # su - timelog
-$ django-admin.py startproject serve
+$ django-admin startproject serve
 $ cd serve/
 $ git clone https://github.com/erikano/django-timelog.git timelog/
 $ patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch
