@@ -18,7 +18,6 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
       'name': cat.name,
       'description': cat.description,
       'slug': cat.slug,
-      'rec_sum_hours': "XX:XX",
       'sum_hours': "XX:XX",
       'details': "sheet-" + cat.slug \
                  + "-" + arg_year + "-" + arg_month \
@@ -26,6 +25,8 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
     }
     cat_branch['children'] = \
       category_tree(arg_year, arg_month, arg_fmt_ext, cat.id)
+    if cat_branch['children']:
+      cat_branch['rec_sum_hours'] = "XX:XX"
 
     tree.append(cat_branch)
 

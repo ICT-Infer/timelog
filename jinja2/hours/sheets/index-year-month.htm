@@ -49,10 +49,14 @@ section.category > dl.props > dd.description {
   <dl class="props">
     <dt class="details">Details</dt>
     <dd class="details"><a href="{{ cat.details }}">Details</a></dt>
+    {% if cat.rec_sum_hours %}
     <dt class="rec_sum_hours">Recursive sum hours</dt>
     <dd class="rec_sum_hours">{{ cat.rec_sum_hours }}</dt>
+    {% endif %}
+    {% if cat.sum_hours %}
     <dt class="sum_hours">Sum hours</dt>
     <dd class="sum_hours">{{ cat.sum_hours }}</dt>
+    {% endif %}
     {% if cat.description %}
     <dt class="description">Description</dt>
     <dd class="description">{{ cat.description }}</dt>
