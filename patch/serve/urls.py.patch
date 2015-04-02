@@ -1,5 +1,5 @@
---- a/serve/urls.py	2015-04-02 09:06:14.000000000 +0000
-+++ b/serve/urls.py	2015-04-02 09:07:58.009531118 +0000
+--- a/serve/urls.py
++++ b/serve/urls.py
 @@ -7,4 +7,5 @@
      # url(r'^blog/', include('blog.urls')),
  

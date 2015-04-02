@@ -1,5 +1,5 @@
---- a/serve/settings.py	2015-04-02 22:01:18.081530749 +0000
-+++ b/serve/settings.py	2015-04-02 22:05:28.977531880 +0000
+--- a/serve/settings.py
++++ b/serve/settings.py
 @@ -37,6 +37,7 @@
      'django.contrib.sessions',
      'django.contrib.messages',
