@@ -25,23 +25,6 @@ def category_tree (root=None):
 
   return tree
 
-def flatten_category_tree (tree, parent_id=None):
-  flattened_tree = []
-
-  for cat_branch in tree:
-    flattened_branch = {
-      'id': cat_branch['id'],
-      'name': cat_branch['name'],
-      'description': cat_branch['description'],
-      'slug': cat_branch['slug'],
-      'parent_id': parent_id,
-    }
-    flattened_tree.append(flattened_branch)
-    flattened_tree += flatten_category_tree(cat_branch['children'],
-                                            cat_branch['id'])
-
-  return flattened_tree
-
 #
 # View functions and their subfunctions
 #
@@ -55,7 +38,6 @@ def sheets(req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {} 
   view_data['category_tree'] = category_tree()
-  view_data['category_tree_flat'] = flatten_category_tree(category_tree())
 
   ctx = {
     'view_data': view_data,
