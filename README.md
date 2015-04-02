@@ -16,6 +16,7 @@ Most notably, we're using:
 
   * Django 1.8
   * Python 3.4
+  * PostgreSQL 9.1
 
 ## Setup
 
