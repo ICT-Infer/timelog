@@ -127,9 +127,9 @@ Transfer the data dump to somewhere safe!
 ## Updating
 
 ```
-$ cd ~/venv && \
-  source bin/activate && \
-  cd serve/timelog \
+$ cd ~/venv \
+  && source bin/activate \
+  && cd serve/timelog \
   && git pull \
   && python3 ../manage.py makemigrations timelog \
   && python3 ../manage.py migrate
