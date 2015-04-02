@@ -9,17 +9,21 @@ from timelog.models import Category, Entry
 # Shared functions common to other view functions.
 #
 
-def category_tree (root=None):
+def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
   tree = []
 
-  for cat in Category.objects.filter(parent=root).order_by('name'):
+  for cat in Category.objects.filter(parent=arg_root).order_by('name'):
     cat_branch = {
       'id': cat.id,
       'name': cat.name,
       'description': cat.description,
       'slug': cat.slug,
+      'details': "sheet-" + cat.slug \
+                 + "-" + arg_year + "-" + arg_month \
+                 + "." + arg_fmt_ext,
     }
-    cat_branch['children'] = category_tree(cat.id)
+    cat_branch['children'] = \
+      category_tree(arg_year, arg_month, arg_fmt_ext, cat.id)
 
     tree.append(cat_branch)
 
@@ -37,7 +41,7 @@ def index(req):
 def sheets(req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {} 
-  view_data['category_tree'] = category_tree()
+  view_data['category_tree'] = category_tree(arg_year, arg_month, arg_fmt_ext)
 
   ctx = {
     'view_data': view_data,
