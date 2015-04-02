@@ -10,7 +10,7 @@ Currently a work in progress.
 
 ## Compatibility/requirements/dependencies
 
-All dependencies will be installed in the *setup* section below.
+All dependencies will be installed in the [setup section](#setup) below.
 
 Most notably, we're using:
 
