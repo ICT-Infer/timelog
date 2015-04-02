@@ -5,6 +5,47 @@ from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
 from timelog.models import Category, Entry
 
+#
+# Shared functions common to other view functions.
+#
+
+def category_tree (root=None):
+  tree = []
+
+  for cat in Category.objects.filter(parent=root).order_by('name'):
+    cat_branch = {
+      'id': cat.id,
+      'name': cat.name,
+      'description': cat.description,
+      'slug': cat.slug,
+    }
+    cat_branch['children'] = category_tree(cat.id)
+
+    tree.append(cat_branch)
+
+  return tree
+
+def flatten_category_tree (tree, parent_id=None):
+  flattened_tree = []
+
+  for cat_branch in tree:
+    flattened_branch = {
+      'id': cat_branch['id'],
+      'name': cat_branch['name'],
+      'description': cat_branch['description'],
+      'slug': cat_branch['slug'],
+      'parent_id': parent_id,
+    }
+    flattened_tree.append(flattened_branch)
+    flattened_tree += flatten_category_tree(cat_branch['children'],
+                                            cat_branch['id'])
+
+  return flattened_tree
+
+#
+# View functions and their subfunctions
+#
+
 # {base}/
 def index(req):
   return HttpResponse("Timelog index.")
@@ -13,16 +54,7 @@ def index(req):
 def sheets(req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {} 
-  v_categories = []
-  for db_cat in Category.objects.filter(parent=None):
-    v_cat = {}
-    v_cat['id'] = db_cat.id
-    v_cat['name'] = db_cat.name
-    v_cat['description'] = db_cat.description
-    v_cat['detail'] = "sheet-" + db_cat.slug + "-" + arg_year \
-                      + "-" + arg_month + "." + arg_fmt_ext
-    v_categories.append(v_cat)
-  view_data['categories'] = v_categories
+  view_data['category_tree_flat'] = flatten_category_tree(category_tree())
 
   ctx = {
     'view_data': view_data,

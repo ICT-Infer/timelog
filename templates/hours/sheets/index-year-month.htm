@@ -17,7 +17,7 @@
 </tr>
 </thead>
 <tbody>
-{% for cat in view_data.categories %}
+{% for cat in view_data.category_tree_flat %}
 <tr class="categories">
   <td class="id">{{ cat.id }}</td>
   <td class="parent_id">{{ cat.parent_id }}</td>
