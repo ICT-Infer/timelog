@@ -50,7 +50,7 @@ Jinja2 requires Python 3.3+ but the Python 3 in Debian Wheezy is Python 3.2 and 
                   libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
 ```
 
-Then we download the source tarball, build and install it.
+Then we download the source tarball, build and install it to a temporary directory.
 
 ```
 # su - timelog
