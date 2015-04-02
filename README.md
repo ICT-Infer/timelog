@@ -54,29 +54,20 @@ Then we download the source tarball, build and install it to a temporary directo
 
 ```
 # su - timelog
-$ mkdir -p ~/tmp/python3.4/
-$ cd ~/tmp/python3.4/
+$ mkdir -p ~/opt/python3.4/
+$ cd ~/opt/python3.4/
 $ wget https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tar.xz
 $ tar xvf Python-3.4.3.tar.xz
 $ cd Python-3.4.3/
-$ ./configure --prefix=/home/timelog/tmp/python3.4/
+$ ./configure --prefix=/home/timelog/opt/python3.4/
 $ make install
 ```
-
-Originally, I attempted using `checkinstall` in order to make it possible to uninstall the python we built from source but it kept failing at various stages saying "ranlib: could not create temporary file whilst writing archive: No more archived files" regardless of whether I just did "make" and then "make install" throught `checkinstall` or if I first did "make install" and then "make install" again through `checkinstall`. Decided then to just not use `checkinstall` after all and instead to do the install in a temporary directory.
 
 ### Setting up a virtualenv
 
 ```
-$ ~/tmp/python3.4/bin/pip3 install virtualenv
-$ ~/tmp/python3.4/bin/virtualenv --always-copy ~/venv/
-```
-
-### Removing the temporary install of Python 3.4
-
-```
-$ cd
-$ rm -rf ~/tmp/python3.4/
+$ ~/opt/python3.4/bin/pip3 install virtualenv
+$ ~/opt/python3.4/bin/virtualenv ~/venv/
 ```
 
 ### Activating the virtualenv and installing the dependencies needed there
