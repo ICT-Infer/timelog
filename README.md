@@ -74,12 +74,12 @@ $ ~/opt/python3.4/bin/virtualenv ~/venv/
 
 ```
 $ cd ~/venv/
-$ source ./bin/activate
+$ source bin/activate
 $ wget https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz
 $ tar xvf python-dateutil-2.0.tar.gz
 $ cd python-dateutil-2.0/
 $ python3 setup.py install
-$ cd ..
+$ cd ../
 $ pip3 install django pytz Unidecode Jinja2 psycopg2
 ```
 
@@ -115,9 +115,9 @@ Time sheets, though incomplete, can be retrieved from
 ## Dumping data for backup and later restore
 
 ```
-$ cd ~/venv \
+$ cd ~/venv/ \
   && source bin/activate \
-  && cd serve/timelog \
+  && cd serve/timelog/ \
   && python3 ../manage.py dumpdata \
        > ~/timelog-$( git describe )-dbdump-$( date +%Y-%m-%dT%H%M%S ).json
 ```
@@ -127,9 +127,9 @@ Transfer the data dump to somewhere safe!
 ## Updating
 
 ```
-$ cd ~/venv \
+$ cd ~/venv/ \
   && source bin/activate \
-  && cd serve/timelog \
+  && cd serve/timelog/ \
   && git pull \
   && python3 ../manage.py makemigrations timelog \
   && python3 ../manage.py migrate
