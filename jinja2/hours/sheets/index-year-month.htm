@@ -6,7 +6,7 @@
 </head>
 <body>
 <section class="category">
-{%- for cat in view_data.category_tree recursive %}
+{% for cat in view_data.category_tree recursive %}
   <h1 class="name">{{ cat.name }}</h1>
   <dl>
     <dt class="rec_sum_hours">Recursive sum hours</dt>
@@ -15,15 +15,15 @@
     <dd class="sum_hours">{{ cat.sum_hours }}</dt>
     <dt class="details">Details</dt>
     <dd class="details"><a href="{{ cat.details }}">Details</a></dt>
-    {%- if cat.description -%}
+    {% if cat.description %}
     <dt class="description">Description</dt>
     <dd class="description">{{ cat.description }}</dt>
-    {%- endif -%}
+    {% endif %}
   </dl>
-  {%- if cat.children -%}
+  {% if cat.children %}
     <section class="category">{{ loop(cat.children) }}</section>
-  {%- endif -%}
-{%- endfor -%}
+  {% endif %}
+{% endfor %}
 </section>
 </body>
 </html>
