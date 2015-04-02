@@ -5,6 +5,14 @@
 <title>{{ title }} - Time sheets - Timelog</title>
 </head>
 <body>
+<ul>
+{%- for cat in view_data.category_tree recursive %}
+  <li>{{ cat.name }}</li>
+  {%- if cat.children -%}
+    <ul>{{ loop(cat.children) }}</ul>
+  {%- endif -%}
+{%- endfor -%}
+</ul>
 <table>
 <thead>
 <tr>
