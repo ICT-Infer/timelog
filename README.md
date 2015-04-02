@@ -117,7 +117,9 @@ Time sheets, though incomplete, can be retrieved from
 ## Updating
 
 ```
-$ cd ~/serve/timelog \
+$ cd ~/timelog && \
+  source bin/activate && \
+  cd serve/timelog \
   && git pull \
   && python3 ../manage.py makemigrations timelog \
   && python3 ../manage.py migrate
