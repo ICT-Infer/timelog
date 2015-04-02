@@ -54,30 +54,36 @@ Then we download the source tarball, build and install it.
 
 ```
 # su - timelog
+$ mkdir -p ~/tmp/python3.4/
+$ cd ~/tmp/python3.4/
 $ wget https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tar.xz
 $ tar xvf Python-3.4.3.tar.xz
 $ cd Python-3.4.3/
-$ ./configure --prefix=/home/timelog
+$ ./configure --prefix=/home/timelog/tmp/python3.4/
 $ make install
 ```
 
-Originally, I attempted using `checkinstall` in order to make it possible to uninstall the python we built from source but it kept failing at various stages saying "ranlib: could not create temporary file whilst writing archive: No more archived files" regardless of whether I just did "make" and then "make install" throught `checkinstall` or if I first did "make install" and then "make install" again through `checkinstall`. Decided then to just not use `checkinstall` after all.
+Originally, I attempted using `checkinstall` in order to make it possible to uninstall the python we built from source but it kept failing at various stages saying "ranlib: could not create temporary file whilst writing archive: No more archived files" regardless of whether I just did "make" and then "make install" throught `checkinstall` or if I first did "make install" and then "make install" again through `checkinstall`. Decided then to just not use `checkinstall` after all and instead to do the install in a temporary directory.
 
 ### Setting up a virtualenv
 
 ```
 $ cd
-$ ./bin/pip3 install virtualenv
-$ virtualenv timelog
-$ cd timelog
-$ source bin/activate
+$ ~/tmp/python3.4/bin/pip3 install virtualenv
+$ virtualenv ~/venv/
 ```
 
-At this point, had the `checkinstall` I attempted earlier worked, we should've been able to remove the initial install of Python 3.4 from the home directory of the timelog user.
-
-### Installing dependencies in virtualenv
+### Removing the temporary install of Python 3.4
 
 ```
+$ rm -rf ~/tmp/python3.4/
+```
+
+### Activating the virtualenv and installing the dependencies needed there
+
+```
+$ cd ~/venv/
+$ source ./bin/activate
 $ wget https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz
 $ cd python-dateutil-2.0/
 $ python3 setup.py install
@@ -117,7 +123,7 @@ Time sheets, though incomplete, can be retrieved from
 ## Updating
 
 ```
-$ cd ~/timelog && \
+$ cd ~/venv && \
   source bin/activate && \
   cd serve/timelog \
   && git pull \
