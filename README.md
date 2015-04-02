@@ -68,7 +68,6 @@ Originally, I attempted using `checkinstall` in order to make it possible to uni
 ### Setting up a virtualenv
 
 ```
-$ cd
 $ ~/tmp/python3.4/bin/pip3 install virtualenv
 $ virtualenv ~/venv/
 ```
@@ -76,6 +75,7 @@ $ virtualenv ~/venv/
 ### Removing the temporary install of Python 3.4
 
 ```
+$ cd
 $ rm -rf ~/tmp/python3.4/
 ```
 
