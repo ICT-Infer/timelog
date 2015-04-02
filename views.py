@@ -54,6 +54,7 @@ def index(req):
 def sheets(req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {} 
+  view_data['category_tree'] = category_tree()
   view_data['category_tree_flat'] = flatten_category_tree(category_tree())
 
   ctx = {
