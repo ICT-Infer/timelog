@@ -85,6 +85,7 @@ $ rm -rf ~/tmp/python3.4/
 $ cd ~/venv/
 $ source ./bin/activate
 $ wget https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz
+$ tar xvf python-dateutil-2.0.tar.gz
 $ cd python-dateutil-2.0/
 $ python3 setup.py install
 $ cd ..
