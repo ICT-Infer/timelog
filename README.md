@@ -70,7 +70,7 @@ $ ~/opt/python3.4/bin/pip3 install virtualenv
 $ ~/opt/python3.4/bin/virtualenv ~/venv/
 ```
 
-### Activating the virtualenv and installing the dependencies needed there
+### Activating the virtualenv and installing more dependencies
 
 ```
 $ cd ~/venv/
