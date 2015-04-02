@@ -1,6 +1,6 @@
---- a/serve/settings.py	2015-03-19 00:40:02.253528784 +0000
-+++ b/serve/settings.py	2015-03-19 00:42:52.749530743 +0000
-@@ -36,6 +36,7 @@
+--- a/serve/settings.py	2015-04-02 09:06:14.253530738 +0000
++++ b/serve/settings.py	2015-04-02 09:06:41.093531581 +0000
+@@ -37,6 +37,7 @@
      'django.contrib.sessions',
      'django.contrib.messages',
      'django.contrib.staticfiles',
@@ -8,7 +8,7 @@
  )
  
  MIDDLEWARE_CLASSES = (
-@@ -58,8 +59,11 @@
+@@ -76,8 +77,11 @@
  
  DATABASES = {
      'default': {
