@@ -8,19 +8,21 @@ Made with great help from https://docs.djangoproject.com/en/1.8/intro/tutorial01
 
 Currently a work in progress.
 
-## Compatibility, requirements, dependencies
+## Compatibility/requirements/dependencies
 
-Compatible with Django 1.8+. Requires Python 3.
+All dependencies will be installed in the *setup* section below.
 
-Other dependencies are listed in the *setup* section below.
+Most notably, we're using:
+
+  * Django 1.8
+  * Python 3.4
 
 ## Setup
 
-Describing the setup procedure using Debian GNU/Linux 7.
+Describing the setup procedure using Debian GNU/Linux 7.8 Wheezy.
 
 ```
-# apt-get install python3-dateutil python3-pip postgresql libpq-dev
-# pip-3.2 install django pytz Unidecode psycopg2
+# apt-get install postgresql libpq-dev
 # adduser timelog
 # su - postgres
 $ psql
@@ -34,7 +36,58 @@ CREATE DATABASE timelog OWNER timelog;
 
 ```
 $ exit
+```
+
+### Installing Python 3.4 from source
+
+Jinja2 requires Python 3.3+ but the Python 3 in Debian Wheezy is Python 3.2 and I couldn't find any more recent Python 3 in backports either (though I haven't used backports before, so maybe I did something wrong). We'll install Python 3.4 from source for the `timelog' user. First we'll need to install some dependencies in order to be able to build Python.
+
+
+```
+# apt-get install build-essential \
+                  libncurses5-dev libncursesw5-dev libreadline6-dev \
+                  libdb5.1-dev libgdbm-dev libsqlite3-dev \
+                  libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
+```
+
+Then we download the source tarball, build and install it.
+
+```
 # su - timelog
+$ wget https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tar.xz
+$ tar xvf Python-3.4.3.tar.xz
+$ cd Python-3.4.3/
+$ ./configure --prefix=/home/timelog
+$ make install
+```
+
+Originally, I attempted using `checkinstall` in order to make it possible to uninstall the python we built from source but it kept failing at various stages saying "ranlib: could not create temporary file whilst writing archive: No more archived files" regardless of whether I just did "make" and then "make install" throught `checkinstall` or if I first did "make install" and then "make install" again through `checkinstall`. Decided then to just not use `checkinstall` after all.
+
+### Setting up a virtualenv
+
+```
+$ cd
+$ ./bin/pip3 install virtualenv
+$ virtualenv timelog
+$ cd timelog
+$ source bin/activate
+```
+
+At this point, had the `checkinstall` I attempted earlier worked, we should've been able to remove the initial install of Python 3.4 from the home directory of the timelog user.
+
+### Installing dependencies in virtualenv
+
+```
+$ wget https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz
+$ cd python-dateutil-2.0/
+$ python3 setup.py install
+$ cd ..
+$ pip3 install django pytz Unidecode Jinja2 psycopg2
+```
+
+### Proceeding with the remainder of the setup
+
+```
 $ django-admin startproject serve
 $ cd serve/
 $ git clone https://github.com/erikano/django-timelog.git timelog/
