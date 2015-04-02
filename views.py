@@ -18,6 +18,8 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
       'name': cat.name,
       'description': cat.description,
       'slug': cat.slug,
+      'rec_sum_hours': "XX:XX",
+      'sum_hours': "XX:XX",
       'details': "sheet-" + cat.slug \
                  + "-" + arg_year + "-" + arg_month \
                  + "." + arg_fmt_ext,
