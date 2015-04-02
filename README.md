@@ -69,7 +69,7 @@ Originally, I attempted using `checkinstall` in order to make it possible to uni
 
 ```
 $ ~/tmp/python3.4/bin/pip3 install virtualenv
-$ ~/tmp/python3.4/bin/virtualenv ~/venv/
+$ ~/tmp/python3.4/bin/virtualenv --always-copy ~/venv/
 ```
 
 ### Removing the temporary install of Python 3.4
