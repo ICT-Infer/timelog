@@ -112,6 +112,18 @@ Time sheets, though incomplete, can be retrieved from
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.htm` or
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.json`.
 
+## Dumping data for backup and later restore
+
+```
+$ cd ~/venv && \
+  && source bin/activate \
+  && cd serve/timelog \
+  && python3 ../manage.py dumpdata \
+       > ~/timelog-$( git describe )-dbdump-$( date +%Y-%m-%dT%H%M%S ).json
+```
+
+Transfer the data dump to somewhere safe!
+
 ## Updating
 
 ```
