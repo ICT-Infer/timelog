@@ -105,7 +105,7 @@ $ python3 manage.py runserver 0.0.0.0:8000 &
 `http://<host or IP>:8000/admin/timelog/`.
 It's not great but it's better than nothing.~~
 
-The admin interface is currently broken by the fact that its templates are made for DjangoTemplate and not Jinja2. Issue #12.
+The admin interface is currently broken by the fact that its templates are made for DjangoTemplate and not Jinja2. See [issue #12](/erikano/django-timelog/issues/12).
 
 ## Time sheets
 
