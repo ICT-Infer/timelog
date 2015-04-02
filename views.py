@@ -26,6 +26,7 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
     cat_branch['children'] = \
       category_tree(arg_year, arg_month, arg_fmt_ext, cat.id)
     if cat_branch['children']:
+      # TODO: Only include rec_sum_hours if greater than sum_hours
       cat_branch['rec_sum_hours'] = "XX:XX"
 
     tree.append(cat_branch)
