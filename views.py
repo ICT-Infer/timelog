@@ -13,6 +13,7 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
   tree = []
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
+    # TODO: Only include sum_hours if it has non-zero value.
     cat_branch = {
       'id': cat.id,
       'name': cat.name,
