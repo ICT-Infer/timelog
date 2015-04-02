@@ -117,7 +117,7 @@ Time sheets, though incomplete, can be retrieved from
 ## Dumping data for backup and later restore
 
 ```
-$ cd ~/venv && \
+$ cd ~/venv \
   && source bin/activate \
   && cd serve/timelog \
   && python3 ../manage.py dumpdata \
