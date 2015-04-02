@@ -101,11 +101,9 @@ $ python3 manage.py runserver 0.0.0.0:8000 &
 
 ## Usage with default Django admin web interface
 
-~~You *could* begin entering data into django-timelog right now at
+You *could* begin entering data into django-timelog right now at
 `http://<host or IP>:8000/admin/timelog/`.
-It's not great but it's better than nothing.~~
-
-The admin interface is currently broken by the fact that its templates are made for DjangoTemplate and not Jinja2. See [issue #12](/erikano/django-timelog/issues/12).
+It's not great but it's better than nothing.
 
 ## Time sheets
 

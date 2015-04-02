@@ -1,5 +1,5 @@
---- a/serve/settings.py	2015-04-02 16:17:25.269530975 +0000
-+++ b/serve/settings.py	2015-04-02 16:15:36.121531001 +0000
+--- a/serve/settings.py	2015-04-02 22:01:18.081530749 +0000
++++ b/serve/settings.py	2015-04-02 22:05:28.977531880 +0000
 @@ -37,6 +37,7 @@
      'django.contrib.sessions',
      'django.contrib.messages',
@@ -8,26 +8,19 @@
  )
  
  MIDDLEWARE_CLASSES = (
-@@ -54,17 +55,9 @@
+@@ -54,6 +55,11 @@
  
  TEMPLATES = [
      {
--        'BACKEND': 'django.template.backends.django.DjangoTemplates',
 +        'BACKEND': 'django.template.backends.jinja2.Jinja2',
++        'DIRS': [],
++        'APP_DIRS': True,
++    },
++    {
+         'BACKEND': 'django.template.backends.django.DjangoTemplates',
          'DIRS': [],
          'APP_DIRS': True,
--        'OPTIONS': {
--            'context_processors': [
--                'django.template.context_processors.debug',
--                'django.template.context_processors.request',
--                'django.contrib.auth.context_processors.auth',
--                'django.contrib.messages.context_processors.messages',
--            ],
--        },
-     },
- ]
- 
-@@ -76,8 +69,11 @@
+@@ -76,8 +82,11 @@
  
  DATABASES = {
      'default': {
