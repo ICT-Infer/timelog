@@ -120,7 +120,7 @@ $ cd ~/venv/ \
   && source bin/activate \
   && cd serve/timelog/ \
   && python3 ../manage.py dumpdata \
-       > ~/timelog-$( git describe )-dbdump-$( date +%Y-%m-%dT%H%M%S ).json
+       > ~/timelog-$( git describe )-dbdump-$( date +%FT%H%M%S ).json
 ```
 
 Transfer the data dump to somewhere safe!
