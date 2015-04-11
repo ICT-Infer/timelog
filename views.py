@@ -135,7 +135,7 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
       if (db_entry.t_end):
         t_end_vl = timezone.localtime(db_entry.t_end)
         if t_end_vl >= t_upper_bound_excl:
-          t_end_vl = t_upper_bound_excl - relativedelta(seconds=1)
+          t_end_vl = t_upper_bound_excl - relativedelta(microseconds=1)
         v_entry['view_local']['t_end'] = t_end_vl.strftime("%H:%M:%S")
         v_entry['duration'] = str(t_end_vl - t_begin_vl)
       else:
