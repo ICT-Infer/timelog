@@ -4,6 +4,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
 from timelog.models import Category, Entry
+from django.db.models import Q
 
 #
 # Shared functions common to other view functions.
@@ -107,12 +108,16 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   ctx_tmp = {}
 
   if (not errors):
-    # TODO: Limit entries to current range.
     # TODO: Grouping
     # TODO: Sorting
     # TODO: Splitting
 
-    db_entries = Entry.objects.filter()
+    db_entries = Entry.objects.filter(
+      (Q(t_begin__gte = t_lower_bound_incl)
+        & Q(t_begin__lt = t_upper_bound_excl))
+      | (Q(t_end__gte = t_lower_bound_incl)
+        & Q(t_end__lt = t_upper_bound_excl))
+    )
 
     v_entries = []
 
