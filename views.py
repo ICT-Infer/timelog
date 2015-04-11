@@ -10,8 +10,7 @@ from django.db.models import Q
 # Shared functions common to other view functions.
 #
 
-
-def category_tree(arg_year, arg_month, arg_fmt_ext, arg_root=None):
+def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
   tree = []
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
@@ -29,18 +28,17 @@ def category_tree(arg_year, arg_month, arg_fmt_ext, arg_root=None):
 
   return tree
 
+
 #
 # View functions and their subfunctions
 #
 
-
 # {base}/
-def index(req):
+def index (req):
   return HttpResponse("Timelog index.")
 
-
 # {base}/hours/sheets/index-{year}-{month}.{fmt_ext}
-def sheets(req, arg_year, arg_month, arg_fmt_ext):
+def sheets (req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {}
   view_data['category_tree'] = category_tree(arg_year, arg_month, arg_fmt_ext)
@@ -48,8 +46,7 @@ def sheets(req, arg_year, arg_month, arg_fmt_ext):
   ctx = {'view_data': view_data, }
   return render(req, 'hours/sheets/index-year-month.htm', ctx)
 
-
-def sheet_format_htm(req, ctx):
+def sheet_format_htm (req, ctx):
   if 'errors' in ctx['view_data'] and ctx['view_data']['errors']:
     res = ''
     for err in ctx['view_data']['errors']:
@@ -57,12 +54,10 @@ def sheet_format_htm(req, ctx):
     return HttpResponse(res, status=500)
   return render(req, 'hours/sheets/sheet-cat_slug-year-month.htm', ctx)
 
-
-def sheet_format_json(req, ctx):
+def sheet_format_json (req, ctx):
   return JsonResponse(ctx['view_data'])
 
-
-def sheet_format_dispatcher(req, ctx, arg_fmt_ext):
+def sheet_format_dispatcher (req, ctx, arg_fmt_ext):
   if arg_fmt_ext == 'htm':
     return sheet_format_htm(req, ctx)
   elif arg_fmt_ext == 'json':
@@ -71,9 +66,8 @@ def sheet_format_dispatcher(req, ctx, arg_fmt_ext):
     res_str = "Unknown file format extension `.%s'." % arg_fmt_ext
     return HttpResponse(res_str, status=404)
 
-
 # {base}/hours/sheets/sheet-{cat_slug}-{year}-{month}.{fmt_ext}
-def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
+def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   cat_slug = arg_cat_slug
   year = int(arg_year)
   month = int(arg_month)
