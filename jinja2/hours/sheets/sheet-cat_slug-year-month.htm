@@ -61,8 +61,8 @@
 <a id="log-out" href="">Log out</a>
 <!-- TODO: Use name of person where it now says just "User real name". -->
 <h1>{{ title }}{% if opt.own_only %} (User real name){% endif %}</h1>
-<p>Range [{{ s_tlbi }}, {{ s_tube }}), time zone {{ tz }}.</p>
-<p>Generated around the time of {{ s_now }}.</p>
+<p>Range [{{ t_lower_bound_incl }}, {{ t_upper_bound_excl }}), time zone {{ tz }}.</p>
+<p>Generated around the time of {{ t_now }}.</p>
 <!-- TODO: Grouping -->
 <table>
 <thead>
