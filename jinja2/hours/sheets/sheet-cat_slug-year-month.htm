@@ -5,8 +5,8 @@
 <title>{{ title }} - Time sheets - Timelog</title>
 <style>
 .entries > .view_local-date,
-.entries > .view_local-t_begin,
-.entries > .view_local-t_end,
+.entries > .view_local-t_lower_bound_incl,
+.entries > .view_local-t_upper_bound_excl,
 .entries > .duration {
   text-align: right;
 }
@@ -25,11 +25,11 @@
 </select>
 <label for="year">Year</label>
 <select name="year" id="year">
-  <option value="{{ begin.year }}">{{ begin.year }}</option>
+  <option value="{{ t_lower_bound_incl.year }}">{{ t_lower_bound_incl.year }}</option>
 </select>
 <label for="month">Month</label>
 <select name="month" id="month">
-  <option value="{{ begin.month }}">{{ begin.month }}</option>
+  <option value="{{ t_lower_bound_incl.month }}">{{ t_lower_bound_incl.month }}</option>
 </select>
 <button type="submit">Navigate</button>
 <!-- TODO: Make add-new initiate adding new category/entry. -->
@@ -61,7 +61,7 @@
 <a id="log-out" href="">Log out</a>
 <!-- TODO: Use name of person where it now says just "User real name". -->
 <h1>{{ title }}{% if opt.own_only %} (User real name){% endif %}</h1>
-<p>Range [{{ s_begin }}, {{ s_end }}), time zone {{ tz }}.</p>
+<p>Range [{{ s_tlbi }}, {{ s_tube }}), time zone {{ tz }}.</p>
 <p>Generated around the time of {{ s_now }}.</p>
 <!-- TODO: Grouping -->
 <table>

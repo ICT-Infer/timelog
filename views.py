@@ -96,10 +96,10 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   t_now = timezone.localtime(timezone.now())
 
   try:
-    begin = datetime.datetime(year, month, 1, 0, 0, 0)
-    end = begin + relativedelta(months=1)
-    begin = timezone.make_aware(begin, t_now.tzinfo)
-    end = timezone.make_aware(end, t_now.tzinfo)
+    t_lower_bound_incl = datetime.datetime(year, month, 1, 0, 0, 0)
+    t_upper_bound_excl = t_lower_bound_incl + relativedelta(months=1)
+    t_lower_bound_incl = timezone.make_aware(t_lower_bound_incl, t_now.tzinfo)
+    t_upper_bound_excl = timezone.make_aware(t_upper_bound_excl, t_now.tzinfo)
   except ValueError as e:
     errors.append(str(e))
 
@@ -141,7 +141,8 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
     try:
       ctx_tmp['title'] = "%s, %s %s" \
-          % (cat_name, begin.strftime("%B"), str(begin.year))
+          % (cat_name, t_lower_bound_incl.strftime("%B"),
+             str(t_lower_bound_incl.year))
     except ValueError as e:
       errors.append(str(e))
 
@@ -151,10 +152,10 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['opt'] = opt
     ctx_tmp['cat_id'] = cat_id
     ctx_tmp['cat_name'] = cat_name
-    ctx_tmp['begin'] = begin
-    ctx_tmp['end'] = end
-    ctx_tmp['s_begin'] = str(begin)
-    ctx_tmp['s_end'] = str(end)
+    ctx_tmp['t_lower_bound_incl'] = t_lower_bound_incl 
+    ctx_tmp['t_upper_bound_excl'] = t_upper_bound_excl 
+    ctx_tmp['s_tlbi'] = str(t_lower_bound_incl)
+    ctx_tmp['s_tube'] = str(t_upper_bound_excl)
     ctx_tmp['s_now'] = str(t_now)
     ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
