@@ -3,8 +3,7 @@ from django.utils import timezone
 from timelog.models import Category, Entry
 import pytz
 
-
-class EntryAdmin(admin.ModelAdmin):
+class EntryAdmin (admin.ModelAdmin):
   def get_form(self, req, obj, **kwargs):
     if obj is not None and not hasattr(obj, 'tz_maniped'):
       # Reverse of what we do in models.Entry.save.
@@ -22,7 +21,6 @@ class EntryAdmin(admin.ModelAdmin):
       obj.tz_maniped = True
 
     return super(EntryAdmin, self).get_form(req, obj, **kwargs)
-
 
 admin.site.register(Category)
 admin.site.register(Entry, EntryAdmin)

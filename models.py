@@ -7,14 +7,13 @@ from django.utils import timezone
 from django.core.exceptions import ValidationError
 import pytz
 
-
-class Category(models.Model):
+class Category (models.Model):
   parent = models.ForeignKey("self", null=True, blank=True)
   name = models.CharField(max_length=255)
   description = models.CharField(max_length=255, blank=True)
   slug = models.SlugField(editable=False, unique=True)
 
-  def save(self, *args, **kwargs):
+  def save (self, *args, **kwargs):
     if (not self.id):
       self.slug = re.sub('_{2,}', '_',
                          slugify(unidecode(self.name)).replace('-', '_'))
@@ -37,14 +36,13 @@ class Category(models.Model):
 
     super(Category, self).save(*args, **kwargs)
 
-  def __str__(self):
+  def __str__ (self):
     return self.name
 
   class Meta:
     verbose_name_plural = 'categories'
 
-
-class Entry(models.Model):
+class Entry (models.Model):
   user = models.ForeignKey(settings.AUTH_USER_MODEL)
   category = models.ForeignKey(Category)
   # TODO: Validate tz_begin and tz_end are valid time zones.
@@ -56,7 +54,7 @@ class Entry(models.Model):
                             default=str(timezone.get_current_timezone()))
   description = models.CharField(max_length=255, blank=True)
 
-  def clean(self):
+  def clean (self):
     # Validation of the model as a whole
 
     if (self.t_begin.tzinfo.utcoffset(None) !=
@@ -74,7 +72,7 @@ class Entry(models.Model):
 
     super(Entry, self).clean()
 
-  def save(self, *args, **kwargs):
+  def save (self, *args, **kwargs):
     self.t_begin = timezone.make_naive(self.t_begin,
                                        timezone.get_current_timezone())
     timezone.activate(self.tz_begin)
@@ -92,7 +90,7 @@ class Entry(models.Model):
 
     super(Entry, self).save(*args, **kwargs)
 
-  def __str__(self):
+  def __str__ (self):
     retstr = str(self.user) + ', ' + str(self.category) + ' @ ' \
       + str(self.t_begin.astimezone(pytz.timezone(self.tz_begin))) + ' (' + self.tz_begin + ') - '
     if (self.t_end):
