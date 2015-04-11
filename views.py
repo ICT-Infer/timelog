@@ -154,9 +154,7 @@ def sheet(req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['cat_name'] = cat_name
     ctx_tmp['t_lower_bound_incl'] = t_lower_bound_incl 
     ctx_tmp['t_upper_bound_excl'] = t_upper_bound_excl 
-    ctx_tmp['s_tlbi'] = str(t_lower_bound_incl)
-    ctx_tmp['s_tube'] = str(t_upper_bound_excl)
-    ctx_tmp['s_now'] = str(t_now)
+    ctx_tmp['t_now'] = t_now
     ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
   if (errors):
