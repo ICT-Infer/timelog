@@ -27,7 +27,6 @@ timepoints (such as by `tl pending` and `tl report`).
 
 `tl` is being developed on:
 
-  * FreeBSD/armv6
   * FreeBSD/amd64
   * OpenBSD/i386
   * Mac OS X/powerpc
