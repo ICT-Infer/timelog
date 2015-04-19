@@ -99,7 +99,7 @@ $ python3 manage.py createsuperuser # it will suggest using name 'timelog'. Let 
 
 ## Usage
 
-Start the server.
+### Starting the server
 
 ```
 $ cd ~/venv/ \
