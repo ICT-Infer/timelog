@@ -136,14 +136,14 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
         v_entry = {
           'date':        entry.t_begin.strftime("%F"),
           't_begin':     entry.t_begin.strftime("%T"),
-          'category':    str(db_entry.category),
-          'user':        str(db_entry.user),
-          'description': str(db_entry.description),
+          'category':    db_entry.category,
+          'user':        db_entry.user,
+          'description': db_entry.description,
         }
 
         if entry.t_end:
           v_entry['t_end']    = entry.t_end.strftime("%T")
-          v_entry['duration'] = str(entry.t_end - entry.t_begin)
+          v_entry['duration'] = entry.t_end - entry.t_begin
         else:
           v_entry['t_end']    = None
           v_entry['duration'] = None
@@ -153,7 +153,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     try:
       ctx_tmp['title'] = "%s, %s %s" \
           % (cat_name, t_lower_bound_incl.strftime("%B"),
-             str(t_lower_bound_incl.year))
+             t_lower_bound_incl.year)
     except ValueError as e:
       errors.append(str(e))
 
