@@ -142,3 +142,23 @@ class Entry (models.Model):
                  t_begin = t_begin, tz_begin = self.tz_begin,
                  t_end = t_end, tz_end = self.tz_end,
                  description = self.description)
+
+  def split_on_midnight (self):
+    # Assumes we are working on an entry copied by self.in_localtime()
+
+    if self.t_end and not (self.t_end.date() == self.t_begin.date()):
+      boundary = self.t_begin\
+                   .replace(hour=0, minute=0, second=0, microsecond=0) \
+                 + relativedelta(days=1)
+      return [
+        Entry(user = self.user, category = self.category,
+              t_begin = self.t_begin, tz_begin = self.tz_begin,
+              t_end = boundary, tz_end = self.tz_end,
+              description = self.description)
+      ] + \
+        Entry(user = self.user, category = self.category,
+              t_begin = boundary, tz_begin = self.tz_begin,
+              t_end = self.t_end, tz_end = self.tz_end,
+              description = self.description).split_on_midnight()
+    else:
+      return [self] # TODO MAYBE: Return *copy* of self in list instead.
