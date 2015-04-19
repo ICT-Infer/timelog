@@ -131,7 +131,7 @@ class Entry (models.Model):
     else:
       t_begin = self.t_begin
     if self.t_end:
-      if self.t_end > t_upper_bound_excl:
+      if self.t_end >= t_upper_bound_excl:
         t_end = t_upper_bound_excl - relativedelta(microseconds=1)
       else:
         t_end = self.t_end
@@ -151,14 +151,9 @@ class Entry (models.Model):
                    .replace(hour=0, minute=0, second=0, microsecond=0) \
                  + relativedelta(days=1)
       return [
-        Entry(user = self.user, category = self.category,
-              t_begin = self.t_begin, tz_begin = self.tz_begin,
-              t_end = boundary, tz_end = self.tz_end,
-              description = self.description)
+        self.limited_to_bounds(self.t_begin, boundary)
       ] + \
-        Entry(user = self.user, category = self.category,
-              t_begin = boundary, tz_begin = self.tz_begin,
-              t_end = self.t_end, tz_end = self.tz_end,
-              description = self.description).split_on_midnight()
+        self.limited_to_bounds(boundary, self.t_end + \
+          relativedelta(microseconds=1)).split_on_midnight()
     else:
       return [self] # TODO MAYBE: Return *copy* of self in list instead.
