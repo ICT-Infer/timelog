@@ -6,6 +6,7 @@ import re
 from django.utils import timezone
 from django.core.exceptions import ValidationError
 import pytz
+from dateutil.relativedelta import relativedelta
 
 class Category (models.Model):
   parent = models.ForeignKey("self", null=True, blank=True)
@@ -103,3 +104,41 @@ class Entry (models.Model):
 
   class Meta:
     verbose_name_plural = 'entries'
+
+  #
+  # Transformed copies (might not be the best description for these).
+  # TODO: Prevent transformed copies from being saved.
+  # TODO MAYBE: Enable choosing time zone for these functions.
+  #
+
+  def in_localtime (self):
+    t_begin = timezone.localtime(self.t_begin)
+    tz_begin = str(timezone.get_current_timezone())
+    if self.t_end:
+      t_end = timezone.localtime(self.t_end)
+    else:
+      t_end = None
+    tz_end = str(timezone.get_current_timezone())
+
+    return Entry(user = self.user, category = self.category,
+                 t_begin = t_begin, tz_begin = tz_begin,
+                 t_end = t_end, tz_end = tz_end,
+                 description = self.description)
+
+  def limited_to_bounds (self, t_lower_bound_incl, t_upper_bound_excl):
+    if self.t_begin < t_lower_bound_incl:
+      t_begin = t_lower_bound_incl
+    else:
+      t_begin = self.t_begin
+    if self.t_end:
+      if self.t_end > t_upper_bound_excl:
+        t_end = t_upper_bound_excl - relativedelta(microseconds=1)
+      else:
+        t_end = self.t_end
+    else:
+       t_end = None
+
+    return Entry(user = self.user, category = self.category,
+                 t_begin = t_begin, tz_begin = self.tz_begin,
+                 t_end = t_end, tz_end = self.tz_end,
+                 description = self.description)

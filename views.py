@@ -128,30 +128,24 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     v_entries = []
 
     for db_entry in db_entries:
-      v_entry = {}
+      entry = db_entry.in_localtime()\
+              .limited_to_bounds(t_lower_bound_incl, t_upper_bound_excl)
 
-      # Date and time local to view.
-      t_begin_vl = timezone.localtime(db_entry.t_begin)
-      if t_begin_vl < t_lower_bound_incl:
-        t_begin_vl = t_lower_bound_incl
-      v_entry['view_local'] = {
-        'date': t_begin_vl.strftime("%Y-%m-%d"),
-        't_begin': t_begin_vl.strftime("%H:%M:%S"),
+      v_entry = {
+        'date':        entry.t_begin.strftime("%F"),
+        't_begin':     entry.t_begin.strftime("%T"),
+        'category':    str(db_entry.category),
+        'user':        str(db_entry.user),
+        'description': str(db_entry.description),
       }
-      if (db_entry.t_end):
-        t_end_vl = timezone.localtime(db_entry.t_end)
-        if t_end_vl >= t_upper_bound_excl:
-          t_end_vl = t_upper_bound_excl - relativedelta(microseconds=1)
-        v_entry['view_local']['t_end'] = t_end_vl.strftime("%H:%M:%S")
-        v_entry['duration'] = str(t_end_vl - t_begin_vl)
+
+      if entry.t_end:
+        v_entry['t_end']    = entry.t_end.strftime("%T")
+        v_entry['duration'] = str(entry.t_end - entry.t_begin)
       else:
-        t_end_vl = None
-        v_entry['view_local']['t_end'] = None
+        v_entry['t_end']    = None
         v_entry['duration'] = None
 
-      v_entry['category'] = str(db_entry.category)
-      v_entry['user'] = str(db_entry.user)
-      v_entry['description'] = str(db_entry.description)
       v_entries.append(v_entry)
 
     try:
