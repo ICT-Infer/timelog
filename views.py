@@ -28,6 +28,12 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
 
   return tree
 
+def flatten_tree (tree):
+  flat = []
+  for cat in tree:
+    flat.append(cat['id'])
+    flat += flatten_tree(cat['children'])
+  return flat
 
 #
 # View functions and their subfunctions
@@ -101,16 +107,22 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   view_data = {}
   ctx_tmp = {}
 
+  cats = [cat_id]
+  if not opt['no_recurse']:
+    cats += flatten_tree(category_tree(arg_year, arg_month, arg_fmt_ext, cat_id))
+  ctx_tmp['cats'] = cats
+
   if (not errors):
     # TODO: Grouping
     # TODO: Sorting
     # TODO: Splitting
 
     db_entries = Entry.objects.filter(
-      (Q(t_begin__gte = t_lower_bound_incl)
+      Q(category__in = cats) &
+      ((Q(t_begin__gte = t_lower_bound_incl)
         & Q(t_begin__lt = t_upper_bound_excl))
       | (Q(t_end__gte = t_lower_bound_incl)
-        & Q(t_end__lt = t_upper_bound_excl))
+        & Q(t_end__lt = t_upper_bound_excl)))
     )
 
     v_entries = []
