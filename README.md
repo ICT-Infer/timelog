@@ -102,7 +102,10 @@ $ python3 manage.py createsuperuser # it will suggest using name 'timelog'. Let 
 Start the server.
 
 ```
-$ cd ~/venv/serve/timelog/ && python3 manage.py runserver 0.0.0.0:8000 &
+$ cd ~/venv/ \
+  && source bin/activate \
+  && cd serve/timelog/ \
+  && python3 manage.py runserver 0.0.0.0:8000 &
 ```
 
 The backgrounded process will not count as a job to the shell and
