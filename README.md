@@ -6,6 +6,21 @@ An alternative to my [saas-by-erik/timelog](https://github.com/saas-by-erik/time
 
 Currently a work in progress.
 
+## Table of Contents
+
+* [Compatibility/requirements/dependencies](#compatibilityrequirementsdependencies)
+* [Setup](#setup)
+  - [Installing Python 3.4 from source](#installing-python-34-from-source)
+  - [Setting up a virtualenv](#setting-up-a-virtualenv)
+  - [Activating the virtualenv and installing more dependencies](#activating-the-virtualenv-and-installing-more-dependencies)
+  - [Proceeding with the remainder of the setup](#proceeding-with-the-remainder-of-the-setup)
+* [Usage](#usage)
+  - [Starting the server](#starting-the-server)
+  - [Default Django admin web interface](#default-django-admin-web-interface)
+  - [Time sheets](#time-sheets)
+  - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
+* [Updating](#updating)
+
 ## Compatibility/requirements/dependencies
 
 All dependencies will be installed in the [setup section](#setup) below.
