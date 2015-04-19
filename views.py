@@ -143,7 +143,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
         if entry.t_end:
           v_entry['t_end']    = entry.t_end.strftime("%T")
-          v_entry['duration'] = entry.t_end - entry.t_begin
+          v_entry['duration'] = entry.t_end - entry.t_begin # TODO: Round.
         else:
           v_entry['t_end']    = None
           v_entry['duration'] = None
