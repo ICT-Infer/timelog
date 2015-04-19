@@ -115,7 +115,6 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   if (not errors):
     # TODO: Grouping
     # TODO: Sorting
-    # TODO: Splitting
 
     db_entries = Entry.objects.filter(
       Q(category__in = cats) &
@@ -128,25 +127,28 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     v_entries = []
 
     for db_entry in db_entries:
-      entry = db_entry.in_localtime()\
-              .limited_to_bounds(t_lower_bound_incl, t_upper_bound_excl)
+      entries_split_local = db_entry.in_localtime()\
+                           .limited_to_bounds(t_lower_bound_incl,
+                                              t_upper_bound_excl)\
+                           .split_on_midnight()
 
-      v_entry = {
-        'date':        entry.t_begin.strftime("%F"),
-        't_begin':     entry.t_begin.strftime("%T"),
-        'category':    str(db_entry.category),
-        'user':        str(db_entry.user),
-        'description': str(db_entry.description),
-      }
+      for entry in entries_split_local:
+        v_entry = {
+          'date':        entry.t_begin.strftime("%F"),
+          't_begin':     entry.t_begin.strftime("%T"),
+          'category':    str(db_entry.category),
+          'user':        str(db_entry.user),
+          'description': str(db_entry.description),
+        }
 
-      if entry.t_end:
-        v_entry['t_end']    = entry.t_end.strftime("%T")
-        v_entry['duration'] = str(entry.t_end - entry.t_begin)
-      else:
-        v_entry['t_end']    = None
-        v_entry['duration'] = None
+        if entry.t_end:
+          v_entry['t_end']    = entry.t_end.strftime("%T")
+          v_entry['duration'] = str(entry.t_end - entry.t_begin)
+        else:
+          v_entry['t_end']    = None
+          v_entry['duration'] = None
 
-      v_entries.append(v_entry)
+        v_entries.append(v_entry)
 
     try:
       ctx_tmp['title'] = "%s, %s %s" \
