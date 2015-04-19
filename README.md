@@ -105,6 +105,9 @@ Start the server.
 $ cd ~/venv/serve/timelog/ && python3 manage.py runserver 0.0.0.0:8000 &
 ```
 
+The backgrounded process will not count as a job to the shell and
+will keep running even after you log out.
+
 ### Default Django admin web interface
 
 You *could* begin entering data into django-timelog right now at
