@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <title>{{ title }} - Time sheets - Timelog</title>
 <style>
-.entries > .view_local-date,
-.entries > .view_local-t_begin,
-.entries > .view_local-t_end,
+.entries > .date,
+.entries > .t_begin,
+.entries > .t_end,
 .entries > .duration {
   text-align: right;
 }
@@ -80,9 +80,9 @@
 <!-- TODO: Split entries crossing days into multiple rows -- one per day. -->
 {% for entry in view_data.entries %}
 <tr class="entries">
-  <td class="view_local-date">{{ entry.view_local.date }}</td>
-  <td class="view_local-t_begin">{{ entry.view_local.t_begin }}</td>
-  <td class="view_local-t_end">{% if entry.view_local.t_end %}{{ entry.view_local.t_end }}{% endif %}</td>
+  <td class="date">{{ entry.date }}</td>
+  <td class="t_begin">{{ entry.t_begin }}</td>
+  <td class="t_end">{% if entry.t_end %}{{ entry.t_end }}{% endif %}</td>
   {% if not opt.own_only and not opt.grp_psn %}<td class="user">{{ entry.user }}</td>{% endif %}
   {% if not opt.grp_cat %}<td class="category">{{ entry.category }}</td>{% endif %}
   <td class="description">{{ entry.description }}</td>
