@@ -97,23 +97,30 @@ $ $EDITOR serve/settings.py # Edit TIME_ZONE.
 $ python3 manage.py makemigrations timelog
 $ python3 manage.py migrate
 $ python3 manage.py createsuperuser # it will suggest using name 'timelog'. Let it.
-$ python3 manage.py runserver 0.0.0.0:8000 &
 ```
 
-## Usage with default Django admin web interface
+## Usage
+
+Start the server.
+
+```
+$ cd ~/venv/serve/timelog/ && python3 manage.py runserver 0.0.0.0:8000 &
+```
+
+### Default Django admin web interface
 
 You *could* begin entering data into django-timelog right now at
 `http://<host or IP>:8000/admin/timelog/`.
 It's not great but it's better than nothing.
 
-## Time sheets
+### Time sheets
 
 Time sheets, though incomplete, can be retrieved from 
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-<slug>-<year>-<month>.<format>`, e.g.
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.htm` or
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.json`.
 
-## Dumping data for backup and later restore
+### Dumping data for backup and later restore
 
 ```
 $ cd ~/venv/ \
