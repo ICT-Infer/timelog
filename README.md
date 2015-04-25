@@ -105,8 +105,7 @@ $ cd serve/
 $ git clone https://github.com/erikano/django-timelog.git timelog/
 $ patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch
 $ patch -p2 -d serve/ < timelog/patch/serve/urls.py.patch
-$ export EDITOR=vim # Set it to your prefered editor.
-$ $EDITOR serve/settings.py # Edit TIME_ZONE.
+$ sed -i "s@\(TIME_ZONE = \)'[^']*'\$@\1'$( tzselect )'@" serve/settings.py
 $ python3 manage.py makemigrations timelog
 $ python3 manage.py migrate
 $ python3 manage.py createsuperuser # it will suggest using name 'timelog'. Let it.
