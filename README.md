@@ -37,7 +37,7 @@ Describing the setup procedure using Debian GNU/Linux 7.8 Wheezy.
 
 ```
 # apt-get install postgresql libpq-dev
-# adduser timelog
+# adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
 # su - postgres
 $ psql
 ```
