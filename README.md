@@ -56,8 +56,8 @@ so that you can administer Django accounts for you users.
 ### Starting the server
 
 ```
-sudo -u timelog -i -- bash -c "source ~/venv/bin/activate \
-  && python3 ~/venv/serve/manage.py runserver 0.0.0.0:8000 &"
+sudo -u timelog -i -- bash -c \
+  "python3 ~/venv/serve/manage.py runserver 0.0.0.0:8000 &"
 ```
 
 The backgrounded process will keep running even after you log out.
@@ -78,9 +78,9 @@ Time sheets, though incomplete, can be retrieved from
 ### Dumping data for backup and later restore
 
 ```
-sudo -u timelog -i -- bash -c "source ~/venv/bin/activate \
-  && python3 ~/venv/serve/manage.py dumpdata \
-       > ~/timelog-$( git describe )-dbdump-$( date +%FT%T%z ).json"
+sudo -u timelog -i -- bash -c \
+  "python3 ~/venv/serve/manage.py dumpdata \
+     > ~/timelog-$( git describe )-dbdump-$( date +%FT%T%z ).json"
 ```
 
 Transfer the data dump to somewhere safe!
@@ -88,9 +88,9 @@ Transfer the data dump to somewhere safe!
 ## Updating
 
 ```
-sudo -u timelog -i -- bash -c "source ~/venv/bin/activate \
-  && cd ~/venv/serve/timelog/ \
-  && git pull \
-  && python3 ../manage.py makemigrations timelog \
-  && python3 ../manage.py migrate"
+sudo -u timelog -i -- bash -c \
+  "cd ~/venv/serve/timelog/ \
+   && git pull \
+   && python3 ../manage.py makemigrations timelog \
+   && python3 ../manage.py migrate"
 ```
