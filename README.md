@@ -11,7 +11,7 @@ Currently a work in progress.
 * [Compatibility/requirements/dependencies](#compatibilityrequirementsdependencies)
 * [Installation](#installation)
 * [Usage](#usage)
-  - [Starting, stopping and restarting the server](#starting-stopping-and-restarting-the-server)
+  - [Stopping, starting and restarting the server](#stopping-starting-and-restarting-the-server)
   - [Default Django admin web interface](#default-django-admin-web-interface)
   - [Time sheets](#time-sheets)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
