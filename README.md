@@ -95,7 +95,7 @@ Time sheets, though incomplete, can be retrieved from
 sudo -u timelog -i -- bash -c \
   "cd ~/venv/serve/timelog/ \
    && python3 ~/venv/serve/manage.py dumpdata \
-        > ~/timelog-\$( git describe )-dbdump-$( date +%FT%T%z ).json"
+        > ~/timelog-\$( git describe )-dbdump-$( date +%FT%H%M%S%z ).json"
 ```
 
 Transfer the data dump to somewhere safe!
