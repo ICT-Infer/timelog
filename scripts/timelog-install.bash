@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-elif [ "$#" -ne "0" ] ; then
+if [ "$#" -ne "0" ] ; then
   echo "Usage: $0" 1>&2
   exit 1
 fi
