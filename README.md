@@ -55,6 +55,7 @@ $ exit
 ### Setting up a virtualenv
 
 ```
+# su - timelog
 $ virtualenv-3.4 ~/venv/
 ```
 
