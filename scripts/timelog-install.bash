@@ -44,3 +44,5 @@ sudo -u timelog -i -- bash -c \
    && python3 manage.py makemigrations timelog \
    && python3 manage.py migrate \
    && python3 manage.py createsuperuser"
+
+cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service /etc/systemd/system/ && systemctl daemon-reload
