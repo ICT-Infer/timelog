@@ -10,7 +10,6 @@ Currently a work in progress.
 
 * [Compatibility/requirements/dependencies](#compatibilityrequirementsdependencies)
 * [Setup](#setup)
-  - [Installing Python 3.4 from source](#installing-python-34-from-source)
   - [Setting up a virtualenv](#setting-up-a-virtualenv)
   - [Activating the virtualenv and installing more dependencies](#activating-the-virtualenv-and-installing-more-dependencies)
   - [Proceeding with the remainder of the setup](#proceeding-with-the-remainder-of-the-setup)
@@ -29,14 +28,15 @@ Most notably, we're using:
 
   * Django 1.8
   * Python 3.4
-  * PostgreSQL 9.1
+  * PostgreSQL 9.4
 
 ## Setup
 
-Describing the setup procedure using Debian GNU/Linux 7.8 Wheezy.
+Describing the setup procedure using Debian GNU/Linux 8.0 "Jessie".
 
 ```
-# apt-get install postgresql libpq-dev
+# apt-get install postgresql libpq-dev python3-pip
+# pip3 install virtualenv
 # adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
 # su - postgres
 $ psql
@@ -52,36 +52,10 @@ CREATE DATABASE timelog OWNER timelog;
 $ exit
 ```
 
-### Installing Python 3.4 from source
-
-Jinja2 requires Python 3.3+ but the Python 3 in Debian Wheezy is Python 3.2 and I couldn't find any more recent Python 3 in backports either (though I haven't used backports before, so maybe I did something wrong). We'll install Python 3.4 from source for the `timelog' user. First we'll need to install some dependencies in order to be able to build Python.
-
-
-```
-# apt-get install build-essential \
-                  libncurses5-dev libncursesw5-dev libreadline6-dev \
-                  libdb5.1-dev libgdbm-dev libsqlite3-dev \
-                  libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
-```
-
-Then, in a subdirectory of the home directory of the timelog user, we download the source tarball, build and install it.
-
-```
-# su - timelog
-$ mkdir -p ~/opt/python3.4/
-$ cd ~/opt/python3.4/
-$ wget https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tar.xz
-$ tar xvf Python-3.4.3.tar.xz
-$ cd Python-3.4.3/
-$ ./configure --prefix=/home/timelog/opt/python3.4/
-$ make install
-```
-
 ### Setting up a virtualenv
 
 ```
-$ ~/opt/python3.4/bin/pip3 install virtualenv
-$ ~/opt/python3.4/bin/virtualenv ~/venv/
+$ virtualenv-3.4 ~/venv/
 ```
 
 ### Activating the virtualenv and installing more dependencies
