@@ -51,7 +51,7 @@ which you should leave blank to accept the default value; 'timelog'.
 It will also ask for an e-mail address for that user which I leave blank.
 Finally, it will ask for a password for the user.
 The user created is the one you will log in as to
-the [Django site admin web-UI](#default-django-site-admin-web-interface)
+the [Django site admin web interface](#default-django-site-admin-web-interface)
 so that you can administer Django accounts for you users.
 
 ## Usage
