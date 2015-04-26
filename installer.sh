@@ -25,6 +25,7 @@ EOF
 sudo -u timelog -i -- bash -c "virtualenv-3.4 ~/venv/ \
   && cd ~/venv/ \
   && source bin/activate \
+  && echo 'source ~/venv/bin/activate' >> ~/.bashrc \
   && wget \
        https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz \
   && tar xvf python-dateutil-2.0.tar.gz \
