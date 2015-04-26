@@ -1,14 +1,19 @@
 #!/usr/bin/env bash
 
+elif [ "$#" -ne "0" ] ; then
+  echo "Usage: $0" 1>&2
+  exit 1
+fi
+
 if [ "$( id -u )" -ne "0" ] ; then
   echo "Need root privileges to run." 1>&2
-  exit 1
+  exit 2
 fi
 
 if [ ! "$( cat /etc/issue | head -n1 | cut -d' ' -f1-3 )" == "Debian GNU/Linux 8" ] ; then
   echo "This install script is made for Debian GNU/Linux 8." 1>&2
   echo "You do not appear to be running Debian GNU/Linux 8." 1>&2
-  exit 2
+  exit 3
 fi
 
 apt-get install postgresql libpq-dev python3-pip
