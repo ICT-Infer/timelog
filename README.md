@@ -35,8 +35,8 @@ Please give the install script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-install.sh
-sudo bash ./timelog-install.sh
+wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-install.bash
+sudo bash ./timelog-install.bash
 ```
 
 When you run the install script, you will be asked to pick a time zone.
