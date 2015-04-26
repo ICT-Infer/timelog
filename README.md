@@ -11,7 +11,7 @@ Currently a work in progress.
 * [Compatibility/requirements/dependencies](#compatibilityrequirementsdependencies)
 * [Installation](#installation)
 * [Usage](#usage)
-  - [Starting the server](#starting-the-server)
+  - [Starting, stopping and restarting the server](#starting-stopping-and-restarting-the-server)
   - [Default Django admin web interface](#default-django-admin-web-interface)
   - [Time sheets](#time-sheets)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
@@ -53,14 +53,25 @@ so that you can administer Django accounts for you users.
 
 ## Usage
 
-### Starting the server
+### Stopping, starting and restarting the server
+
+Stopping the server:
 
 ```
-sudo -u timelog -i -- bash -c \
-  "python3 ~/venv/serve/manage.py runserver 0.0.0.0:8000 &"
+sudo systemctl stop timelog.service
 ```
 
-The backgrounded process will keep running even after you log out.
+Starting the server:
+
+```
+sudo systemctl start timelog.service
+```
+
+Restarting the server:
+
+```
+sudo systemctl restart timelog.service
+```
 
 ### Default Django admin web interface
 

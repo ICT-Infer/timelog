@@ -1,0 +1,12 @@
+[Unit]
+Description=Django Timelog App
+After=network.target
+
+[Service]
+Type=simple
+User=timelog
+Group=timelog
+ExecStart=/var/lib/timelog/venv/serve/timelog/systemd-service/run.bash
+
+[Install]
+WantedBy=multi-user.target
