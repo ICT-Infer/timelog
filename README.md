@@ -92,5 +92,5 @@ sudo -u timelog -i -- bash -c "source ~/venv/bin/activate \
   && cd ~/venv/serve/timelog/ \
   && git pull \
   && python3 ../manage.py makemigrations timelog \
-  && python3 ../manage.py migrate
+  && python3 ../manage.py migrate"
 ```
