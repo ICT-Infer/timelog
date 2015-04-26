@@ -37,6 +37,8 @@ and prior to running it.
 ```
 wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-install.bash
 sudo bash ./timelog-install.bash
+sudo systemctl enable timelog.service
+sudo systemctl start timelog.service
 ```
 
 When you run the install script, you will be asked to pick a time zone.
