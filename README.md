@@ -52,7 +52,7 @@ wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/tim
 sudo bash ./timelog-install.bash
 ```
 
-Then enable the timelog service and start it:
+Once the install script has finished, enable the timelog service and start it:
 
 ```
 sudo systemctl enable timelog.service
