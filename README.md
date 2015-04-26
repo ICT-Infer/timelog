@@ -10,6 +10,7 @@ Currently a work in progress.
 
 * [Compatibility/requirements/dependencies](#compatibilityrequirementsdependencies)
 * [Installation](#installation)
+  - [Enable and start](#enable-and-start)
 * [Usage](#usage)
   - [Stopping, starting and restarting the server](#stopping-starting-and-restarting-the-server)
   - [Default Django site admin web interface](#default-django-site-admin-web-interface)
@@ -37,8 +38,6 @@ and prior to running it.
 ```
 wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-install.bash
 sudo bash ./timelog-install.bash
-sudo systemctl enable timelog.service
-sudo systemctl start timelog.service
 ```
 
 When you run the install script, you will be asked to pick a time zone.
@@ -53,6 +52,13 @@ Finally, it will ask for a password for the user.
 The user created is the one you will log in as to
 the [Django site admin web interface](#default-django-site-admin-web-interface)
 so that you can administer Django accounts for yourself and other users.
+
+### Enable and start
+
+```
+sudo systemctl enable timelog.service
+sudo systemctl start timelog.service
+```
 
 ## Usage
 
