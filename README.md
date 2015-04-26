@@ -9,10 +9,7 @@ Currently a work in progress.
 ## Table of Contents
 
 * [Compatibility/requirements/dependencies](#compatibilityrequirementsdependencies)
-* [Setup](#setup)
-  - [Setting up a virtualenv](#setting-up-a-virtualenv)
-  - [Activating the virtualenv and installing more dependencies](#activating-the-virtualenv-and-installing-more-dependencies)
-  - [Proceeding with the remainder of the setup](#proceeding-with-the-remainder-of-the-setup)
+* [Installation](#installation)
 * [Usage](#usage)
   - [Starting the server](#starting-the-server)
   - [Default Django admin web interface](#default-django-admin-web-interface)
@@ -22,7 +19,7 @@ Currently a work in progress.
 
 ## Compatibility/requirements/dependencies
 
-All dependencies will be installed in the [setup section](#setup) below.
+All dependencies will be installed during [installation](#installation).
 
 Most notably, we're using:
 
@@ -30,75 +27,40 @@ Most notably, we're using:
   * Python 3.4
   * PostgreSQL 9.4
 
-## Setup
+## Installation
 
-Describing the setup procedure using Debian GNU/Linux 8.0 "Jessie".
+For Debian GNU/Linux 8.0 "Jessie", an install script is provided.
 
-```
-# apt-get install postgresql libpq-dev python3-pip
-# pip3 install virtualenv
-# adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
-# su - postgres
-$ psql
-```
+Please give the install script a read-through after you've downloaded it
+and prior to running it.
 
 ```
-CREATE USER timelog;
-CREATE DATABASE timelog OWNER timelog;
-\q
+wget https://raw.githubusercontent.com/erikano/django-timelog/master/installer.sh
+sudo bash ./installer.sh
 ```
 
-```
-$ exit
-```
+When you run the install script, you will be asked to pick a time zone.
+Please note that this will *not* affect your Debian system time zone --
+the value you pick will only be used in the Django project created
+for the Django Timelog App.
 
-### Setting up a virtualenv
-
-```
-# su - timelog
-$ virtualenv-3.4 ~/venv/
-```
-
-### Activating the virtualenv and installing more dependencies
-
-```
-$ cd ~/venv/
-$ source bin/activate
-$ wget https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz
-$ tar xvf python-dateutil-2.0.tar.gz
-$ cd python-dateutil-2.0/
-$ python3 setup.py install
-$ cd ../
-$ pip3 install django pytz Unidecode Jinja2 psycopg2
-```
-
-### Proceeding with the remainder of the setup
-
-```
-$ django-admin startproject serve
-$ cd serve/
-$ git clone https://github.com/erikano/django-timelog.git timelog/
-$ patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch
-$ patch -p2 -d serve/ < timelog/patch/serve/urls.py.patch
-$ sed -i "s@\(TIME_ZONE = \)'[^']*'\$@\1'$( tzselect )'@" serve/settings.py
-$ python3 manage.py makemigrations timelog
-$ python3 manage.py migrate
-$ python3 manage.py createsuperuser # it will suggest using name 'timelog'. Let it.
-```
+Also, during the install script run, you will be asked for a username
+which you should leave blank to accept the default value; 'timelog'.
+It will also ask for an e-mail address for that user which I leave blank.
+Finally, it will ask for a password for the user.
+The user created is the one you will log into the Django Admin web-UI with
+so that you can administer Django accounts for you users.
 
 ## Usage
 
 ### Starting the server
 
 ```
-$ cd ~/venv/ \
-  && source bin/activate \
-  && cd serve/timelog/ \
-  && python3 manage.py runserver 0.0.0.0:8000 &
+sudo -u timelog -i -- bash -c "source ~/venv/bin/activate \
+  && python3 ~/venv/serve/manage.py runserver 0.0.0.0:8000 &"
 ```
 
-The backgrounded process will not count as a job to the shell and
-will keep running even after you log out.
+The backgrounded process will keep running even after you log out.
 
 ### Default Django admin web interface
 
@@ -116,11 +78,9 @@ Time sheets, though incomplete, can be retrieved from
 ### Dumping data for backup and later restore
 
 ```
-$ cd ~/venv/ \
-  && source bin/activate \
-  && cd serve/timelog/ \
-  && python3 ../manage.py dumpdata \
-       > ~/timelog-$( git describe )-dbdump-$( date +%FT%T%z ).json
+sudo -u timelog -i -- bash -c "source ~/venv/bin/activate \
+  && python3 ~/venv/serve/manage.py dumpdata \
+       > ~/timelog-$( git describe )-dbdump-$( date +%FT%T%z ).json"
 ```
 
 Transfer the data dump to somewhere safe!
@@ -128,9 +88,8 @@ Transfer the data dump to somewhere safe!
 ## Updating
 
 ```
-$ cd ~/venv/ \
-  && source bin/activate \
-  && cd serve/timelog/ \
+sudo -u timelog -i -- bash -c "source ~/venv/bin/activate \
+  && cd ~/venv/serve/timelog/ \
   && git pull \
   && python3 ../manage.py makemigrations timelog \
   && python3 ../manage.py migrate
