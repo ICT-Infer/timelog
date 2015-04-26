@@ -22,24 +22,25 @@ CREATE USER timelog;
 CREATE DATABASE timelog OWNER timelog;
 EOF
 
-sudo -u timelog -i -- bash -c "virtualenv-3.4 ~/venv/ \
-  && cd ~/venv/ \
-  && source bin/activate \
-  && echo 'source ~/venv/bin/activate' >> ~/.bashrc \
-  && wget \
-       https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz \
-  && tar xvf python-dateutil-2.0.tar.gz \
-  && cd python-dateutil-2.0/ \
-  && python3 setup.py install \
-  && cd ../ \
-  && pip3 install django pytz Unidecode Jinja2 psycopg2 \
-  && django-admin startproject serve \
-  && cd serve/ \
-  && git clone https://github.com/erikano/django-timelog.git timelog/ \
-  && patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch \
-  && patch -p2 -d serve/ < timelog/patch/serve/urls.py.patch \
-  && sed -i \"s@\\\(TIME_ZONE = \\\)'[^']*'\\\$@\\\1'$( tzselect )'@\" \
-       serve/settings.py \
-  && python3 manage.py makemigrations timelog \
-  && python3 manage.py migrate \
-  && python3 manage.py createsuperuser"
+sudo -u timelog -i -- bash -c \
+  "virtualenv-3.4 ~/venv/ \
+   && cd ~/venv/ \
+   && source bin/activate \
+   && echo 'source ~/venv/bin/activate' >> ~/.bashrc \
+   && wget \
+        https://labix.org/download/python-dateutil/python-dateutil-2.0.tar.gz \
+   && tar xvf python-dateutil-2.0.tar.gz \
+   && cd python-dateutil-2.0/ \
+   && python3 setup.py install \
+   && cd ../ \
+   && pip3 install django pytz Unidecode Jinja2 psycopg2 \
+   && django-admin startproject serve \
+   && cd serve/ \
+   && git clone https://github.com/erikano/django-timelog.git timelog/ \
+   && patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch \
+   && patch -p2 -d serve/ < timelog/patch/serve/urls.py.patch \
+   && sed -i \"s@\\\(TIME_ZONE = \\\)'[^']*'\\\$@\\\1'$( tzselect )'@\" \
+        serve/settings.py \
+   && python3 manage.py makemigrations timelog \
+   && python3 manage.py migrate \
+   && python3 manage.py createsuperuser"
