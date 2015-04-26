@@ -12,7 +12,7 @@ Currently a work in progress.
 * [Installation](#installation)
 * [Usage](#usage)
   - [Stopping, starting and restarting the server](#stopping-starting-and-restarting-the-server)
-  - [Default Django admin web interface](#default-django-admin-web-interface)
+  - [Default Django site admin web interface](#default-django-site-admin-web-interface)
   - [Time sheets](#time-sheets)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
 * [Updating](#updating)
@@ -50,7 +50,8 @@ Also, during the install script run, you will be asked for a username
 which you should leave blank to accept the default value; 'timelog'.
 It will also ask for an e-mail address for that user which I leave blank.
 Finally, it will ask for a password for the user.
-The user created is the one you will log into the Django Admin web-UI with
+The user created is the one you will log in as to
+the [Django site admin web-UI](#default-django-site-admin-web-interface)
 so that you can administer Django accounts for you users.
 
 ## Usage
@@ -75,7 +76,7 @@ Restarting the server:
 sudo systemctl restart timelog.service
 ```
 
-### Default Django admin web interface
+### Default Django site admin web interface
 
 You *could* begin entering data into django-timelog right now at
 `http://<host or IP>:8000/admin/timelog/`.
