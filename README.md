@@ -37,7 +37,7 @@ All dependencies will be installed during [installation](#installation).
 For [supported platforms](#supported-platforms), an install script is provided.
 
 When you run the install script, you will be asked to pick a time zone.
-Please note that this will *not* affect your Debian system time zone --
+Please note that this will *not* affect your system time zone --
 the value you pick will only be used in the Django project created
 for the Django Timelog App.
 
