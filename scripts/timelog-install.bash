@@ -41,7 +41,32 @@ sudo -u timelog -i -- bash -c \
    && sed -i \"s@\\\(TIME_ZONE = \\\)'[^']*'\\\$@\\\1'$( tzselect )'@\" \
         serve/settings.py \
    && python3 manage.py makemigrations timelog \
-   && python3 manage.py migrate \
-   && python3 manage.py createsuperuser"
+   && python3 manage.py migrate"
+
+echo "Django site admin web interface super user account creation" 1>&2
+wui_user=timelog
+echo "Using username \`$wui_user'"
+read -p "Use a random password? [y/N] " -n 1 -r wui_pass_random
+if [ ! $wui_pass_random == "" ] ; then
+  echo
+fi
+if [[ $wui_pass_random =~ ^[Yy]$ ]] ; then
+  wui_pass=$( egrep -o ^[a-z]+$ /usr/share/dict/words | shuf -n4 | xargs echo )
+  echo "Using random password \`$wui_pass'."
+else
+  while [ -z $wui_pass ] || [ ! "$wui_pass_a" == "$wui_pass_b" ] ; do
+    read -p "Enter password: " -r -s wui_pass_a
+    echo
+    read -p "Confirm password: " -r -s wui_pass_b
+    echo
+    wui_pass="$wui_pass_a"
+  done
+fi
+
+sudo -u timelog -i -- bash -c \
+  "python3 ~/venv/serve/manage.py shell" <<EOF
+from django.contrib.auth.models import User
+User.objects.create_superuser('timelog', '', '$wui_pass')
+EOF
 
 cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service /etc/systemd/system/ && systemctl daemon-reload
