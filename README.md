@@ -34,7 +34,7 @@ All dependencies will be installed during [installation](#installation).
 
 ## Installation
 
-For Debian GNU/Linux 8.0 "Jessie", an install script is provided.
+For supported platforms, an install script is provided.
 
 When you run the install script, you will be asked to pick a time zone.
 Please note that this will *not* affect your Debian system time zone --
