@@ -36,13 +36,9 @@ Please note that this will *not* affect your Debian system time zone --
 the value you pick will only be used in the Django project created
 for the Django Timelog App.
 
-Also, during the install script run, you will be asked for a username
-which you should leave blank to accept the default value; 'timelog'.
-It will also ask for an e-mail address for that user which I leave blank.
-Finally, it will ask for a password for the user.
-The user created is the one you will log in as to
-the [Django site admin web interface](#default-django-site-admin-web-interface)
-so that you can administer Django accounts for yourself and other users.
+Also, during the install script run, you will be asked for a password
+to use for the timelog Django super user account. See also:
+[Django site admin web interface](#default-django-site-admin-web-interface).
 
 Please give the install script a read-through after you've downloaded it
 and prior to running it.
