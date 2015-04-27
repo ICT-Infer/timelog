@@ -44,6 +44,7 @@ sudo -u timelog -i -- bash -c \
    && python3 manage.py makemigrations timelog \
    && python3 manage.py migrate"
 
+echo
 echo "Django site admin web interface super user account creation" 1>&2
 wui_user=timelog
 echo "Using username \`$wui_user'"
