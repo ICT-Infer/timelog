@@ -107,6 +107,7 @@ Transfer the data dump to somewhere safe!
 sudo -u timelog -i -- bash -c \
   "cd ~/venv/serve/timelog/ \
    && git pull \
+   && pip install -U -r requirements.txt \
    && python3 ../manage.py makemigrations timelog \
    && python3 ../manage.py migrate"
 ```

@@ -32,10 +32,11 @@ sudo -u timelog -i -- bash -c \
    && cd ~/venv/ \
    && source bin/activate \
    && echo 'source ~/venv/bin/activate' >> ~/.bash_profile \
-   && pip3 install django pytz python-dateutil Unidecode Jinja2 psycopg2 \
-   && django-admin startproject serve \
-   && cd serve/ \
    && git clone https://github.com/erikano/django-timelog.git timelog/ \
+   && pip3 install -r timelog/requirements.txt \
+   && django-admin startproject serve \
+   && mv timelog/ serve/timelog/ \
+   && cd serve/ \
    && patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch \
    && patch -p2 -d serve/ < timelog/patch/serve/urls.py.patch \
    && sed -i \"s@\\\(TIME_ZONE = \\\)'[^']*'\\\$@\\\1'$( tzselect )'@\" \
