@@ -37,7 +37,7 @@ the value you pick will only be used in the Django project created
 for the Django Timelog App.
 
 Also, during the install script run, you will be asked for a password
-to use for the timelog Django super user account. See also:
+to use for the timelog Django superuser account. See also:
 [Django site admin web interface](#default-django-site-admin-web-interface).
 
 Please give the install script a read-through after you've downloaded it
