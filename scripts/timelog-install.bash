@@ -45,7 +45,7 @@ sudo -u timelog -i -- bash -c \
    && python3 manage.py migrate"
 
 echo
-echo "Django site admin web interface super user account creation" 1>&2
+echo "Django site admin web interface superuser account creation" 1>&2
 wui_user=timelog
 echo "Using username \`$wui_user'"
 read -p "Use a random password? [y/N] " -n 1 -r wui_pass_random
