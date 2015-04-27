@@ -8,7 +8,8 @@ Currently a work in progress.
 
 ## Table of Contents
 
-* [Compatibility/requirements/dependencies](#compatibilityrequirementsdependencies)
+* [Supported platforms](#supported-platforms)
+* [Dependencies](#dependencies)
 * [Installation](#installation)
 * [Usage](#usage)
   - [Stopping, starting and restarting the server](#stopping-starting-and-restarting-the-server)
@@ -17,15 +18,19 @@ Currently a work in progress.
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
 * [Updating](#updating)
 
-## Compatibility/requirements/dependencies
+## Supported platforms
 
-All dependencies will be installed during [installation](#installation).
+* Debian GNU/Linux 8.0 "Jessie"
 
-Most notably, we're using:
+## Dependencies
+
+Most notable dependencies:
 
   * Django 1.8
   * Python 3.4
   * PostgreSQL 9.4
+
+All dependencies will be installed during [installation](#installation).
 
 ## Installation
 
