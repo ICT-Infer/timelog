@@ -34,7 +34,7 @@ All dependencies will be installed during [installation](#installation).
 
 ## Installation
 
-For supported platforms, an install script is provided.
+For [supported platforms](#supported-platforms), an install script is provided.
 
 When you run the install script, you will be asked to pick a time zone.
 Please note that this will *not* affect your Debian system time zone --
