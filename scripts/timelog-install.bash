@@ -71,4 +71,6 @@ from django.contrib.auth.models import User
 User.objects.create_superuser('timelog', '', '$wui_pass')
 EOF
 
-cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service /etc/systemd/system/ && systemctl daemon-reload
+cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
+  /etc/systemd/system/ \
+&& systemctl daemon-reload
