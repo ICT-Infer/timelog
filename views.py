@@ -136,14 +136,14 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
         v_entry = {
           'date':        entry.t_begin.strftime("%F"),
           't_begin':     entry.t_begin.strftime("%T"),
-          'category':    db_entry.category,
-          'user':        db_entry.user,
+          'category':    str(db_entry.category),
+          'user':        str(db_entry.user),
           'description': db_entry.description,
         }
 
         if entry.t_end:
           v_entry['t_end']    = entry.t_end.strftime("%T")
-          v_entry['duration'] = entry.t_end - entry.t_begin # TODO: Round.
+          v_entry['duration'] = str(entry.t_end - entry.t_begin) # TODO: Round.
         else:
           v_entry['t_end']    = None
           v_entry['duration'] = None
