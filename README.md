@@ -90,7 +90,7 @@ It's not great but it's better than nothing.
 
 ### Time sheets
 
-Time sheets, though incomplete, can be retrieved from 
+Time sheets, though incomplete, can be retrieved from
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-<slug>-<year>-<month>.<format>`, e.g.
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.htm` or
 `http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.json`.

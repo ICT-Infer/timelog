@@ -163,8 +163,8 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['opt'] = opt
     ctx_tmp['cat_id'] = cat_id
     ctx_tmp['cat_name'] = cat_name
-    ctx_tmp['t_lower_bound_incl'] = t_lower_bound_incl 
-    ctx_tmp['t_upper_bound_excl'] = t_upper_bound_excl 
+    ctx_tmp['t_lower_bound_incl'] = t_lower_bound_incl
+    ctx_tmp['t_upper_bound_excl'] = t_upper_bound_excl
     ctx_tmp['t_now'] = t_now
     ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
