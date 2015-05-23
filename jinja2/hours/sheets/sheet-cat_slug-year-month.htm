@@ -80,7 +80,7 @@
   <th>Duration</th>
 </tr>
 </thead>
-<tbody>
+<tbody class="entries">
 {% for entry in view_data.entries %}
 <tr class="entry">
   <td class="date">{{ entry.date }}</td>
@@ -92,12 +92,12 @@
   <td class="duration">{% if entry.duration %}{{ entry.duration }}{% endif %}</td>
 </tr>
 {% endfor %}
+</tbody>
 <tr class="calculation total">
   <!-- TODO: Adjust colspan according to groupings. -->
   <th colspan="6">Total sum hours</td>
   <td class="sum duration">{{ view_data.sum_duration }}</td>
 </tr>
-</tbody>
 </table>
 </body>
 </html>
