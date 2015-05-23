@@ -1,0 +1,10 @@
+.entry > .date,
+.entry > .t_begin,
+.entry > .t_end,
+.entry > .duration,
+.calculation > .duration {
+  text-align: right;
+}
+.calculation > th {
+  text-align: left;
+}
