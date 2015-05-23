@@ -123,7 +123,7 @@ class Entry (models.Model):
     return Entry(user = self.user, category = self.category,
                  t_begin = t_begin, tz_begin = tz_begin,
                  t_end = t_end, tz_end = tz_end,
-                 description = self.description)
+                 description = self.description, pk = self.pk)
 
   def limited_to_bounds (self, t_lower_bound_incl, t_upper_bound_excl):
     if self.t_begin < t_lower_bound_incl:
@@ -141,7 +141,7 @@ class Entry (models.Model):
     return Entry(user = self.user, category = self.category,
                  t_begin = t_begin, tz_begin = self.tz_begin,
                  t_end = t_end, tz_end = self.tz_end,
-                 description = self.description)
+                 description = self.description, pk = self.pk)
 
   def split_on_midnight (self):
     # Assumes we are working on an entry copied by self.in_localtime()
