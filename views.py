@@ -165,7 +165,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     # TODO: Sum for each kind of grouping
     sdts = sum([e['duration'] for e in v_entries if e['duration']],
                datetime.timedelta()).total_seconds()
-    v_sum_duration = "%02d:%02d:%02d" \
+    v_sum_duration = "%d:%02d:%02d" \
                      % (sdts // 3600, (sdts % 3600) // 60, sdts % 60)
 
     # Turn durations into strings so they're JSON serializeable.
