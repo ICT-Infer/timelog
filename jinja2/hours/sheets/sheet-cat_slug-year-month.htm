@@ -38,24 +38,28 @@
 <div>
 <label for="no-recurse">No recurse</label>
 <input type="checkbox" name="no-recurse" id="no-recurse"
-  value="1" {% if opt.no_recurse %}checked{% endif %} />
+  value="1" {% if opt.no_recurse %}checked{% endif %}
+  {% if opt.grp_cat %}disabled{% endif %} />
 </div>
 <div>
 <label for="own-entries-only">List own entries only</label>
 <input type="checkbox" name="own-entries-only" id="own-entries-only"
-  value="1" {% if opt.own_only %}checked{% endif %} />
+  value="1" {% if opt.own_only %}checked{% endif %}
+  {% if opt.grp_psn %}disabled{% endif %} />
 </div>
 <fieldset id="group-by">
 <legend>Group by</legend>
 <div>
 <label for="group-by-category">Category</label>
 <input type="checkbox" name="group-by-category" id="group-by-category"
-  value="1" {% if opt.grp_cat %}checked{% endif %} />
+  value="1" {% if opt.grp_cat %}checked{% endif %}
+  {% if opt.no_recurse %}disabled{% endif %} />
 </div>
 <div>
 <label for="group-by-person">Person</label>
 <input type="checkbox" name="group-by-person" id="group-by-person"
-  value="1" {% if opt.grp_psn %}checked{% endif %} />
+  value="1" {% if opt.grp_psn %}checked{% endif %}
+  {% if opt.own_only %}disabled{% endif %} />
 </div>
 <div>
 <label for="group-by-week">Week</label>
