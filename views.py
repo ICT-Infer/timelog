@@ -142,7 +142,11 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
         if entry.t_end:
           v_entry['t_end']    = entry.t_end.strftime("%T")
-          v_entry['duration'] = str(entry.t_end - entry.t_begin) # TODO: Round.
+          # Rounded duration
+          d = entry.t_end - entry.t_begin
+          v_entry['duration'] = d - datetime.timedelta(
+            seconds=(-1 if (d.microseconds >= 500) else 0),
+            microseconds=d.microseconds)
         else:
           v_entry['t_end']    = None
           v_entry['duration'] = None
