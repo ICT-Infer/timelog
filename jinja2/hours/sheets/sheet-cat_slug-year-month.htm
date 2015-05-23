@@ -6,6 +6,7 @@
 <link rel="stylesheet" href="/static/css/sheets.css">
 </head>
 <body>
+<div id="ui-main">
 <header>
 <h1>Timelog</h1>
 <h2>Hours</h2>
@@ -25,37 +26,50 @@
   <option value="{{ t_lower_bound_incl.month }}">{{ t_lower_bound_incl.month }}</option>
 </select>
 <button type="submit">Navigate</button>
+</form>
+<div>
+<!-- TODO: Log in/log out -->
+<a id="log-out" href="">Log out</a>
 <!-- TODO: Make add-new initiate adding new category/entry. -->
 <a id="add-new" title="Add a new category or entry." href="">+</a>
-</form>
+</div>
+</div>
 <form id="options" method="GET">
+<div>
 <label for="no-recurse">No recurse</label>
 <input type="checkbox" name="no-recurse" id="no-recurse"
   value="1" {% if opt.no_recurse %}checked{% endif %} />
+</div>
+<div>
 <label for="own-entries-only">List own entries only</label>
 <input type="checkbox" name="own-entries-only" id="own-entries-only"
   value="1" {% if opt.own_only %}checked{% endif %} />
+</div>
 <fieldset id="group-by">
 <legend>Group by</legend>
+<div>
 <label for="group-by-category">Category</label>
 <input type="checkbox" name="group-by-category" id="group-by-category"
   value="1" {% if opt.grp_cat %}checked{% endif %} />
+</div>
+<div>
 <label for="group-by-person">Person</label>
 <input type="checkbox" name="group-by-person" id="group-by-person"
   value="1" {% if opt.grp_psn %}checked{% endif %} />
+</div>
+<div>
 <label for="group-by-week">Week</label>
 <input type="checkbox" name="group-by-week" id="group-by-week"
   value="1" {% if opt.grp_week %}checked{% endif %} />
+</div>
 </fieldset>
+<a id="opt-defaults" title="Reset option values to their defaults." href="{{ req_path }}">Reset</a>
 <button type="submit">Update view</button>
-<a id="opt-defaults" title="Reset option values to their defaults." href="{{ req_path }}">Reset to default values</a>
 </form>
-<!-- TODO: Log in/log out -->
-<a id="log-out" href="">Log out</a>
 <!-- TODO: Use name of person where it now says just "User real name". -->
-<h1>{{ title }}{% if opt.own_only %} (User real name){% endif %}</h1>
-<p>Range [{{ t_lower_bound_incl }}, {{ t_upper_bound_excl }}), time zone {{ tz }}.</p>
-<p>Generated around the time of {{ t_now }}.</p>
+<h1 id="sheet-title">{{ title }}{% if opt.own_only %} (User real name){% endif %}</h1>
+<p class="debug">Range [{{ t_lower_bound_incl }}, {{ t_upper_bound_excl }}), time zone {{ tz }}.</p>
+<p class="debug">Generated around the time of {{ t_now }}.</p>
 <!-- TODO: Grouping -->
 <table>
 <thead>
