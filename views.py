@@ -86,6 +86,8 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   # Options from GET parameters
   # TODO: Handle invalid values.
+  # TODO MAYBE: Make opts no_recurse and grp_cat mutually exclusive?
+  # TODO MAYBE: Make opts own_only and grp_psn mutually exclusive?
   # TODO: Separate input handling from rest of function.
   opt = {}
   opt['no_recurse'] = int(req.GET.get('no-recurse', 0))
