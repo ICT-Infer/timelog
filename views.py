@@ -114,7 +114,6 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   if (not errors):
     # TODO: Grouping
-    # TODO: Sorting
 
     db_entries = Entry.objects.filter(
       Q(category__in = cats) &
@@ -149,6 +148,11 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
           v_entry['duration'] = None
 
         v_entries.append(v_entry)
+
+    # Sorting on string representation is not so pretty but it's convenient.
+    v_entries.sort(
+      key = lambda e: e['date'] + "T" + e['t_begin']
+                                + "-" + (e['t_end'] or "None"))
 
     try:
       ctx_tmp['title'] = "%s, %s %s" \
