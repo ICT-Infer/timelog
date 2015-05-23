@@ -158,6 +158,16 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
       key = lambda e: e['date'] + "T" + e['t_begin']
                                 + "-" + (e['t_end'] or "None"))
 
+    # TODO: Sum for each kind of grouping
+    sdts = sum([e['duration'] for e in v_entries if e['duration']],
+               datetime.timedelta()).total_seconds()
+    v_sum_duration = "%02d:%02d:%02d" \
+                     % (sdts // 3600, (sdts % 3600) // 60, sdts % 60)
+
+    # Turn durations into strings so they're JSON serializeable.
+    for e in v_entries:
+      e['duration'] = (str(e['duration']) if e['duration'] else None)
+
     try:
       ctx_tmp['title'] = "%s, %s %s" \
           % (cat_name, t_lower_bound_incl.strftime("%B"),
@@ -186,6 +196,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     view_data['overview'] = "index-" + arg_year \
                             + "-" + arg_month + "." + arg_fmt_ext
     view_data['entries'] = v_entries
+    view_data['sum_duration'] = v_sum_duration
     ctx_tmp['view_data'] = view_data
     ctx_tmp['req_path'] = req.path
 
