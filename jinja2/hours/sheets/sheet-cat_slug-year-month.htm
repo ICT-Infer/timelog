@@ -74,8 +74,8 @@
   <th>Date</th>
   <th>Begin</th>
   <th>End</th>
-  {% if not opt.own_only and not opt.grp_psn %}<th>User</th>{% endif %}
-  {% if not opt.grp_cat %}<th>Category</th>{% endif %}
+  {% if (not opt.own_only) and (not opt.grp_psn) %}<th>User</th>{% endif %}
+  {% if (not opt.no_recurse) and (not opt.grp_cat) %}<th>Category</th>{% endif %}
   <th>Description</th>
   <th>Duration</th>
 </tr>
@@ -86,16 +86,22 @@
   <td class="date">{{ entry.date }}</td>
   <td class="t_begin">{{ entry.t_begin }}</td>
   <td class="t_end">{% if entry.t_end %}{{ entry.t_end }}{% endif %}</td>
-  {% if not opt.own_only and not opt.grp_psn %}<td class="user">{{ entry.user }}</td>{% endif %}
-  {% if not opt.grp_cat %}<td class="category">{{ entry.category }}</td>{% endif %}
+  {% if (not opt.own_only) and (not opt.grp_psn) %}<td class="user">{{ entry.user }}</td>{% endif %}
+  {% if (not opt.no_recurse) and (not opt.grp_cat) %}<td class="category">{{ entry.category }}</td>{% endif %}
   <td class="description">{{ entry.description }}</td>
   <td class="duration">{% if entry.duration %}{{ entry.duration }}{% endif %}</td>
 </tr>
 {% endfor %}
 </tbody>
+{% set cols = 7 %}
+{% if (opt.own_only) or (opt.grp_psn) %}
+  {% set cols = cols - 1 %}
+{% endif %}
+{% if (opt.no_recurse) or (opt.grp_cat) %}
+  {% set cols = cols - 1 %}
+{% endif %}
 <tr class="calculation total">
-  <!-- TODO: Adjust colspan according to groupings. -->
-  <th colspan="6">Total sum hours</td>
+  <th colspan="{{ cols - 1 }}">Total sum hours</td>
   <td class="sum duration">{{ view_data.sum_duration }}</td>
 </tr>
 </table>
