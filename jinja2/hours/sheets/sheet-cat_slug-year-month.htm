@@ -82,7 +82,7 @@
 </thead>
 <tbody class="entries">
 {% for entry in view_data.entries %}
-<tr class="entry">
+<tr class="entry" id="{{ entry.id }}">
   <td class="date">{{ entry.date }}</td>
   <td class="t_begin">{{ entry.t_begin }}</td>
   <td class="t_end">{% if entry.t_end %}{{ entry.t_end }}{% endif %}</td>

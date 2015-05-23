@@ -133,8 +133,10 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
                                               t_upper_bound_excl)\
                            .split_on_midnight()
 
-      for entry in entries_split_local:
+      for i, entry in enumerate(entries_split_local):
         v_entry = {
+          # "-lpt-" in id means "local part", as in part within the date bounds
+          'id':          "e-" + str(entry.pk) + "-lpt-" + str(i),
           'date':        entry.t_begin.strftime("%F"),
           't_begin':     entry.t_begin.strftime("%T"),
           'category':    str(db_entry.category),
