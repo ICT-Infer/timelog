@@ -23,7 +23,7 @@
 </select>
 <label for="month">Month</label>
 <select name="month" id="month">
-  <option value="{{ t_lower_bound_incl.month }}">{{ t_lower_bound_incl.month }}</option>
+  <option value="{{ t_lower_bound_incl.month }}">{{ "%02d" % t_lower_bound_incl.month }}</option>
 </select>
 <button type="submit">Navigate</button>
 </form>
