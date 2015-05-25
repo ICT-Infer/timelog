@@ -31,7 +31,7 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
 
 def flattened (tree):
   for cat in tree:
-    yield cat['id']
+    yield cat
     yield from flattened(cat['children'])
 
 #
@@ -78,8 +78,10 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   month = int(arg_month)
 
   cat = Category.objects.get(slug=cat_slug)
-  cat_id = cat.id
-  cat_name = cat.name
+  cat = {'id': cat.id, 'name': cat.name, 'description': cat.description,
+         'slug': cat.slug, 'sum_hours': "XX:XX",
+         'details': "sheet-" + cat.slug + "-" + arg_year + "-" + arg_month \
+                    + "." + arg_fmt_ext, }
 
   errors = []
 
@@ -108,16 +110,16 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   view_data = {}
   ctx_tmp = {}
 
-  cats = [cat_id]
+  cats = [cat]
   if not opt['no_recurse']:
-    cats = itertools.chain(cats, flattened(category_tree(arg_year, arg_month, arg_fmt_ext, cat_id)))
+    cats = itertools.chain(cats, flattened(category_tree(arg_year, arg_month, arg_fmt_ext, cat['id'])))
   ctx_tmp['cats'] = cats
 
   if (not errors):
     # TODO: Grouping
 
     db_entries = Entry.objects.filter(
-      Q(category__in = list(cats)) &
+      Q(category__in = [cat['id'] for cat in cats]) &
       ((Q(t_begin__gte = t_lower_bound_incl)
         & Q(t_begin__lt = t_upper_bound_excl))
       | (Q(t_end__gte = t_lower_bound_incl)
@@ -173,7 +175,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
     try:
       ctx_tmp['title'] = "%s, %s %s" \
-          % (cat_name, t_lower_bound_incl.strftime("%B"),
+          % (cat['name'], t_lower_bound_incl.strftime("%B"),
              t_lower_bound_incl.year)
     except ValueError as e:
       errors.append(str(e))
@@ -182,8 +184,8 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['redir']['sheet'] = "/timelog/redir/sheet.htm"
     ctx_tmp['query_str'] = req.GET.urlencode()
     ctx_tmp['opt'] = opt
-    ctx_tmp['cat_id'] = cat_id
-    ctx_tmp['cat_name'] = cat_name
+    ctx_tmp['cat_id'] = cat['id']
+    ctx_tmp['cat_name'] = cat['name']
     ctx_tmp['t_lower_bound_incl'] = t_lower_bound_incl
     ctx_tmp['t_upper_bound_excl'] = t_upper_bound_excl
     ctx_tmp['t_now'] = t_now
