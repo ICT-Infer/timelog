@@ -37,12 +37,12 @@ def tree (arg_datetime_lbound_incl,
       'entries': entries(arg_datetime_lbound_incl,
                          arg_datetime_ubound_excl,
                          cat.id),
-      'sum_hours': "XX:XX",
+      'sum_hours': "XX:XX", # TODO
       'children': tree(arg_datetime_lbound_incl,
                        arg_datetime_ubound_excl,
                        arg_fmt_ext,
                        cat.id),
-      'rec_sum_hours': "XX:XX",
+      'rec_sum_hours': "XX:XX", # TODO
     }
 
 def flattened (tree):
