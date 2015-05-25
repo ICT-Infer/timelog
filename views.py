@@ -11,31 +11,37 @@ import itertools
 # Shared functions common to other view functions.
 #
 
-def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
-  tree = []
+def entries (arg_datetime_lbound_incl,
+             arg_datetime_ubound_excl,
+             arg_cat=None):
+
+  return None
+
+def category_tree (arg_datetime_lbound_incl,
+                   arg_datetime_ubound_excl,
+                   arg_root=None):
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
-    cat_branch = \
+    yield \
     {
       'id': cat.id,
       'name': cat.name,
       'description': cat.description,
       'slug': cat.slug,
-      'sum_hours': "XX:XX",
       'details': "sheet" \
                  + "-" + cat.slug \
                  + "-" + arg_year \
                  + "-" + arg_month \
                  + "." + arg_fmt_ext,
+      'entries': entries(arg_datetime_lbound_incl,
+                         arg_datetime_ubound_excl,
+                         cat.id),
+      'sum_hours': "XX:XX",
+      'children': category_tree(arg_datetime_lbound_incl,
+                                arg_datetime_ubound_excl,
+                                cat.id),
+      'rec_sum_hours': "XX:XX",
     }
-    cat_branch['children'] = \
-      category_tree(arg_year, arg_month, arg_fmt_ext, cat.id)
-    if cat_branch['children']:
-      cat_branch['rec_sum_hours'] = "XX:XX"
-
-    tree.append(cat_branch)
-
-  return tree
 
 def flattened (tree):
   for cat in tree:
@@ -115,13 +121,15 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   opt['grp_psn'] = int(req.GET.get('group-by-person', 0))
   opt['grp_week'] = int(req.GET.get('group-by-week', 0))
 
-  t_now = timezone.localtime(timezone.now())
+  datetime_now = timezone.localtime(timezone.now())
 
   try:
-    t_lower_bound_incl = datetime.datetime(year, month, 1, 0, 0, 0)
-    t_upper_bound_excl = t_lower_bound_incl + relativedelta(months=1)
-    t_lower_bound_incl = timezone.make_aware(t_lower_bound_incl, t_now.tzinfo)
-    t_upper_bound_excl = timezone.make_aware(t_upper_bound_excl, t_now.tzinfo)
+    datetime_lbound_incl = datetime.datetime(year, month, 1, 0, 0, 0)
+    datetime_ubound_excl = datetime_lbound_incl + relativedelta(months=1)
+    datetime_lbound_incl = timezone.make_aware(datetime_lbound_incl,
+                                               datetime_now.tzinfo)
+    datetime_ubound_excl = timezone.make_aware(datetime_ubound_excl,
+                                               datetime_now.tzinfo)
   except ValueError as e:
     errors.append(str(e))
 
@@ -130,7 +138,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   cats = [cat]
   if not opt['no_recurse']:
-    cats = itertools.chain(cats, flattened(category_tree(arg_year, arg_month, arg_fmt_ext, cat['id'])))
+    cats = itertools.chain(cats, flattened(category_tree(datetime_lbound_incl, datetime_ubound_excl, cat['id'])))
   ctx_tmp['cats'] = cats
 
   if (not errors):
@@ -138,18 +146,18 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
     db_entries = Entry.objects.filter(
       Q(category__in = [cat['id'] for cat in cats]) &
-      ((Q(t_begin__gte = t_lower_bound_incl)
-        & Q(t_begin__lt = t_upper_bound_excl))
-      | (Q(t_end__gte = t_lower_bound_incl)
-        & Q(t_end__lt = t_upper_bound_excl)))
+      ((Q(t_begin__gte = datetime_lbound_incl)
+        & Q(t_begin__lt = datetime_ubound_excl))
+      | (Q(t_end__gte = datetime_lbound_incl)
+        & Q(t_end__lt = datetime_ubound_excl)))
     )
 
     v_entries = []
 
     for db_entry in db_entries:
       entries_split_local = db_entry.in_localtime()\
-                           .limited_to_bounds(t_lower_bound_incl,
-                                              t_upper_bound_excl)\
+                           .limited_to_bounds(datetime_lbound_incl,
+                                              datetime_ubound_excl)\
                            .split_on_midnight()
 
       for i, entry in enumerate(entries_split_local):
@@ -193,8 +201,9 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
     try:
       ctx_tmp['title'] = "%s, %s %s" \
-          % (cat['name'], t_lower_bound_incl.strftime("%B"),
-             t_lower_bound_incl.year)
+          % (cat['name'],
+             datetime_lbound_incl.strftime("%B"),
+             datetime_lbound_incl.year)
     except ValueError as e:
       errors.append(str(e))
 
@@ -204,9 +213,9 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['opt'] = opt
     ctx_tmp['cat_id'] = cat['id']
     ctx_tmp['cat_name'] = cat['name']
-    ctx_tmp['t_lower_bound_incl'] = t_lower_bound_incl
-    ctx_tmp['t_upper_bound_excl'] = t_upper_bound_excl
-    ctx_tmp['t_now'] = t_now
+    ctx_tmp['t_lower_bound_incl'] = datetime_lbound_incl
+    ctx_tmp['t_upper_bound_excl'] = datetime_ubound_excl
+    ctx_tmp['t_now'] = datetime_now
     ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
   if (errors):
