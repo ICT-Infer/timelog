@@ -114,6 +114,9 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   year = int(arg_year)
   month = int(arg_month)
 
+  # TODO: Error if arg_fmt_ext is neither htm nor json.
+  #       Either take care of it here or some other place.
+
   cat = Category.objects.get(slug=cat_slug)
   cat = \
   {
@@ -153,7 +156,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   cats = [cat]
   if not opt['no_recurse']:
-    cats = itertools.chain(cats, flattened(category_tree(datetime_lbound_incl, datetime_ubound_excl, cat['id'])))
+    cats = itertools.chain(cats, flattened(category_tree(datetime_lbound_incl, datetime_ubound_excl, arg_fmt_ext, cat['id'])))
   ctx_tmp['cats'] = cats
 
   if (not errors):
