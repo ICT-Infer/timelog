@@ -5,6 +5,7 @@ from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
 from timelog.models import Category, Entry
 from django.db.models import Q
+import itertools
 
 #
 # Shared functions common to other view functions.
@@ -109,14 +110,14 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   cats = [cat_id]
   if not opt['no_recurse']:
-    cats += list(flattened(category_tree(arg_year, arg_month, arg_fmt_ext, cat_id)))
+    cats = itertools.chain(cats, flattened(category_tree(arg_year, arg_month, arg_fmt_ext, cat_id)))
   ctx_tmp['cats'] = cats
 
   if (not errors):
     # TODO: Grouping
 
     db_entries = Entry.objects.filter(
-      Q(category__in = cats) &
+      Q(category__in = list(cats)) &
       ((Q(t_begin__gte = t_lower_bound_incl)
         & Q(t_begin__lt = t_upper_bound_excl))
       | (Q(t_end__gte = t_lower_bound_incl)
