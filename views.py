@@ -16,9 +16,19 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
     # TODO: Only include sum_hours if it has non-zero value.
-    cat_branch = {'id': cat.id, 'name': cat.name, 'description': cat.description, 'slug': cat.slug, 'sum_hours': "XX:XX", 'details': "sheet-" + cat.slug \
-                 + "-" + arg_year + "-" + arg_month \
-                 + "." + arg_fmt_ext, }
+    cat_branch = \
+    {
+      'id': cat.id,
+      'name': cat.name,
+      'description': cat.description,
+      'slug': cat.slug,
+      'sum_hours': "XX:XX",
+      'details': "sheet" \
+                 + "-" + cat.slug \
+                 + "-" + arg_year \
+                 + "-" + arg_month \
+                 + "." + arg_fmt_ext,
+    }
     cat_branch['children'] = \
       category_tree(arg_year, arg_month, arg_fmt_ext, cat.id)
     if cat_branch['children']:
@@ -78,10 +88,20 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   month = int(arg_month)
 
   cat = Category.objects.get(slug=cat_slug)
-  cat = {'id': cat.id, 'name': cat.name, 'description': cat.description,
-         'slug': cat.slug, 'sum_hours': "XX:XX",
-         'details': "sheet-" + cat.slug + "-" + arg_year + "-" + arg_month \
-                    + "." + arg_fmt_ext, }
+  cat = \
+  {
+    'id': cat.id,
+    'name': cat.name,
+    'description': cat.description,
+    'slug': cat.slug,
+    'sum_hours': "XX:XX",
+    'details': "sheet" \
+               + "-" + cat.slug \
+               + "-" + arg_year \
+               + "-" + arg_month \
+               + "." + arg_fmt_ext,
+    'rec_sum_hours': "XX:XX",
+  }
 
   errors = []
 
