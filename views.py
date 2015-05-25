@@ -17,10 +17,10 @@ def entries (arg_datetime_lbound_incl,
 
   return None # TODO
 
-def category_tree (arg_datetime_lbound_incl,
-                   arg_datetime_ubound_excl,
-                   arg_fmt_ext,
-                   arg_root=None):
+def tree (arg_datetime_lbound_incl,
+          arg_datetime_ubound_excl,
+          arg_fmt_ext,
+          arg_root=None):
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
     yield \
@@ -38,10 +38,10 @@ def category_tree (arg_datetime_lbound_incl,
                          arg_datetime_ubound_excl,
                          cat.id),
       'sum_hours': "XX:XX",
-      'children': category_tree(arg_datetime_lbound_incl,
-                                arg_datetime_ubound_excl,
-                                arg_fmt_ext,
-                                cat.id),
+      'children': tree(arg_datetime_lbound_incl,
+                       arg_datetime_ubound_excl,
+                       arg_fmt_ext,
+                       cat.id),
       'rec_sum_hours': "XX:XX",
     }
 
@@ -77,7 +77,7 @@ def sheets (req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {}
   lb, ub = bounds(int(arg_year), int(arg_month))
-  view_data['category_tree'] = category_tree(lb, ub, arg_fmt_ext)
+  view_data['category_tree'] = tree(lb, ub, arg_fmt_ext)
 
   ctx = {'view_data': view_data, }
 
@@ -156,7 +156,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   cats = [cat]
   if not opt['no_recurse']:
-    cats = itertools.chain(cats, flattened(category_tree(datetime_lbound_incl, datetime_ubound_excl, arg_fmt_ext, cat['id'])))
+    cats = itertools.chain(cats, flattened(tree(datetime_lbound_incl, datetime_ubound_excl, arg_fmt_ext, cat['id'])))
   ctx_tmp['cats'] = cats
 
   if (not errors):
