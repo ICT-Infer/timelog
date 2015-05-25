@@ -19,6 +19,7 @@ def entries (arg_datetime_lbound_incl,
 
 def category_tree (arg_datetime_lbound_incl,
                    arg_datetime_ubound_excl,
+                   arg_fmt_ext,
                    arg_root=None):
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
@@ -30,8 +31,8 @@ def category_tree (arg_datetime_lbound_incl,
       'slug': cat.slug,
       'details': "sheet" \
                  + "-" + cat.slug \
-                 + "-" + arg_year \
-                 + "-" + arg_month \
+                 + "-" + str(arg_datetime_lbound_incl.year) \
+                 + "-" + "%02d" % arg_datetime_lbound_incl.month \
                  + "." + arg_fmt_ext,
       'entries': entries(arg_datetime_lbound_incl,
                          arg_datetime_ubound_excl,
@@ -39,6 +40,7 @@ def category_tree (arg_datetime_lbound_incl,
       'sum_hours': "XX:XX",
       'children': category_tree(arg_datetime_lbound_incl,
                                 arg_datetime_ubound_excl,
+                                arg_fmt_ext,
                                 cat.id),
       'rec_sum_hours': "XX:XX",
     }
@@ -47,6 +49,20 @@ def flattened (tree):
   for cat in tree:
     yield cat
     yield from flattened(cat['children'])
+
+def bounds (arg_year, arg_month):
+
+  now = timezone.localtime(timezone.now())
+
+  try:
+    lbound_incl = datetime.datetime(arg_year, arg_month, 1, 0, 0, 0)
+    ubound_excl = lbound_incl + relativedelta(months=1)
+    lbound_incl = timezone.make_aware(lbound_incl, now.tzinfo)
+    ubound_excl = timezone.make_aware(ubound_excl, now.tzinfo)
+  except ValueError as e:
+    errors.append(str(e))
+
+  return lbound_incl, ubound_excl
 
 #
 # View functions and their subfunctions
@@ -60,10 +76,17 @@ def index (req):
 def sheets (req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {}
-  view_data['category_tree'] = category_tree(arg_year, arg_month, arg_fmt_ext)
+  lb, ub = bounds(int(arg_year), int(arg_month))
+  view_data['category_tree'] = category_tree(lb, ub, arg_fmt_ext)
 
   ctx = {'view_data': view_data, }
-  return render(req, 'hours/sheets/index-year-month.htm', ctx)
+
+  if arg_fmt_ext == 'htm':
+    return render(req, 'hours/sheets/index-year-month.htm', ctx)
+  elif arg_fmt_ext == 'json':
+    # TODO: Fix generator object is not JSON serializable
+    return JsonResponse(ctx['view_data'])
+  # TODO: Else, error
 
 def sheet_format_htm (req, ctx):
   if 'errors' in ctx['view_data'] and ctx['view_data']['errors']:
@@ -123,15 +146,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   datetime_now = timezone.localtime(timezone.now())
 
-  try:
-    datetime_lbound_incl = datetime.datetime(year, month, 1, 0, 0, 0)
-    datetime_ubound_excl = datetime_lbound_incl + relativedelta(months=1)
-    datetime_lbound_incl = timezone.make_aware(datetime_lbound_incl,
-                                               datetime_now.tzinfo)
-    datetime_ubound_excl = timezone.make_aware(datetime_ubound_excl,
-                                               datetime_now.tzinfo)
-  except ValueError as e:
-    errors.append(str(e))
+  datetime_lbound_incl, datetime_ubound_excl = bounds(year, month)
 
   view_data = {}
   ctx_tmp = {}
