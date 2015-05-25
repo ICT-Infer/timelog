@@ -28,12 +28,10 @@ def category_tree (arg_year, arg_month, arg_fmt_ext, arg_root=None):
 
   return tree
 
-def flatten_tree (tree):
-  flat = []
+def flattened (tree):
   for cat in tree:
-    flat.append(cat['id'])
-    flat += flatten_tree(cat['children'])
-  return flat
+    yield cat['id']
+    yield from flattened(cat['children'])
 
 #
 # View functions and their subfunctions
@@ -111,7 +109,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   cats = [cat_id]
   if not opt['no_recurse']:
-    cats += flatten_tree(category_tree(arg_year, arg_month, arg_fmt_ext, cat_id))
+    cats += list(flattened(category_tree(arg_year, arg_month, arg_fmt_ext, cat_id)))
   ctx_tmp['cats'] = cats
 
   if (not errors):
