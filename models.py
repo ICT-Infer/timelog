@@ -125,14 +125,14 @@ class Entry (models.Model):
                  t_end = t_end, tz_end = tz_end,
                  description = self.description, pk = self.pk)
 
-  def limited_to_bounds (self, t_lower_bound_incl, t_upper_bound_excl):
-    if self.t_begin < t_lower_bound_incl:
-      t_begin = t_lower_bound_incl
+  def limited_to_bounds (self, bounds):
+    if self.t_begin < bounds['lower_incl']:
+      t_begin = bounds['lower_incl']
     else:
       t_begin = self.t_begin
     if self.t_end:
-      if self.t_end >= t_upper_bound_excl:
-        t_end = t_upper_bound_excl - relativedelta(microseconds=1)
+      if self.t_end >= bounds['upper_excl']:
+        t_end = bounds['upper_excl'] - relativedelta(microseconds=1)
       else:
         t_end = self.t_end
     else:
@@ -151,9 +151,11 @@ class Entry (models.Model):
                    .replace(hour=0, minute=0, second=0, microsecond=0) \
                  + relativedelta(days=1)
       return [
-        self.limited_to_bounds(self.t_begin, boundary)
-      ] + \
-        self.limited_to_bounds(boundary, self.t_end + \
-          relativedelta(microseconds=1)).split_on_midnight()
+        self.limited_to_bounds({'lower_incl': self.t_begin,
+          'upper_excl': boundary})
+      ] \
+        + self.limited_to_bounds({'lower_incl': boundary,
+            'upper_excl': self.t_end + relativedelta(microseconds=1)})\
+          .split_on_midnight()
     else:
       return [self] # TODO MAYBE: Return *copy* of self in list instead.
