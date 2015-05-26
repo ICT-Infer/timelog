@@ -43,6 +43,7 @@ then
   exit 1
 fi
 
+rm /etc/avahi/services/timelog.service
 systemctl disable timelog.service
 rm /etc/systemd/system/timelog.service
 systemctl daemon-reload
