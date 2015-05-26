@@ -1,0 +1,11 @@
+<?xml version="1.0" standalone='no'?>
+<!DOCTYPE service-group SYSTEM "avahi-service.dtd">
+<!-- https://github.com/erikano/django-timelog/ -->
+<service-group>
+  <name replace-wildcards="yes">%h - timelog</name>
+  <service>
+    <type>_http._tcp</type>
+    <port>8000</port>
+    <txt-record>path=/timelog/</txt-record>
+  </service>
+</service-group>
