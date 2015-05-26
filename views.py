@@ -13,9 +13,45 @@ import itertools
 
 def entries (arg_datetime_lbound_incl,
              arg_datetime_ubound_excl,
-             arg_cat=None):
+             arg_cat_id):
 
-  return None # TODO
+  db_entries = Entry.objects.filter(
+    Q(category = arg_cat_id) &
+    ((Q(t_begin__gte = arg_datetime_lbound_incl)
+      & Q(t_begin__lt = arg_datetime_ubound_excl))
+    | (Q(t_end__gte = arg_datetime_lbound_incl)
+      & Q(t_end__lt = arg_datetime_ubound_excl)))
+  )
+
+  for db_entry in db_entries:
+    entries_split_local = db_entry.in_localtime()\
+                         .limited_to_bounds(arg_datetime_lbound_incl,
+                                            arg_datetime_ubound_excl)\
+                         .split_on_midnight()
+
+    for i, entry in enumerate(entries_split_local):
+      v_entry = {
+        # "-lpt-" in id means "local part", as in part within the date bounds
+        'id':          "e-" + str(entry.pk) + "-lpt-" + str(i),
+        'date':        entry.t_begin.strftime("%F"),
+        't_begin':     entry.t_begin.strftime("%T"),
+        'category':    str(db_entry.category),
+        'user':        str(db_entry.user),
+        'description': db_entry.description,
+      }
+
+      if entry.t_end:
+        v_entry['t_end']    = entry.t_end.strftime("%T")
+        # Rounded duration
+        d = entry.t_end - entry.t_begin
+        v_entry['duration'] = d - datetime.timedelta(
+          seconds=(-1 if (d.microseconds >= 500) else 0),
+          microseconds=d.microseconds)
+      else:
+        v_entry['t_end']    = None
+        v_entry['duration'] = None
+
+      yield v_entry
 
 
 def node (arg_datetime_lbound_incl,
@@ -53,7 +89,7 @@ def tree (arg_datetime_lbound_incl,
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
     yield node(arg_datetime_lbound_incl,
-               arg_datetime_lbound_incl,
+               arg_datetime_ubound_excl,
                arg_fmt_ext,
                cat)
 
@@ -178,44 +214,10 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   if (not errors):
     # TODO: Grouping
 
-    db_entries = Entry.objects.filter(
-      Q(category__in = [cat['id'] for cat in cats]) &
-      ((Q(t_begin__gte = datetime_lbound_incl)
-        & Q(t_begin__lt = datetime_ubound_excl))
-      | (Q(t_end__gte = datetime_lbound_incl)
-        & Q(t_end__lt = datetime_ubound_excl)))
-    )
-
     v_entries = []
 
-    for db_entry in db_entries:
-      entries_split_local = db_entry.in_localtime()\
-                           .limited_to_bounds(datetime_lbound_incl,
-                                              datetime_ubound_excl)\
-                           .split_on_midnight()
-
-      for i, entry in enumerate(entries_split_local):
-        v_entry = {
-          # "-lpt-" in id means "local part", as in part within the date bounds
-          'id':          "e-" + str(entry.pk) + "-lpt-" + str(i),
-          'date':        entry.t_begin.strftime("%F"),
-          't_begin':     entry.t_begin.strftime("%T"),
-          'category':    str(db_entry.category),
-          'user':        str(db_entry.user),
-          'description': db_entry.description,
-        }
-
-        if entry.t_end:
-          v_entry['t_end']    = entry.t_end.strftime("%T")
-          # Rounded duration
-          d = entry.t_end - entry.t_begin
-          v_entry['duration'] = d - datetime.timedelta(
-            seconds=(-1 if (d.microseconds >= 500) else 0),
-            microseconds=d.microseconds)
-        else:
-          v_entry['t_end']    = None
-          v_entry['duration'] = None
-
+    for cat in cats:
+      for v_entry in cat['entries']:
         v_entries.append(v_entry)
 
     # Sorting on string representation is not so pretty but it's convenient.
