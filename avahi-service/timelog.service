@@ -3,7 +3,7 @@
 <!-- https://github.com/erikano/django-timelog/ -->
 <service-group>
   <name replace-wildcards="yes">%h - timelog</name>
-  <service>
+  <service protocol="ipv4">
     <type>_http._tcp</type>
     <port>8000</port>
     <txt-record>path=/timelog/</txt-record>
