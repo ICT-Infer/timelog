@@ -196,8 +196,8 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
     v_entries = []
 
-    for cat in cats:
-      for v_entry in cat['entries']:
+    for c in cats:
+      for v_entry in c['entries']:
         v_entries.append(v_entry)
 
     # Sorting on string representation is not so pretty but it's convenient.
