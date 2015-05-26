@@ -67,6 +67,17 @@ function install_timelog {
     done
   fi
 
+  echo "Zeroconf mDNS with Avahi (optional)"
+  read -p "Install /etc/avahi/services/timelog.service? [y/N] " -n 1 -r opt_avahi_service
+  if [ ! $opt_avahi_service == "" ] ; then
+    echo
+  fi
+  if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
+    sudo apt-get install avahi-daemon
+    sudo cp ~timelog/venv/serve/timelog/avahi-service/timelog.service \
+      /etc/avahi/services/
+  fi
+
   sudo -u timelog -i -- bash -c \
     "python3 ~/venv/serve/manage.py shell" <<EOF
   from django.contrib.auth.models import User

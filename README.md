@@ -11,8 +11,6 @@ Currently a work in progress.
 * [Supported platforms](#supported-platforms)
 * [Dependencies](#dependencies)
 * [Installation](#installation)
-  - [Optional configuration](#optional-configuration)
-    + [Zeroconf mDNS with Avahi](#zeroconf-mdns-with-avahi)
 * [Usage](#usage)
   - [Stopping, starting and restarting the server](#stopping-starting-and-restarting-the-server)
   - [Default Django site admin web interface](#default-django-site-admin-web-interface)
@@ -60,25 +58,6 @@ Once the install script has finished, enable the timelog service and start it:
 ```
 sudo systemctl enable timelog.service
 sudo systemctl start timelog.service
-```
-
-### Optional configuration
-
-#### Zeroconf mDNS with Avahi
-
-An Avahi service definition file ships with django-timelog but is not installed by default. To install it:
-
-First ensure you have `avahi-daemon` installed.
-
-```
-sudo apt-get install avahi-daemon
-```
-
-Copy the service definition file to the avahi services directory.
-
-```
-sudo cp ~timelog/venv/serve/timelog/avahi-service/timelog.service \
-  /etc/avahi/services/
 ```
 
 ## Usage
