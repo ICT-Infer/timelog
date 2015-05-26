@@ -247,8 +247,8 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['opt'] = opt
     ctx_tmp['cat_id'] = cat['id']
     ctx_tmp['cat_name'] = cat['name']
-    ctx_tmp['t_lower_bound_incl'] = datetime_lbound_incl
-    ctx_tmp['t_upper_bound_excl'] = datetime_ubound_excl
+    ctx_tmp['datetime_lbound_incl'] = datetime_lbound_incl
+    ctx_tmp['datetime_ubound_excl'] = datetime_ubound_excl
     ctx_tmp['t_now'] = datetime_now
     ctx_tmp['tz'] = timezone.get_current_timezone_name()
 
