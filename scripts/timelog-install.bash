@@ -25,9 +25,9 @@ function install_timelog {
   adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
 
   sudo -u postgres -i psql <<EOF
-  CREATE USER timelog;
-  CREATE DATABASE timelog OWNER timelog;
-  EOF
+CREATE USER timelog;
+CREATE DATABASE timelog OWNER timelog;
+EOF
 
   sudo -u timelog -i -- bash -c \
     "virtualenv-3.4 ~/venv/ \
@@ -80,9 +80,9 @@ function install_timelog {
 
   sudo -u timelog -i -- bash -c \
     "python3 ~/venv/serve/manage.py shell" <<EOF
-  from django.contrib.auth.models import User
-  User.objects.create_superuser('timelog', '', '$wui_pass')
-  EOF
+from django.contrib.auth.models import User
+User.objects.create_superuser('timelog', '', '$wui_pass')
+EOF
 
   cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
     /etc/systemd/system/ \
