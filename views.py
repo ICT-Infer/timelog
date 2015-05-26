@@ -17,33 +17,45 @@ def entries (arg_datetime_lbound_incl,
 
   return None # TODO
 
+
+def node (arg_datetime_lbound_incl,
+          arg_datetime_ubound_excl,
+          arg_fmt_ext,
+          arg_cat,
+          arg_root=None):
+  return \
+    {
+      'id': arg_cat.id,
+      'name': arg_cat.name,
+      'description': arg_cat.description,
+      'slug': arg_cat.slug,
+      'details': "sheet" \
+                 + "-" + arg_cat.slug \
+                 + "-" + str(arg_datetime_lbound_incl.year) \
+                 + "-" + "%02d" % arg_datetime_lbound_incl.month \
+                 + "." + arg_fmt_ext,
+      'entries': entries(arg_datetime_lbound_incl,
+                         arg_datetime_ubound_excl,
+                         arg_cat.id),
+      'sum_hours': "XX:XX", # TODO
+      'children': tree(arg_datetime_lbound_incl,
+                       arg_datetime_ubound_excl,
+                       arg_fmt_ext,
+                       arg_cat.id),
+      'rec_sum_hours': "XX:XX", # TODO
+    }
+
 def tree (arg_datetime_lbound_incl,
           arg_datetime_ubound_excl,
           arg_fmt_ext,
           arg_root=None):
 
   for cat in Category.objects.filter(parent=arg_root).order_by('name'):
-    yield \
-    {
-      'id': cat.id,
-      'name': cat.name,
-      'description': cat.description,
-      'slug': cat.slug,
-      'details': "sheet" \
-                 + "-" + cat.slug \
-                 + "-" + str(arg_datetime_lbound_incl.year) \
-                 + "-" + "%02d" % arg_datetime_lbound_incl.month \
-                 + "." + arg_fmt_ext,
-      'entries': entries(arg_datetime_lbound_incl,
-                         arg_datetime_ubound_excl,
-                         cat.id),
-      'sum_hours': "XX:XX", # TODO
-      'children': tree(arg_datetime_lbound_incl,
-                       arg_datetime_ubound_excl,
-                       arg_fmt_ext,
-                       cat.id),
-      'rec_sum_hours': "XX:XX", # TODO
-    }
+    yield node(arg_datetime_lbound_incl,
+               arg_datetime_lbound_incl,
+               arg_fmt_ext,
+               cat,
+               arg_root)
 
 def flattened (tree):
   for cat in tree:
@@ -117,21 +129,13 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   # TODO: Error if arg_fmt_ext is neither htm nor json.
   #       Either take care of it here or some other place.
 
-  cat = Category.objects.get(slug=cat_slug)
-  cat = \
-  {
-    'id': cat.id,
-    'name': cat.name,
-    'description': cat.description,
-    'slug': cat.slug,
-    'sum_hours': "XX:XX",
-    'details': "sheet" \
-               + "-" + cat.slug \
-               + "-" + arg_year \
-               + "-" + arg_month \
-               + "." + arg_fmt_ext,
-    'rec_sum_hours': "XX:XX",
-  }
+  datetime_lbound_incl, datetime_ubound_excl = bounds(year, month)
+
+  # TODO: Rename "cat"
+  cat = node(datetime_lbound_incl,
+             datetime_ubound_excl,
+             arg_fmt_ext,
+             Category.objects.get(slug=cat_slug))
 
   errors = []
 
@@ -148,8 +152,6 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   opt['grp_week'] = int(req.GET.get('group-by-week', 0))
 
   datetime_now = timezone.localtime(timezone.now())
-
-  datetime_lbound_incl, datetime_ubound_excl = bounds(year, month)
 
   view_data = {}
   ctx_tmp = {}
