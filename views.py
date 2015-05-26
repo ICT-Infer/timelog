@@ -21,8 +21,8 @@ def entries (arg_datetime_lbound_incl,
 def node (arg_datetime_lbound_incl,
           arg_datetime_ubound_excl,
           arg_fmt_ext,
-          arg_cat,
-          arg_root=None):
+          arg_cat):
+
   return \
     {
       'id': arg_cat.id,
@@ -54,8 +54,7 @@ def tree (arg_datetime_lbound_incl,
     yield node(arg_datetime_lbound_incl,
                arg_datetime_lbound_incl,
                arg_fmt_ext,
-               cat,
-               arg_root)
+               cat)
 
 def flattened (tree):
   for cat in tree:
