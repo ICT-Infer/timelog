@@ -164,8 +164,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   bounds = ym_bounds(int(arg_year), int(arg_month))
 
-  # TODO: Rename "cat"
-  cat = node(bounds, arg_fmt_ext, Category.objects.get(slug=cat_slug))
+  root = node(bounds, arg_fmt_ext, Category.objects.get(slug=cat_slug))
 
   errors = []
 
@@ -186,24 +185,24 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
   view_data = {}
   ctx_tmp = {}
 
-  cats = [cat]
+  nodes = [root]
   if not opt['no_recurse']:
-    cats = itertools.chain(cats, flattened(tree(bounds, arg_fmt_ext, cat['id'])))
-  ctx_tmp['cats'] = cats
+    nodes = itertools.chain(nodes, flattened(tree(bounds,
+      arg_fmt_ext, root['id'])))
+  ctx_tmp['nodes'] = nodes
 
   if (not errors):
     # TODO: Grouping
 
     v_entries = []
 
-    for c in cats:
-      for v_entry in c['entries']:
+    for n in nodes:
+      for v_entry in n['entries']:
         v_entries.append(v_entry)
 
     # Sorting on string representation is not so pretty but it's convenient.
-    v_entries.sort(
-      key = lambda e: e['date'] + "T" + e['t_begin']
-                                + "-" + (e['t_end'] or "None"))
+    v_entries.sort(key = lambda e: e['date'] + "T" + e['t_begin']
+                                             + "-" + (e['t_end'] or "None"))
 
     # TODO: Sum for each kind of grouping
     sdts = sum([e['duration'] for e in v_entries if e['duration']],
@@ -217,7 +216,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
     try:
       ctx_tmp['title'] = "%s, %s %s" \
-          % (cat['name'],
+          % (root['name'],
              bounds['lower_incl'].strftime("%B"),
              bounds['lower_incl'].year)
     except ValueError as e:
@@ -227,8 +226,8 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     ctx_tmp['redir']['sheet'] = "/timelog/redir/sheet.htm"
     ctx_tmp['query_str'] = req.GET.urlencode()
     ctx_tmp['opt'] = opt
-    ctx_tmp['cat_id'] = cat['id']
-    ctx_tmp['cat_name'] = cat['name']
+    ctx_tmp['cat_id'] = root['id']
+    ctx_tmp['cat_name'] = root['name']
     ctx_tmp['datetime_lbound_incl'] = bounds['lower_incl']
     ctx_tmp['datetime_ubound_excl'] = bounds['upper_excl'] 
     ctx_tmp['t_now'] = datetime_now
