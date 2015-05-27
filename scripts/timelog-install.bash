@@ -92,6 +92,9 @@ EOF
   fi
 
   systemctl daemon-reload
+
+  echo "Done installing timelog." 1>&2
+  echo "Remember to enable and start the timelog service." 1>&2
 }
 
 install_timelog
