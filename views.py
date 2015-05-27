@@ -3,6 +3,7 @@ from django.utils import timezone
 import datetime
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
+from django.shortcuts import redirect
 from timelog.models import Category, Entry
 from django.db.models import Q
 import itertools
@@ -106,7 +107,8 @@ def ym_bounds (arg_year, arg_month):
 # {base}/
 def index (req):
 
-  return HttpResponse("Timelog index.")
+  now = timezone.localtime(timezone.now())
+  return redirect('timelog.views.sheets', str(now.year), "%02d" % now.month, "htm")
 
 
 # {base}/hours/sheets/index-{year}-{month}.{fmt_ext}
