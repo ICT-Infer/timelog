@@ -86,15 +86,15 @@ sudo systemctl restart timelog.service
 ### Default Django site admin web interface
 
 You *could* begin entering data into django-timelog right now at
-`http://<host or IP>:8000/admin/timelog/`.
-It's not great but it's better than nothing.
+`http://example.com:8000/admin/timelog/` (substitute your server host name
+or IP address for `example.com`). It's not great but it's better than nothing.
 
-### Time sheets
+### Timelog web UI
 
-Time sheets, though incomplete, can be retrieved from
-`http://<host or IP>:8000/timelog/hours/sheets/sheet-<slug>-<year>-<month>.<format>`, e.g.
-`http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.htm` or
-`http://<host or IP>:8000/timelog/hours/sheets/sheet-example-2015-03.json`.
+Browse to `http://example.com:8000/timelog/` (substitute your server host name
+or IP address for `example.com`). It'll be blank unless you add a category
+first. To add a category, use the above mentioned Django
+site admin web interface.
 
 ### Dumping data for backup and later restore
 
