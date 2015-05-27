@@ -1,18 +1,26 @@
 #!/usr/bin/env bash
 
-if [ "$#" -ne "0" ] ; then
-  echo "Usage: $0" 1>&2
+if [ "$#" -eq "1" ] && [ "$1" == "--version-check-only" ] ; then
+  version_check_only=true
+elif [ "$#" -ne "0" ] ; then
+  echo "Usage: $0 [--check]" 1>&2
   exit 1
+else
+  unset version_check_only
+fi
+
+if [ ! "$( cat /etc/issue | head -n1 | cut -d' ' -f1-3 )" == "Debian GNU/Linux 8" ] ; then
+  echo "Only Debian GNU/Linux 8 is supported by this version of timelog." 1>&2
+  echo "You do not appear to be running Debian GNU/Linux 8." 1>&2
+  exit 2
+fi
+
+if [ "$version_check_only" == "true" ] ; then
+  exit 0
 fi
 
 if [ "$( id -u )" -ne "0" ] ; then
   echo "Need root privileges to run." 1>&2
-  exit 2
-fi
-
-if [ ! "$( cat /etc/issue | head -n1 | cut -d' ' -f1-3 )" == "Debian GNU/Linux 8" ] ; then
-  echo "This install script is made for Debian GNU/Linux 8." 1>&2
-  echo "You do not appear to be running Debian GNU/Linux 8." 1>&2
   exit 3
 fi
 

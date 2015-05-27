@@ -14,11 +14,7 @@ if [ "$( id -u )" -ne "0" ] ; then
   exit 2
 fi
 
-if [ ! "$( cat /etc/issue | head -n1 | cut -d' ' -f1-3 )" == "Debian GNU/Linux 8" ] ; then
-  echo "This uninstall script is made for Debian GNU/Linux 8." 1>&2
-  echo "You do not appear to be running Debian GNU/Linux 8." 1>&2
-  exit 3
-fi
+sudo -u nobody bash $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/timelog-install.bash --version-check-only || exit 3
 
 function uninstall_timelog {
 
