@@ -19,6 +19,7 @@ Currently a work in progress.
   - [Timelog web UI](#timelog-web-ui)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
 * [Updating](#updating)
+* [Copyright and license](#copyright-and-license)
 
 ## Supported platforms
 
@@ -130,3 +131,13 @@ sudo -u timelog -i -- bash -c \
    && python3 ../manage.py migrate" \
 && sudo systemctl restart timelog.service
 ```
+
+## Copyright and license
+
+```
+Copyright (c) 2015 Erik Nordstroem <contact@erikano.net>
+```
+
+django-timelog is published under the ISC license.
+
+A copy of the license is included in the file `LICENSE`.
