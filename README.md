@@ -120,8 +120,12 @@ Transfer the data dump to somewhere safe!
 
 ## Updating and upgrading
 
+Please give the update script a read-through after you've downloaded it
+and prior to running it.
+
 ```
-sudo bash ~timelog/venv/serve/timelog/scripts/timelog-up.bash
+wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-up.bash
+sudo bash ./timelog-up.bash
 ```
 
 ## Copyright and license
