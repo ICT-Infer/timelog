@@ -8,14 +8,14 @@ server {
     log_not_found off;
   }
 
-  location /static/timelog/
-  {
-    alias /var/lib/timelog/venv/serve/timelog/static/;
-  }
-
   location /static/admin/
   {
     alias /var/lib/timelog/venv/lib/python3.4/site-packages/django/contrib/admin/static/admin/;
+  }
+
+  location /static/
+  {
+    root /var/lib/timelog/venv/serve/timelog/;
   }
 
   location /
