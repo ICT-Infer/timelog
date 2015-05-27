@@ -117,5 +117,6 @@ sudo -u timelog -i -- bash -c \
    && git pull \
    && pip install -U -r requirements.txt \
    && python3 ../manage.py makemigrations timelog \
-   && python3 ../manage.py migrate"
+   && python3 ../manage.py migrate" \
+&& sudo systemctl restart timelog.service
 ```
