@@ -121,7 +121,7 @@ Transfer the data dump to somewhere safe!
 ## Updating and upgrading
 
 ```
-sudo bash ~timelog/venv/serve/timelog/scripts/timelog-up.sh
+sudo bash ~timelog/venv/serve/timelog/scripts/timelog-up.bash
 ```
 
 ## Copyright and license
