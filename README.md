@@ -16,7 +16,7 @@ Currently a work in progress.
     + [Entering data](#entering-data)
   - [Timelog web UI](#timelog-web-ui)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
-* [Updating](#updating)
+* [Updating and upgrading](#updating-and-upgrading)
 * [Copyright and license](#copyright-and-license)
 
 ## Supported platforms
@@ -118,16 +118,10 @@ sudo -u timelog -i -- bash -c \
 
 Transfer the data dump to somewhere safe!
 
-## Updating
+## Updating and upgrading
 
 ```
-sudo -u timelog -i -- bash -c \
-  "cd ~/venv/serve/timelog/ \
-   && git pull \
-   && pip install -U -r requirements.txt \
-   && python3 ../manage.py makemigrations timelog \
-   && python3 ../manage.py migrate" \
-&& sudo systemctl restart timelog.service
+sudo bash ~timelog/venv/serve/timelog/scripts/timelog-up.sh
 ```
 
 ## Copyright and license
