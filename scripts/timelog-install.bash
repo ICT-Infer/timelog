@@ -18,7 +18,7 @@ fi
 
 function install_timelog {
 
-  apt-get install postgresql libpq-dev python3-pip
+  apt-get install build-essential python3-dev postgresql libpq-dev python3-pip nginx
 
   pip3 install virtualenv
 
@@ -35,6 +35,7 @@ EOF
      && source bin/activate \
      && echo 'source ~/venv/bin/activate' >> ~/.bash_profile \
      && git clone https://github.com/erikano/django-timelog.git timelog/ \
+     && pip3 install --upgrade pip \
      && pip3 install -r timelog/requirements.txt \
      && django-admin startproject serve \
      && mv timelog/ serve/timelog/ \
@@ -73,20 +74,24 @@ from django.contrib.auth.models import User
 User.objects.create_superuser('timelog', '', '$wui_pass')
 EOF
 
+  ln -s /var/lib/timelog/venv/serve/timelog/nginx-site/timelog \
+    /etc/nginx/sites-available/
+
   echo "Zeroconf mDNS with Avahi (optional)"
   read -p "Install /etc/avahi/services/timelog.service? [y/N] " -n 1 -r opt_avahi_service
   if [ ! $opt_avahi_service == "" ] ; then
     echo
   fi
   if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
-    sudo apt-get install avahi-daemon
-    sudo cp ~timelog/venv/serve/timelog/avahi-service/timelog.service \
-      /etc/avahi/services/
+    apt-get install avahi-daemon
+    cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog-a.service \
+      /etc/systemd/system/timelog.service
+  else
+    cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
+      /etc/systemd/system/timelog.service
   fi
 
-  cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
-    /etc/systemd/system/ \
-  && systemctl daemon-reload
+  systemctl daemon-reload
 }
 
 install_timelog

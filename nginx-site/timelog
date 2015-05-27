@@ -1,0 +1,21 @@
+server {
+  listen 8000;
+  listen [::]:8000;
+
+  location = /favicon.ico
+  {
+    access_log off;
+    log_not_found off;
+  }
+
+  location /static/
+  {
+    root /var/lib/timelog/venv/serve/timelog;
+  }
+
+  location /
+  {
+    include uwsgi_params;
+    uwsgi_pass unix:/var/lib/timelog/venv/serve/serve/timelog.sock;
+  }
+}

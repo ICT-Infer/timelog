@@ -33,7 +33,7 @@ fi
 systemctl stop timelog.service
 pkill -u timelog
 
-read -p "Really remove timelog service, user and /var/lib/timelog/? [y/N] " -n 1 -r
+read -p "Really remove timelog service, user and files? [y/N] " -n 1 -r
 if [ ! $REPLY == "" ] ; then
   echo
 fi
@@ -43,10 +43,10 @@ then
   exit 1
 fi
 
-rm /etc/avahi/services/timelog.service
 systemctl disable timelog.service
 rm /etc/systemd/system/timelog.service
 systemctl daemon-reload
+rm /etc/nginx/sites-available/timelog
 userdel timelog
 rm -rf /var/lib/timelog
 
