@@ -26,6 +26,7 @@ Currently a work in progress.
 
 Most notable dependencies:
 
+  * nginx
   * Django 1.8
   * Python 3.4
   * PostgreSQL 9.4
