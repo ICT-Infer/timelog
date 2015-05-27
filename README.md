@@ -16,7 +16,7 @@ Currently a work in progress.
   - [Default Django site admin web interface](#default-django-site-admin-web-interface)
     + [Adding users](#adding-users)
     + [Entering data](#entering-data)
-  - [Time sheets](#time-sheets)
+  - [Timelog web UI](#timelog-web-ui)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
 * [Updating](#updating)
 
