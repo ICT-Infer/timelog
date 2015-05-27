@@ -36,6 +36,8 @@ All dependencies will be installed during [installation](#installation).
 ## Installation
 
 For [supported platforms](#supported-platforms), an install script is provided.
+(A corresponding uninstall script is provided as well, should you ever want to
+remove timelog.)
 
 When you run the install script, you will be asked to pick a time zone.
 Please note that this will *not* affect your system time zone --
