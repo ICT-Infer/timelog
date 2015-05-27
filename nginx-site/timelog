@@ -8,11 +8,6 @@ server {
     log_not_found off;
   }
 
-  location /static/
-  {
-    root /var/lib/timelog/venv/serve/timelog;
-  }
-
   location /
   {
     include uwsgi_params;
