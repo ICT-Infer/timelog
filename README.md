@@ -14,6 +14,8 @@ Currently a work in progress.
 * [Usage](#usage)
   - [Stopping, starting and restarting the server](#stopping-starting-and-restarting-the-server)
   - [Default Django site admin web interface](#default-django-site-admin-web-interface)
+    + [Adding users](#adding-users)
+    + [Entering data](#entering-data)
   - [Time sheets](#time-sheets)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
 * [Updating](#updating)
@@ -87,10 +89,15 @@ sudo systemctl restart timelog.service
 
 ### Default Django site admin web interface
 
+#### Adding users
+
 Add regular users via `http://example.com:8000/admin/auth/user/add/`
 (substitute your server host name or IP address for `example.com`).
 
-You *could* then begin entering data into django-timelog right now at
+#### Entering data
+
+After you've added one or more regular users (see above), you *could* then
+begin entering data into django-timelog right now at
 `http://example.com:8000/admin/timelog/` (substitute your server host name
 or IP address for `example.com`). It's not great but it's better than nothing.
 
