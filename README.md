@@ -87,7 +87,10 @@ sudo systemctl restart timelog.service
 
 ### Default Django site admin web interface
 
-You *could* begin entering data into django-timelog right now at
+Add regular users via `http://example.com:8000/admin/auth/user/add/`
+(substitute your server host name or IP address for `example.com`).
+
+You *could* then begin entering data into django-timelog right now at
 `http://example.com:8000/admin/timelog/` (substitute your server host name
 or IP address for `example.com`). It's not great but it's better than nothing.
 
