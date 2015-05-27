@@ -53,7 +53,7 @@ Please give the install script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-install.bash
+wget -N https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-install.bash
 sudo bash ./timelog-install.bash
 ```
 
@@ -124,7 +124,7 @@ Please give the update script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-up.bash
+wget -N https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-up.bash
 sudo bash ./timelog-up.bash
 ```
 
