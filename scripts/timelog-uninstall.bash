@@ -74,4 +74,4 @@ EOF
     "will have to be removed manually." 1>&2
 }
 
-timelog_uninstall
+uninstall_timelog
