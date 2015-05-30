@@ -46,6 +46,8 @@ function uninstall_timelog {
   systemctl daemon-reload
   rm /etc/nginx/sites-available/timelog
   userdel timelog
+  apt-get -y remove django-timelog-avahi
+  apt-get -y remove django-timelog-base
   rm -rf /var/lib/timelog
 
   if [ "$drop" == "true" ] ; then
@@ -66,8 +68,6 @@ EOF
   fi
 
   echo "Done uninstalling timelog." 1>&2
-  echo "Dependencies installed using apt-get" \
-    "will have to be removed manually." 1>&2
 }
 
 uninstall_timelog

@@ -26,7 +26,22 @@ fi
 
 function install_timelog {
 
-  apt-get install build-essential python3-dev postgresql libpq-dev python3-pip nginx
+  apt-get -y install gdebi-core
+  mkdir -p /var/tmp/meta-packaging/django-timelog-base-0.2.3-git/DEBIAN/
+
+  cat > /var/tmp/meta-packaging/django-timelog-base-0.2.3-git/DEBIAN/control <<EOF
+Package: django-timelog-base
+Version: 0.2.3-git
+Section: main
+Priority: standard
+Architecture: all
+Depends: git, build-essential, python3-dev, postgresql, libpq-dev, python3-pip, nginx
+Maintainer: Erik Nordstroem <contact@erikano.net>
+Description: Meta-package for dependencies of base django-timelog.
+EOF
+
+  dpkg-deb -b /var/tmp/meta-packaging/django-timelog-base-0.2.3-git/
+  gdebi /var/tmp/meta-packaging/django-timelog-base-0.2.3-git.deb
 
   pip3 install virtualenv
 
@@ -91,13 +106,34 @@ EOF
     echo
   fi
   if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
-    apt-get install avahi-daemon
+    mkdir -p /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git/DEBIAN/
+
+    cat > /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git/DEBIAN/control <<EOF
+Package: django-timelog-avahi
+Version: 0.2.3-git
+Section: main
+Priority: standard
+Architecture: all
+Depends: avahi-daemon
+Maintainer: Erik Nordstroem <contact@erikano.net>
+Description: Meta-package for dependencies of django-timelog Avahi integration.
+EOF
+
+    dpkg-deb -b /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git/
+    gdebi /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git.deb
+
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog-a.service \
       /etc/systemd/system/timelog.service
   else
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
       /etc/systemd/system/timelog.service
   fi
+
+  mkdir ~timelog/meta-packaging/
+  mv /var/tmp/meta-packaging/django-timelog-*-0.2.3-git* \
+    ~timelog/meta-packaging/
+  chown -R timelog:timelog ~timelog/meta-packaging/
+  rmdir /var/tmp/meta-packaging/
 
   systemctl daemon-reload
 
