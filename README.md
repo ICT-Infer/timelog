@@ -2,8 +2,6 @@
 
 Django Timelog App. Time sheet time tracking for a person or group of people.
 
-Currently a work in progress.
-
 ## Table of Contents
 
 * [Supported platforms](#supported-platforms)
