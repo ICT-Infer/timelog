@@ -1,3 +1,4 @@
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
 import datetime
@@ -105,6 +106,7 @@ def ym_bounds (arg_year, arg_month):
 #
 
 # {base}/
+@login_required(login_url='/timelog/login/')
 def index (req):
 
   now = timezone.localtime(timezone.now())
@@ -112,6 +114,7 @@ def index (req):
 
 
 # {base}/hours/sheets/index-{year}-{month}.{fmt_ext}
+@login_required(login_url='/timelog/login/')
 def sheets (req, arg_year, arg_month, arg_fmt_ext):
 
   view_data = {}
@@ -155,6 +158,7 @@ def sheet_format_dispatcher (req, ctx, arg_fmt_ext):
 
 
 # {base}/hours/sheets/sheet-{cat_slug}-{year}-{month}.{fmt_ext}
+@login_required(login_url='/timelog/login/')
 def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
   cat_slug = arg_cat_slug
@@ -248,6 +252,7 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
     view_data['sum_duration'] = v_sum_duration
     ctx_tmp['view_data'] = view_data
     ctx_tmp['req_path'] = req.path
+    ctx_tmp['req_user'] = req.user
 
   ctx = ctx_tmp
 
