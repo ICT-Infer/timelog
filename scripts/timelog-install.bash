@@ -41,7 +41,7 @@ Description: Meta-package for dependencies of base django-timelog.
 EOF
 
   dpkg-deb -b /var/tmp/meta-packaging/django-timelog-base-0.2.3-git/
-  gdebi /var/tmp/meta-packaging/django-timelog-base-0.2.3-git.deb
+  gdebi --n /var/tmp/meta-packaging/django-timelog-base-0.2.3-git.deb
 
   pip3 install virtualenv
 
@@ -124,7 +124,7 @@ Description: Meta-package for dependencies of django-timelog Avahi integration.
 EOF
 
     dpkg-deb -b /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git/
-    gdebi /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git.deb
+    gdebi --n /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git.deb
 
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog-a.service \
       /etc/systemd/system/timelog.service
