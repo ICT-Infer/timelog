@@ -91,6 +91,19 @@ sudo systemctl restart timelog.service
 Add regular users via `http://example.com:8000/admin/auth/user/add/`
 (substitute your server host name or IP address for `example.com`).
 
+1. Log in as *timelog* using the password you have set for that user.
+2. Fill in username for the new user, password for the new user
+   and password confirmation for the new user.
+3. Click *save and continue editing*.
+4. You are brought to the *change user* form.
+5. In *available groups* under *groups*, select and choose *timelog_user*.
+6.
+   * If you want to add more users, click *save and add another*.
+     Repeat steps 2-6 until done adding all users you need.
+   * If this was the last user you wanted to add, click *save*.
+     Continue to step 7.
+7. Log out from the django site admin web interface and close the tab/window.
+
 #### Entering data
 
 After you've added one or more regular users (see above), you *could* then
