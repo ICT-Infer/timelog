@@ -97,8 +97,7 @@ Add regular users via `http://example.com:8000/admin/auth/user/add/`
 3. Click *save and continue editing*.
 4. You are brought to the *change user* form.
 5. In *available groups* under *groups*, select and choose *timelog_user*.
-6.
-   * If you want to add more users, click *save and add another*.
+6. * If you want to add more users, click *save and add another*.
      Repeat steps 2-6 until done adding all users you need.
    * If this was the last user you wanted to add, click *save*.
      Continue to step 7.
