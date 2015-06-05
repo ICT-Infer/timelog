@@ -24,7 +24,7 @@ django-timelog protects viewing and modifying data using the Django permissions 
 
 Regular users are trusted to operate on categories and entries regardless of ownership. In other words, some security is traded for convenience. This is useful, e.g. in the case where a group of people have been working on something together and they want one person to take care of entering the relevant data into timelog without having to muck about with permission systems.
 
-SSL is currently not configured by default, meaning that all data, including usernames and passwords, are transmitted in the clear over the network. There are plans to set up self-signed SSL certificates by default in a future release.
+TLS is currently not configured by default, meaning that all data, including usernames and passwords, are transmitted in the clear over the network. There are plans to set up TLS with self-signed certificates by default in a future release.
 
 ## Supported platforms
 
