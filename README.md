@@ -4,6 +4,7 @@ Django Timelog App. Time sheet time tracking for a person or group of people.
 
 ## Table of Contents
 
+* [Screenshot](#screenshot)
 * [Security](#security)
 * [Supported platforms](#supported-platforms)
 * [Dependencies](#dependencies)
@@ -17,6 +18,10 @@ Django Timelog App. Time sheet time tracking for a person or group of people.
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
 * [Updating and upgrading](#updating-and-upgrading)
 * [Copyright and license](#copyright-and-license)
+
+## Screenshot
+
+TODO: Add a screenshot.
 
 ## Security
 
