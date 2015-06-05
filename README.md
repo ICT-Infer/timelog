@@ -154,9 +154,7 @@ sudo bash ./timelog-up.bash
 
 ## Copyright and license
 
-```
-Copyright (c) 2015 Erik Nordstroem <contact@erikano.net>
-```
+django-timelog is copyright (c) 2015 Erik Nordstroem.
 
 django-timelog is published under the ISC license.
 
