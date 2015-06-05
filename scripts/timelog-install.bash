@@ -97,6 +97,10 @@ from django.contrib.auth.models import User
 User.objects.create_superuser('timelog', '', '$wui_pass')
 EOF
 
+  sudo -u timelog -i -- bash -c \
+    "python3 ~/venv/serve/manage.py shell" \
+      < ~timelog/venv/serve/timelog/scripts/setup/timelog_user_group.py
+
   ln -s /var/lib/timelog/venv/serve/timelog/nginx-site/timelog \
     /etc/nginx/sites-available/
 
