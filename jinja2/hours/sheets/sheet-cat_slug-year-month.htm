@@ -12,7 +12,7 @@
 <h2>Hours</h2>
 <h3><a href="{{ view_data.overview }}">Time sheets</a></h3>
 </header>
-<form action="{{ redir.sheet }}?{{ query_str }}" id="navigation" method="POST">
+<form action="{{ redir.sheet }}?{{ qstr }}" id="navigation" method="POST">
 <label for="category">Category</label>
 <select name="category" id="category">
   <option value="{{ cat_id }}">{{ cat_name }}</option>
@@ -30,7 +30,7 @@
 <div>
 <!-- TODO: Link to user page -->
 <a id="user" href="">{{ req_user.username }}</a>
-<a id="log-out" href="/timelog/logout/">Log out</a>
+<a id="log-out" href="/timelog/logout/?login_next={{ req_path + "%3F" + qqstr }}">Log out</a>
 <!-- TODO: Make add-new initiate adding new category/entry. -->
 <a id="add-new" title="Add a new category or entry." href="">+</a>
 </div>
