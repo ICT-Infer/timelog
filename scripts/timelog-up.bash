@@ -38,6 +38,10 @@ function upgrade_timelog {
      && python3 ../manage.py makemigrations timelog \
      && python3 ../manage.py migrate"
 
+  sudo -u timelog -i -- bash -c \
+    "python3 ~/venv/serve/manage.py shell" \
+      < ~timelog/venv/serve/timelog/scripts/setup/timelog_user_group.py
+
   systemctl restart timelog.service
 
   echo "Done upgrading timelog." 1>&2
