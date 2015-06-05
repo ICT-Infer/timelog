@@ -26,6 +26,8 @@ Regular users are trusted to operate on categories and entries regardless of own
 
 TLS is currently not configured by default, meaning that all data, including usernames and passwords, are transmitted in the clear over the network. There are plans to set up TLS with self-signed certificates by default in a future release.
 
+Security measures such as protections against CSRF, XSS and SQLi are provided by Django. See https://docs.djangoproject.com/en/1.8/topics/security/ for details.
+
 ## Supported platforms
 
 * Debian GNU/Linux 8.0 "Jessie"
