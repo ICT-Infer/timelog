@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse, JsonResponse
 from django.utils import timezone
+from django.utils.http import urlquote
 import datetime
 from dateutil.relativedelta import relativedelta
 from django.shortcuts import render
@@ -230,7 +231,8 @@ def sheet (req, arg_cat_slug, arg_year, arg_month, arg_fmt_ext):
 
     ctx_tmp['redir'] = {}
     ctx_tmp['redir']['sheet'] = "/timelog/redir/sheet.htm"
-    ctx_tmp['query_str'] = req.GET.urlencode()
+    ctx_tmp['qstr'] = req.GET.urlencode()
+    ctx_tmp['qqstr'] = urlquote(req.GET.urlencode())
     ctx_tmp['opt'] = opt
     ctx_tmp['cat_id'] = root['id']
     ctx_tmp['cat_name'] = root['name']
