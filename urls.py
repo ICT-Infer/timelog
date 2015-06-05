@@ -6,6 +6,7 @@ urlpatterns = patterns(
   '',
   url(r'^$', views.index, name='index'),
   url(r'^login/$', auth_views.login, {'template_name': 'login.htm'}),
+  url(r'^logout/$', auth_views.logout_then_login, {'login_url': '/timelog/login/'}),
   url(r'^hours/sheets/index-(?P<arg_year>\d+)-(?P<arg_month>\d{2})\.(?P<arg_fmt_ext>\w+)$',
     views.sheets,
     name='sheets'),
