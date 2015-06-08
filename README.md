@@ -25,7 +25,7 @@ TODO: Add a screenshot.
 
 ## Security
 
-django-timelog protects viewing and modifying data using the Django permissions system. The super user is able to use the Default Django site admin web interface for additional operations. Regular users are able to view, add, change and delete categories and entries.
+django-timelog protects viewing and modifying data using the Django permissions system. The super user is able to use the default Django site admin web interface for additional operations. Regular users are able to view, add, change and delete categories and entries.
 
 Regular users are trusted to operate on categories and entries regardless of ownership. In other words, some security is traded for convenience. This is useful, e.g. in the case where a group of people have been working on something together and they want one person to take care of entering the relevant data into timelog without having to muck about with permission systems.
 
