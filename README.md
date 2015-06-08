@@ -41,7 +41,7 @@ Security measures such as protections against CSRF, XSS and SQLi are provided by
 
 Most notable dependencies:
 
-  * nginx
+  * Nginx
   * Django 1.8
   * Python 3.4
   * PostgreSQL 9.4
