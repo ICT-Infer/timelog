@@ -118,7 +118,7 @@ Add regular users via `http://example.com:8000/admin/auth/user/add/`
      Repeat steps 2-6 until done adding all users you need.
    * If this was the last user you wanted to add, click *save*.
      Continue to step 7.
-7. Log out from the django site admin web interface and close the tab/window.
+7. Log out from the Django site admin web interface and close the tab/window.
 
 #### Entering data
 
