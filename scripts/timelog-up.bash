@@ -39,8 +39,8 @@ function upgrade_timelog {
      && python3 ../manage.py migrate"
 
   sudo -u timelog -i -- bash -c \
-    "python3 ~/venv/serve/manage.py shell" \
-      < ~timelog/venv/serve/timelog/scripts/setup/timelog_user_group.py
+    "python3 ~/venv/serve/manage.py shell \
+      < ~/venv/serve/timelog/scripts/setup/timelog_user_group.py"
 
   systemctl restart timelog.service
 
