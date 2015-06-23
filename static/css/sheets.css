@@ -94,6 +94,6 @@ tr > th {
 .debug {
   display: none;
 }
-tr:hover {
+tbody > tr:hover {
   background: #8f8;
 }
