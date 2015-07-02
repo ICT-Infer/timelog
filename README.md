@@ -144,6 +144,18 @@ sudo -u timelog -i -- bash -c \
      > ~/timelog-$( cd ~timelog/venv/serve/timelog/ ; git describe )-dbdump-$( date +%FT%H%M%S%z ).json"
 ```
 
+For good measure, we'll also do a dump of the whole database
+using PostgreSQL tools. The reason for this is that
+we shall prefer to restore using the Django tools
+but if s--t gets f--ked, it's better to have
+the additional means of recovery provided by this.
+
+```
+sudo -u timelog -i -- bash -c \
+  "pg_dump timelog \
+     > ~/timelog-$( cd ~timelog/venv/serve/timelog/ ; git describe )-dbdump-$( date +%FT%H%M%S%z ).sql"
+```
+
 Transfer the data dump to somewhere safe!
 
 ## Updating and upgrading
