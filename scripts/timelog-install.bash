@@ -33,6 +33,12 @@ if [ "$?" -eq "0" ] ; then
   exit 4
 fi
 
+id timelog 2>&1 >/dev/null
+if [ "$?" -eq "0" ] ; then
+  echo "Unix user \`timelog' exists." 1>&2
+  exit 5
+fi
+
 function install_timelog {
 
   apt-get -y install gdebi-core
