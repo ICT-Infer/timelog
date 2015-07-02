@@ -156,7 +156,7 @@ sudo -u timelog -i -- bash -c \
      > ~/timelog-$( cd ~timelog/venv/serve/timelog/ ; git describe )-dbdump-$( date +%FT%H%M%S%z ).sql"
 ```
 
-Transfer the data dump to somewhere safe!
+Transfer the data dumps to somewhere safe!
 
 ## Updating and upgrading
 
