@@ -24,6 +24,15 @@ if [ "$( id -u )" -ne "0" ] ; then
   exit 3
 fi
 
+# If you've modified django-timelog to use a remote database server,
+# then this check won't work. It would be up to you to fix this check
+# if you change django-timelog that way.
+echo '\q' | sudo -u postgres psql timelog 2>&1 >/dev/null
+if [ "$?" -eq "0" ] ; then
+  echo "Database \`timelog' exists." 1>&2
+  exit 4
+fi
+
 function install_timelog {
 
   apt-get -y install gdebi-core
