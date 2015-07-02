@@ -42,6 +42,8 @@ function upgrade_timelog {
     "python3 ~/venv/serve/manage.py shell \
       < ~/venv/serve/timelog/scripts/setup/timelog_user_group.py"
 
+  echo "Restarting timelog service. This might take a while." 1>&2
+
   systemctl restart timelog.service
 
   echo "Done upgrading timelog." 1>&2
