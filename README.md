@@ -140,9 +140,8 @@ To add a category, use the above mentioned Django site admin web interface.
 
 ```
 sudo -u timelog -i -- bash -c \
-  "cd ~/venv/serve/timelog/ \
-   && python3 ~/venv/serve/manage.py dumpdata \
-        > ~/timelog-\$( git describe )-dbdump-$( date +%FT%H%M%S%z ).json"
+  "python3 ~/venv/serve/manage.py dumpdata \
+     > ~/timelog-$( cd ~timelog/venv/serve/timelog/ ; git describe )-dbdump-$( date +%FT%H%M%S%z ).json"
 ```
 
 Transfer the data dump to somewhere safe!
