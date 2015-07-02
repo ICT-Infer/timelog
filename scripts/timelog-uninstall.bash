@@ -28,6 +28,7 @@ function uninstall_timelog {
     exit 1
   fi
 
+  echo "Stopping timelog service. This might take a while." 1>&2
   systemctl stop timelog.service
   pkill -u timelog
 
