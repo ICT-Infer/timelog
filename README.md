@@ -4,6 +4,7 @@ Django Timelog App. Time sheet time tracking for a person or group of people.
 
 ## Table of Contents
 
+* [Pre-stable notice](#pre-stable-notice)
 * [Screenshot](#screenshot)
 * [Security](#security)
 * [Supported platforms](#supported-platforms)
@@ -18,6 +19,31 @@ Django Timelog App. Time sheet time tracking for a person or group of people.
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
 * [Updating and upgrading](#updating-and-upgrading)
 * [Copyright and license](#copyright-and-license)
+
+## Pre-stable notice
+
+Until 1.0.0 is reached, django-timelog is subject to change
+in compatibility-breaking ways. Basically, in its
+present stage of development, the only requirement is that
+the following data MUST be preserved:
+
+* User account name and password hash
+* Category names and descriptions, as well as category hierarchy
+* Entry begin and end dates, times and time zones; entry descriptions
+
+Note that the names of the fields themselves may change
+and the data representation may change. Anything else
+not covered by the above requirement may change as well.
+
+In other words; django-timelog is already ready for use
+but keep in mind that if you're planning on doing
+any integration work prior to release 1.0.0,
+breakage may occur.
+
+After 1.0.0, all releases up to but not including 2.0.0
+will remain compatible in ways TBD.
+
+This is (loosely?) following [semantic versioning](http://semver.org/).
 
 ## Screenshot
 
