@@ -1,6 +1,6 @@
 <?xml version="1.0" standalone='no'?>
 <!DOCTYPE service-group SYSTEM "avahi-service.dtd">
-<!-- https://github.com/erikano/django-timelog/ -->
+<!-- https://github.com/erikano/timelog-core/ -->
 <service-group>
   <name replace-wildcards="yes">%h - timelog</name>
   <service>

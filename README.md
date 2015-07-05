@@ -1,4 +1,4 @@
-# django-timelog
+# timelog-core
 
 Django Timelog App. Time sheet time tracking for a person or group of people.
 
@@ -22,7 +22,7 @@ Django Timelog App. Time sheet time tracking for a person or group of people.
 
 ## Pre-stable notice
 
-Until 1.0.0 is reached, django-timelog is subject to change
+Until 1.0.0 is reached, timelog-core is subject to change
 in compatibility-breaking ways. Basically, in its
 present stage of development, the only requirement is that
 the following data MUST be preserved:
@@ -35,7 +35,7 @@ Note that the names of the fields themselves may change
 and the data representation may change. Anything else
 not covered by the above requirement may change as well.
 
-In other words; django-timelog is already ready for use
+In other words; timelog-core is already ready for use
 but keep in mind that if you're planning on doing
 any integration work prior to release 1.0.0,
 breakage may occur.
@@ -51,7 +51,7 @@ TODO: Add a screenshot.
 
 ## Security
 
-django-timelog protects viewing and modifying data using the Django permissions system. The super user is able to use the default Django site admin web interface for additional operations. Regular users are able to view, add, change and delete categories and entries.
+timelog-core protects viewing and modifying data using the Django permissions system. The super user is able to use the default Django site admin web interface for additional operations. Regular users are able to view, add, change and delete categories and entries.
 
 Regular users are trusted to operate on categories and entries regardless of ownership. In other words, some security is traded for convenience. This is useful, e.g. in the case where a group of people have been working on something together and they want one person to take care of entering the relevant data into timelog without having to muck about with permission systems.
 
@@ -93,8 +93,8 @@ Please give the install script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget -N https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-install.bash
-sudo bash ./timelog-install.bash
+wget -N https://raw.githubusercontent.com/erikano/timelog-core/master/scripts/timelog-core-install.bash
+sudo bash ./timelog-core-install.bash
 ```
 
 Once the install script has finished, enable the timelog service and start it:
@@ -149,7 +149,7 @@ Add regular users via `http://example.com:8000/admin/auth/user/add/`
 #### Entering data
 
 After you've added one or more regular users (see above), you *could* then
-begin entering data into django-timelog right now at
+begin entering data into timelog-core right now at
 `http://example.com:8000/admin/timelog/` (substitute your server host name
 or IP address for `example.com`). It's not great but it's better than nothing.
 
@@ -190,14 +190,14 @@ Please give the update script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget -N https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-up.bash
-sudo bash ./timelog-up.bash
+wget -N https://raw.githubusercontent.com/erikano/timelog-core/master/scripts/timelog-core-up.bash
+sudo bash ./timelog-core-up.bash
 ```
 
 ## Copyright and license
 
-django-timelog is copyright © 2015 Erik Nordstroem.
+timelog-core is copyright © 2015 Erik Nordstroem.
 
-django-timelog is published under the ISC license.
+timelog-core is published under the ISC license.
 
 A copy of the license is included in the file `LICENSE`.
