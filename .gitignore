@@ -1,9 +1,0 @@
-*.db
-*.swp
-/GNUmakefile
-/GNUmakefile.orig
-/config.mk
-/debug/
-/dist/
-/timelog_version.h
-/work/
