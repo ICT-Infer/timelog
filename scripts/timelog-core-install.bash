@@ -24,9 +24,9 @@ if [ "$( id -u )" -ne "0" ] ; then
   exit 3
 fi
 
-# If you've modified django-timelog to use a remote database server,
+# If you've modified timelog-core to use a remote database server,
 # then this check won't work. It would be up to you to fix this check
-# if you change django-timelog that way.
+# if you change timelog-core that way.
 echo '\q' | sudo -u postgres psql timelog 2>&1 >/dev/null
 if [ "$?" -eq "0" ] ; then
   echo "Database \`timelog' exists." 1>&2
@@ -42,21 +42,21 @@ fi
 function install_timelog {
 
   apt-get -y install gdebi-core
-  mkdir -p /var/tmp/meta-packaging/django-timelog-base-0.2.3-git/DEBIAN/
+  mkdir -p /var/tmp/meta-packaging/timelog-core-base-0.3.8-git/DEBIAN/
 
-  cat > /var/tmp/meta-packaging/django-timelog-base-0.2.3-git/DEBIAN/control <<EOF
-Package: django-timelog-base
-Version: 0.2.3-git
+  cat > /var/tmp/meta-packaging/timelog-core-base-0.3.8-git/DEBIAN/control <<EOF
+Package: timelog-core-base
+Version: 0.3.8-git
 Section: main
 Priority: standard
 Architecture: all
 Depends: git, build-essential, python3-dev, postgresql, libpq-dev, python3-pip, nginx
 Maintainer: Erik Nordstroem <contact@erikano.net>
-Description: Meta-package for dependencies of base django-timelog.
+Description: Meta-package for dependencies of base timelog-core.
 EOF
 
-  dpkg-deb -b /var/tmp/meta-packaging/django-timelog-base-0.2.3-git/
-  gdebi --n /var/tmp/meta-packaging/django-timelog-base-0.2.3-git.deb
+  dpkg-deb -b /var/tmp/meta-packaging/timelog-core-base-0.3.8-git/
+  gdebi --n /var/tmp/meta-packaging/timelog-core-base-0.3.8-git.deb
 
   pip3 install virtualenv
 
@@ -72,7 +72,7 @@ EOF
      && cd ~/venv/ \
      && source bin/activate \
      && echo 'source ~/venv/bin/activate' >> ~/.bash_profile \
-     && git clone https://github.com/erikano/django-timelog.git timelog/ \
+     && git clone https://github.com/erikano/timelog-core.git timelog/ \
      && pip3 install --upgrade pip \
      && pip3 install -r timelog/requirements.txt \
      && django-admin startproject serve \
@@ -125,21 +125,21 @@ EOF
     echo
   fi
   if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
-    mkdir -p /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git/DEBIAN/
+    mkdir -p /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git/DEBIAN/
 
-    cat > /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git/DEBIAN/control <<EOF
-Package: django-timelog-avahi
-Version: 0.2.3-git
+    cat > /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git/DEBIAN/control <<EOF
+Package: timelog-core-avahi
+Version: 0.3.8-git
 Section: main
 Priority: standard
 Architecture: all
 Depends: avahi-daemon
 Maintainer: Erik Nordstroem <contact@erikano.net>
-Description: Meta-package for dependencies of django-timelog Avahi integration.
+Description: Meta-package for dependencies of timelog-core Avahi integration.
 EOF
 
-    dpkg-deb -b /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git/
-    gdebi --n /var/tmp/meta-packaging/django-timelog-avahi-0.2.3-git.deb
+    dpkg-deb -b /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git/
+    gdebi --n /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git.deb
 
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog-a.service \
       /etc/systemd/system/timelog.service
@@ -149,7 +149,7 @@ EOF
   fi
 
   mkdir ~timelog/meta-packaging/
-  mv /var/tmp/meta-packaging/django-timelog-*-0.2.3-git* \
+  mv /var/tmp/meta-packaging/timelog-core-*-0.3.8-git* \
     ~timelog/meta-packaging/
   chown -R timelog:timelog ~timelog/meta-packaging/
   rmdir /var/tmp/meta-packaging/
