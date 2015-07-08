@@ -85,7 +85,7 @@ function install_timelog {
     opt_avahi_service=true
   fi
 
-  dpkg -l git 2>&1 | egrep -q "^ii  git"
+  dpkg -l git 2>&1 | egrep -q "^ii  "
   if [ "$?" -ne 0 ] ; then
     apt-get -y install git
     script_installed_git=true
