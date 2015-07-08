@@ -14,7 +14,7 @@ cd ~timelog/venv/serve/
 patch -p2 -d serve/ < ${script_path}/../patch/serve/settings.py.patch || exit 2
 patch -p2 -d serve/ < ${script_path}/../patch/serve/urls.py.patch || exit 3
 sed -i "s@\\\(TIME_ZONE = \\\)'[^']*'\\\$@\\\1'${tzsel}'@" serve/settings.py
-grep -q "TIME_ZONE = $tzsel" serve/settings.py || exit 4
+grep -q "TIME_ZONE = '${tzsel}'" serve/settings.py || exit 4
 python3 manage.py makemigrations timelog || exit 5
 python3 manage.py migrate || exit 6
 
