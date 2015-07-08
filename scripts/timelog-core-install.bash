@@ -24,19 +24,25 @@ if [ "$( id -u )" -ne "0" ] ; then
   exit 3
 fi
 
+which sudo >/dev/null
+if [ "$?" -ne "0" ] ; then
+  echo "Need \`sudo'. Please \`apt-get install sudo'." 1>&2
+  exit 4
+fi
+
 # If you've modified timelog-core to use a remote database server,
 # then this check won't work. It would be up to you to fix this check
 # if you change timelog-core that way.
 echo '\q' | sudo -u postgres psql timelog >/dev/null 2>&1
 if [ "$?" -eq "0" ] ; then
   echo "Database \`timelog' exists." 1>&2
-  exit 4
+  exit 5
 fi
 
 id timelog >/dev/null 2>&1
 if [ "$?" -eq "0" ] ; then
   echo "Unix user \`timelog' exists." 1>&2
-  exit 5
+  exit 6
 fi
 
 function install_timelog {
