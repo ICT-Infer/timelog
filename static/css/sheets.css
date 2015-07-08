@@ -97,3 +97,10 @@ tr > th {
 tbody > tr:hover {
   background: #8f8;
 }
+.entry > td {
+  white-space: nowrap;
+}
+.entry > .description {
+  white-space: normal;
+  width: 99%;
+}
