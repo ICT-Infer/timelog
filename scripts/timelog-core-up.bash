@@ -14,8 +14,8 @@ function abort_upgrade {
 
   sudo -u timelog -i -- bash -c \
     "cd ~/venv/serve/timelog \
-     && git reset scripts/timelog-core-install.bash \
-     && git checkout -- scripts/timelog-core-install.bash"
+     && git reset --hard HEAD \
+     && git clean -f"
 
   exit 3
 }
@@ -31,8 +31,8 @@ function upgrade_timelog {
 
   sudo -u timelog -i -- bash -c \
     "cd ~/venv/serve/timelog \
-     && git reset scripts/timelog-core-install.bash \
-     && git checkout -- scripts/timelog-core-install.bash \
+     && git reset --hard HEAD \
+     && git clean -f \
      && git pull \
      && pip install -U -r requirements.txt \
      && python3 ../manage.py makemigrations timelog \
