@@ -93,8 +93,7 @@ function install_timelog {
 
   adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
 
-  # TODO: Replace erikano/django-timelog with saas-by-erik/timelog-core
-  sudo -u timelog -i bash -c "git clone https://github.com/erikano/django-timelog.git timelog-core"
+  sudo -u timelog -i bash -c "git clone https://github.com/saas-by-erik/timelog-core.git"
 
   if [ "$script_installed_git" == "true" ] ; then
     apt-get -y remove git
