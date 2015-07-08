@@ -27,13 +27,13 @@ fi
 # If you've modified timelog-core to use a remote database server,
 # then this check won't work. It would be up to you to fix this check
 # if you change timelog-core that way.
-echo '\q' | sudo -u postgres psql timelog 2>&1 >/dev/null
+echo '\q' | sudo -u postgres psql timelog >/dev/null 2>&1
 if [ "$?" -eq "0" ] ; then
   echo "Database \`timelog' exists." 1>&2
   exit 4
 fi
 
-id timelog 2>&1 >/dev/null
+id timelog >/dev/null 2>&1
 if [ "$?" -eq "0" ] ; then
   echo "Unix user \`timelog' exists." 1>&2
   exit 5
@@ -49,7 +49,7 @@ function install_timelog {
     opt_avahi_service=true
   fi
 
-  dpkg -l git 1>&2 2>/dev/null
+  dpkg -l git >/dev/null 2>&1
   if [ "$?" -ne 0 ] ; then
     apt-get -y install git
     script_installed_git=true
