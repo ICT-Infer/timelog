@@ -93,7 +93,7 @@ Please give the install script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget -N https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-core-install.bash
+wget -N https://raw.githubusercontent.com/saas-by-erik/timelog-core/master/scripts/timelog-core-install.bash
 sudo bash ./timelog-core-install.bash
 ```
 
@@ -190,7 +190,7 @@ Please give the update script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget -N https://raw.githubusercontent.com/erikano/django-timelog/master/scripts/timelog-core-up.bash
+wget -N https://raw.githubusercontent.com/saas-by-erik/timelog-core/master/scripts/timelog-core-up.bash
 sudo bash ./timelog-core-up.bash
 ```
 
