@@ -42,6 +42,16 @@ function upgrade_timelog {
     "python3 ~/venv/serve/manage.py shell \
       < ~/venv/serve/timelog/scripts/setup/timelog_user_group.py"
 
+  dpkg -l timelog-core-extras-avahi 2>&1 | egrep -q "^ii  "
+  || dpkg -l django-timelog-avahi 2>&1 | egrep -q "^ii  "
+  if [ "$?" -eq 0 ] ; then
+    sudo -u timelog -i -- bash -c \
+      "~/venv/serve/timelog/scripts/timelog-core-install-deps.bash --with-avahi"
+  else
+    sudo -u timelog -i -- bash -c \
+      "~/venv/serve/timelog/scripts/timelog-core-install-deps.bash"
+  fi
+
   echo "Restarting timelog service. This might take a while." 1>&2
 
   systemctl restart timelog.service
