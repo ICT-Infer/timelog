@@ -25,18 +25,13 @@ fi
 
 gdebi --n packaging/debian/meta/timelog-core-deps-${ver}.deb
 
-# We also have gdebi-core as a dep but in the case where we
-# first had to install it from this script itself, we now remove it
-# so the packaging system will know that it is only installed as a
-# dependency. Useful in case we decide to stop using it in the future
-# and also it's the nice thing to do anyway.
-if [ "$script_installed_gdebi" == "true" ] ; then
-  apt-get -y remove gdebi-core
-fi
-
 if [ "$opt_avahi_service" == "true" ] ; then
   dpkg-deb -b packaging/debian/meta/timelog-core-extras-avahi-${ver}/
   gdebi --n packaging/debian/meta/timelog-core-extras-avahi-${ver}.deb
+fi
+
+if [ "$script_installed_gdebi" == "true" ] ; then
+  apt-get -y remove gdebi-core
 fi
 
 # In case user is upgrading from a release prior to rename (i.e. pre-0.3.8).
