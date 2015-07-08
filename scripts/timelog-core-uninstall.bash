@@ -14,7 +14,7 @@ if [ "$( id -u )" -ne "0" ] ; then
   exit 2
 fi
 
-sudo -u nobody bash $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/timelog-install.bash --version-check-only || exit 3
+sudo -u nobody bash $( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/timelog-core-install.bash --version-check-only || exit 3
 
 function uninstall_timelog {
 
@@ -47,8 +47,8 @@ function uninstall_timelog {
   systemctl daemon-reload
   rm /etc/nginx/sites-available/timelog
   userdel timelog
-  apt-get -y remove django-timelog-avahi
-  apt-get -y remove django-timelog-base
+  apt-get -y remove timelog-core-avahi
+  apt-get -y remove timelog-core-base
   rm -rf /var/lib/timelog
 
   if [ "$drop" == "true" ] ; then

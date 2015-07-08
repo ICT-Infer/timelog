@@ -1,0 +1,8 @@
+Package: timelog-core-deps
+Version: 0.3.8-git
+Section: main
+Priority: standard
+Architecture: all
+Depends: git, python3-virtualenv, build-essential, python3-dev, postgresql, libpq-dev, python3-pip, nginx
+Maintainer: Erik Nordstroem <contact@erikano.net>
+Description: Meta-package for dependencies of timelog-core.
