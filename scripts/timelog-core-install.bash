@@ -3,7 +3,7 @@
 if [ "$#" -eq "1" ] && [ "$1" == "--version-check-only" ] ; then
   version_check_only=true
 elif [ "$#" -ne "0" ] ; then
-  echo "Usage: $0 [--check]" 1>&2
+  echo "Usage: $0 [--version-check-only]" 1>&2
   exit 1
 else
   unset version_check_only
@@ -40,119 +40,59 @@ if [ "$?" -eq "0" ] ; then
 fi
 
 function install_timelog {
+  echo "Zeroconf mDNS with Avahi (optional)"
+  read -p "Install /etc/avahi/services/timelog.service? [y/N] " -n 1 -r opt_avahi_service
+  if [ ! "$opt_avahi_service" == "" ] ; then
+    echo
+  fi
+  if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
+    opt_avahi_service=true
+  fi
 
-  apt-get -y install gdebi-core
-  mkdir -p /var/tmp/meta-packaging/timelog-core-base-0.3.8-git/DEBIAN/
-
-  cat > /var/tmp/meta-packaging/timelog-core-base-0.3.8-git/DEBIAN/control <<EOF
-Package: timelog-core-base
-Version: 0.3.8-git
-Section: main
-Priority: standard
-Architecture: all
-Depends: git, build-essential, python3-dev, postgresql, libpq-dev, python3-pip, nginx
-Maintainer: Erik Nordstroem <contact@erikano.net>
-Description: Meta-package for dependencies of base timelog-core.
-EOF
-
-  dpkg-deb -b /var/tmp/meta-packaging/timelog-core-base-0.3.8-git/
-  gdebi --n /var/tmp/meta-packaging/timelog-core-base-0.3.8-git.deb
-
-  pip3 install virtualenv
+  dpkg -l git 1>&2 2>/dev/null
+  if [ "$?" -ne 0 ] ; then
+    apt-get -y install git
+    script_installed_git=true
+  fi
 
   adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
+
+  # TODO: Replace erikano/django-timelog with saas-by-erik/timelog-core
+  sudo -u timelog -i bash -c "git clone https://github.com/erikano/django-timelog.git"
+
+  if [ "$script_installed_git" == "true" ] ; then
+    apt-get -y remove git
+  fi
+
+  if [ "$opt_avahi_service" == "" ] ; then
+    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash --with-avahi
+  else
+    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash
+  fi
 
   sudo -u postgres -i psql <<EOF
 CREATE USER timelog;
 CREATE DATABASE timelog OWNER timelog;
 EOF
 
-  sudo -u timelog -i -- bash -c \
-    "virtualenv-3.4 ~/venv/ \
-     && cd ~/venv/ \
-     && source bin/activate \
-     && echo 'source ~/venv/bin/activate' >> ~/.bash_profile \
-     && git clone https://github.com/erikano/timelog-core.git timelog/ \
-     && pip3 install --upgrade pip \
-     && pip3 install -r timelog/requirements.txt \
-     && django-admin startproject serve \
-     && mv timelog/ serve/timelog/ \
-     && cd serve/ \
-     && patch -p2 -d serve/ < timelog/patch/serve/settings.py.patch \
-     && patch -p2 -d serve/ < timelog/patch/serve/urls.py.patch \
-     && sed -i \"s@\\\(TIME_ZONE = \\\)'[^']*'\\\$@\\\1'$( tzselect )'@\" \
-          serve/settings.py \
-     && python3 manage.py makemigrations timelog \
-     && python3 manage.py migrate"
+  sudo -u timelog -i bash \
+    ~timelog/timelog-core/scripts/timelog-core-install-stage2.bash
 
-  echo
-  echo "Django site admin web interface superuser account creation" 1>&2
-  wui_user=timelog
-  echo "Using username \`$wui_user'"
-  read -p "Use a random password? [y/N] " -n 1 -r wui_pass_random
-  if [ ! $wui_pass_random == "" ] ; then
-    echo
-  fi
-  if [[ $wui_pass_random =~ ^[Yy]$ ]] ; then
-    wui_pass=$( egrep -o ^[a-z]+$ /usr/share/dict/words | shuf -n4 | xargs echo )
-    echo "Using random password \`$wui_pass'."
-  else
-    while [ -z $wui_pass ] || [ ! "$wui_pass_a" == "$wui_pass_b" ] ; do
-      read -p "Enter password: " -r -s wui_pass_a
-      echo
-      read -p "Confirm password: " -r -s wui_pass_b
-      echo
-      wui_pass="$wui_pass_a"
-    done
-  fi
+  mv ~timelog/timelog-core ~timelog/venv/serve/timelog
 
-  sudo -u timelog -i -- bash -c \
-    "python3 ~/venv/serve/manage.py shell" <<EOF
-from django.contrib.auth.models import User
-User.objects.create_superuser('timelog', '', '$wui_pass')
-EOF
-
-  sudo -u timelog -i -- bash -c \
-    "python3 ~/venv/serve/manage.py shell" \
-      < ~timelog/venv/serve/timelog/scripts/setup/timelog_user_group.py
+  sudo -u timelog -i bash \
+    ~timelog/venv/serve/timelog/scripts/timelog-core-install-stage3.bash
 
   ln -s /var/lib/timelog/venv/serve/timelog/nginx-site/timelog \
     /etc/nginx/sites-available/
 
-  echo "Zeroconf mDNS with Avahi (optional)"
-  read -p "Install /etc/avahi/services/timelog.service? [y/N] " -n 1 -r opt_avahi_service
-  if [ ! $opt_avahi_service == "" ] ; then
-    echo
-  fi
   if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
-    mkdir -p /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git/DEBIAN/
-
-    cat > /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git/DEBIAN/control <<EOF
-Package: timelog-core-avahi
-Version: 0.3.8-git
-Section: main
-Priority: standard
-Architecture: all
-Depends: avahi-daemon
-Maintainer: Erik Nordstroem <contact@erikano.net>
-Description: Meta-package for dependencies of timelog-core Avahi integration.
-EOF
-
-    dpkg-deb -b /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git/
-    gdebi --n /var/tmp/meta-packaging/timelog-core-avahi-0.3.8-git.deb
-
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog-a.service \
       /etc/systemd/system/timelog.service
   else
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
       /etc/systemd/system/timelog.service
   fi
-
-  mkdir ~timelog/meta-packaging/
-  mv /var/tmp/meta-packaging/timelog-core-*-0.3.8-git* \
-    ~timelog/meta-packaging/
-  chown -R timelog:timelog ~timelog/meta-packaging/
-  rmdir /var/tmp/meta-packaging/
 
   systemctl daemon-reload
 
