@@ -53,6 +53,29 @@ if [ "$?" -eq "0" ] ; then
 fi
 
 function install_timelog {
+  tzsel=$( tzselect ) || exit 8
+
+  echo "Django superuser account configuration" 1>&2
+  wui_user=timelog
+  echo "Using username \`$wui_user'"
+  read -p "Use a random password? [y/N] " -n 1 -r wui_pass_random
+  if [ ! $wui_pass_random == "" ] ; then
+    echo
+  fi
+  if [[ $wui_pass_random =~ ^[Yy]$ ]] ; then
+    wui_pass_random=true
+    wui_pass=$( egrep -o ^[a-z]+$ /usr/share/dict/words | shuf -n4 | xargs echo )
+    echo "Using random password \`$wui_pass'."
+  else
+    while [ -z $wui_pass ] || [ ! "$wui_pass_a" == "$wui_pass_b" ] ; do
+      read -p "Enter password: " -r -s wui_pass_a
+      echo
+      read -p "Confirm password: " -r -s wui_pass_b
+      echo
+      wui_pass="$wui_pass_a"
+    done
+  fi
+
   echo "Zeroconf mDNS with Avahi (optional)"
   read -p "Install /etc/avahi/services/timelog.service? [y/N] " -n 1 -r opt_avahi_service
   if [ ! "$opt_avahi_service" == "" ] ; then
@@ -79,9 +102,9 @@ function install_timelog {
 
   if [ "$opt_avahi_service" == "true" ] ; then
     ~timelog/timelog-core/scripts/timelog-core-install-deps.bash --with-avahi \
-    || exit 8
+    || exit 9
   else
-    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash || exit 9
+    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash || exit 10
   fi
 
   sudo -u postgres -i psql <<EOF
@@ -90,28 +113,42 @@ CREATE DATABASE timelog OWNER timelog;
 EOF
 
   sudo -u timelog -i bash \
-    ~timelog/timelog-core/scripts/timelog-core-install-stage2.bash || exit 10
+    ~timelog/timelog-core/scripts/timelog-core-install-stage2.bash || exit 11
 
   mv ~timelog/timelog-core ~timelog/venv/serve/timelog
 
+  export $tzsel
+  export $wui_user
+  export $wui_pass
   sudo -u timelog -i bash \
     ~timelog/venv/serve/timelog/scripts/timelog-core-install-stage3.bash \
-  || exit 11
+  || exit 12
 
   ln -s /var/lib/timelog/venv/serve/timelog/nginx-site/timelog \
-    /etc/nginx/sites-available/ || exit 12
+    /etc/nginx/sites-available/ || exit 13
 
   if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog-a.service \
-      /etc/systemd/system/timelog.service || exit 13
+      /etc/systemd/system/timelog.service || exit 14
   else
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
-      /etc/systemd/system/timelog.service || exit 14
+      /etc/systemd/system/timelog.service || exit 15
   fi
 
   systemctl daemon-reload
 
   echo "Done installing timelog." 1>&2
+  echo "Django superuser account details:" 1>&2
+  echo "  username \`" 1>&2
+  echo -n "$wui_user" # echoed to stdout
+  echo -n "'" 1>&2
+  if [ "$wui_pass_random" == "true" ] ; then
+    echo "random password \`" 1>&2
+    echo -n "$wui_pass" # echoed to stdout
+    echo -n "'" 1>&2
+  else
+    echo "(user-entered password not shown)" # echoed to stdout
+  fi
   echo "Remember to enable and start the timelog service." 1>&2
 }
 
