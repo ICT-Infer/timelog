@@ -1,0 +1,8 @@
+Package: timelog-core-extras-avahi
+Version: 0.3.8-git
+Section: main
+Priority: standard
+Architecture: all
+Depends: avahi-daemon
+Maintainer: Erik Nordstroem <contact@erikano.net>
+Description: Meta-package for dependencies of timelog-core Avahi integration.
