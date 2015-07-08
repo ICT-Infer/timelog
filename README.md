@@ -29,7 +29,8 @@ the following data MUST be preserved:
 
 * User account name and password hash
 * Category names and descriptions, as well as category hierarchy
-* Entry begin and end dates, times and time zones; entry descriptions
+* Entry begin and end dates, times and time zones;
+  entry descriptions and ownership
 
 Note that the names of the fields themselves may change
 and the data representation may change. Anything else
