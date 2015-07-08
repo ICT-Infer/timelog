@@ -78,9 +78,10 @@ function install_timelog {
   fi
 
   if [ "$opt_avahi_service" == "true" ] ; then
-    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash --with-avahi
+    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash --with-avahi \
+    || exit 8
   else
-    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash
+    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash || exit 9
   fi
 
   sudo -u postgres -i psql <<EOF
@@ -89,22 +90,23 @@ CREATE DATABASE timelog OWNER timelog;
 EOF
 
   sudo -u timelog -i bash \
-    ~timelog/timelog-core/scripts/timelog-core-install-stage2.bash
+    ~timelog/timelog-core/scripts/timelog-core-install-stage2.bash || exit 10
 
   mv ~timelog/timelog-core ~timelog/venv/serve/timelog
 
   sudo -u timelog -i bash \
-    ~timelog/venv/serve/timelog/scripts/timelog-core-install-stage3.bash
+    ~timelog/venv/serve/timelog/scripts/timelog-core-install-stage3.bash \
+  || exit 11
 
   ln -s /var/lib/timelog/venv/serve/timelog/nginx-site/timelog \
-    /etc/nginx/sites-available/
+    /etc/nginx/sites-available/ || exit 12
 
   if [[ $opt_avahi_service =~ ^[Yy]$ ]] ; then
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog-a.service \
-      /etc/systemd/system/timelog.service
+      /etc/systemd/system/timelog.service || exit 13
   else
     cp /var/lib/timelog/venv/serve/timelog/systemd-service/timelog.service \
-      /etc/systemd/system/timelog.service
+      /etc/systemd/system/timelog.service || exit 14
   fi
 
   systemctl daemon-reload
