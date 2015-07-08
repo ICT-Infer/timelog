@@ -77,7 +77,7 @@ function install_timelog {
     apt-get -y remove git
   fi
 
-  if [ "$opt_avahi_service" == "" ] ; then
+  if [ "$opt_avahi_service" == "true" ] ; then
     ~timelog/timelog-core/scripts/timelog-core-install-deps.bash --with-avahi
   else
     ~timelog/timelog-core/scripts/timelog-core-install-deps.bash
