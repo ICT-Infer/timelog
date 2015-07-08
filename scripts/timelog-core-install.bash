@@ -139,15 +139,16 @@ EOF
 
   echo "Done installing timelog." 1>&2
   echo "Django superuser account details:" 1>&2
-  echo "  username \`" 1>&2
+  echo -n "  username \`" 1>&2
   echo -n "$wui_user" # echoed to stdout
-  echo -n "'" 1>&2
+  echo "'" 1>&2
   if [ "$wui_pass_random" == "true" ] ; then
-    echo "random password \`" 1>&2
+    echo -n "  random password \`" 1>&2
     echo -n "$wui_pass" # echoed to stdout
-    echo -n "'" 1>&2
+    echo "'" 1>&2
   else
-    echo "(user-entered password not shown)" # echoed to stdout
+    echo -n "(user-entered password not shown)" 1>&2
+    echo # blank line to stdout
   fi
   echo "Remember to enable and start the timelog service." 1>&2
 }
