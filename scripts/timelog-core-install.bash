@@ -117,9 +117,9 @@ EOF
 
   mv ~timelog/timelog-core ~timelog/venv/serve/timelog
 
-  export $tzsel
-  export $wui_user
-  export $wui_pass
+  export tzsel
+  export wui_user
+  export wui_pass
   sudo -u timelog -i bash \
     ~timelog/venv/serve/timelog/scripts/timelog-core-install-stage3.bash \
   || exit 12
