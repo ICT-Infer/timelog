@@ -7,6 +7,8 @@ fi
 
 script_path=$( dirname $0 )
 
+read -r -s wui_pass
+
 cd ~timelog/venv/serve/
 
 patch -p2 -d serve/ < ${script_path}/../patch/serve/settings.py.patch || exit 2

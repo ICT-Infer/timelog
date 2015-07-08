@@ -117,11 +117,9 @@ EOF
 
   mv ~timelog/timelog-core ~timelog/venv/serve/timelog
 
-  export tzsel
-  export wui_user
-  export wui_pass
-  sudo -u timelog -i bash \
-    ~timelog/venv/serve/timelog/scripts/timelog-core-install-stage3.bash \
+  echo "$wui_pass" \
+  | sudo tzsel="$tzsel" wui_user="$wui_user" -u timelog -i bash \
+      ~timelog/venv/serve/timelog/scripts/timelog-core-install-stage3.bash \
   || exit 12
 
   ln -s /var/lib/timelog/venv/serve/timelog/nginx-site/timelog \
