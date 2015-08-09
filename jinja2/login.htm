@@ -1,7 +1,0 @@
-<form action="/timelog/login/" method="post">
-  <input type="hidden" name="csrfmiddlewaretoken" value="{{ csrf_token }}">
-  <input type="hidden" name="next" value="{% if next %}{{ next }}{% else %}/timelog/{% endif %}">
-  <input type="text" name="username">
-  <input type="password" name="password">
-  <input type="submit" value="Submit">
-</form>
