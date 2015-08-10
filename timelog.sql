@@ -19,6 +19,11 @@ BEGIN;
 -- To make migration between hosts simpler, pw_uid should be "semi-private".
 -- For this reason, we use pw_name as the primary key.
 CREATE TABLE passwd_shim (
+  -- Unless you have a good, specific reason to need more than eight characters
+  -- for usernames, keep this value as it is since there are other systems
+  -- out there to this day where exceeding 8 characters in the username
+  -- might either lead to trouble or even not be allowed, e.g. NIS(?)
+  -- Besides, eight characters saves typing for your users ;)
   pw_name varchar(8) PRIMARY KEY,
   pw_uid  integer NOT NULL
 );
