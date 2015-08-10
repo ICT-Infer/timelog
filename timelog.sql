@@ -15,7 +15,7 @@
 --
 
 BEGIN;
--- The passwd_shim table is for integration with authentication system.
+-- The passwd_shim table is for integration with host OS user account system.
 -- To make migration between hosts simpler, pw_uid should be "semi-private".
 -- For this reason, we use pw_name as the primary key.
 CREATE TABLE passwd_shim (
