@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2015 Erik Nordstroem <erikn@LoBSD.org>
+ * Copyright (c) 2015 Erik Nordstroem <erikn@SaaS-by-Erik.net>
  *
  * Permission to use, copy, modify, and distribute this software for any
  * purpose with or without fee is hereby granted, provided that the above
