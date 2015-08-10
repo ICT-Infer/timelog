@@ -15,11 +15,10 @@
 --
 
 BEGIN;
--- The passwd_shim table is primarily for conservation
--- of user information during migration between hosts.
+-- The passwd_shim table is for integration with authentication system
 CREATE TABLE passwd_shim (
-  pw_name varchar(8) NOT NULL,
-  pw_uid  integer PRIMARY KEY
+  pw_name varchar(8) PRIMARY KEY,
+  pw_uid  integer NOT NULL
 );
 CREATE TABLE categories (
   parent_id integer,
@@ -32,8 +31,8 @@ CREATE TABLE categories (
   FOREIGN KEY (parent_id) REFERENCES categories  
 );
 CREATE TABLE entries (
-  pw_uid integer NOT NULL,
-  catid  integer NOT NULL,
+  pw_name varchar(8) NOT NULL,
+  catid   integer NOT NULL,
 
   id       serial PRIMARY KEY,
   t_begin  timestamp with time zone NOT NULL,
@@ -42,7 +41,7 @@ CREATE TABLE entries (
   tz_end   varchar(255),
   comment  varchar(255),
 
-  FOREIGN KEY (pw_uid) REFERENCES passwd_shim,
-  FOREIGN KEY (catid)  REFERENCES categories
+  FOREIGN KEY (pw_name) REFERENCES passwd_shim,
+  FOREIGN KEY (catid)   REFERENCES categories
 );
 COMMIT;
