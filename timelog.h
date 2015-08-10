@@ -17,6 +17,8 @@
 #ifndef TIMELOG_H
 #define TIMELOG_H
 
+#include <sys/types.h>
+
 /*
  * It bears to note that the integer values used
  * in the tz enum are _NOT_ related to time zone offset.
@@ -40,7 +42,7 @@ typedef struct
 
 typedef struct
 {
-  unsigned int uid;
+  uid_t        pw_uid;
   unsigned int catid;
 
   unsigned int id;
