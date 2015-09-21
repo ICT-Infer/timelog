@@ -15,6 +15,7 @@
 --
 
 BEGIN;
+
 -- The passwd_shim table is for integration with host OS user account system.
 -- To make migration between hosts simpler, pw_uid should be "semi-private".
 -- For this reason, we use pw_name as the primary key.
@@ -27,6 +28,7 @@ CREATE TABLE passwd_shim (
   pw_name varchar(8) PRIMARY KEY,
   pw_uid  integer NOT NULL
 );
+
 CREATE TABLE categories (
   parent_id integer,
 
@@ -37,6 +39,7 @@ CREATE TABLE categories (
 
   FOREIGN KEY (parent_id) REFERENCES categories  
 );
+
 CREATE TABLE entries (
   pw_name varchar(8) NOT NULL,
   catid   integer NOT NULL,
@@ -51,4 +54,5 @@ CREATE TABLE entries (
   FOREIGN KEY (pw_name) REFERENCES passwd_shim,
   FOREIGN KEY (catid)   REFERENCES categories
 );
+
 COMMIT;
