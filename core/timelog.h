@@ -20,10 +20,10 @@
 #include <sys/types.h>
 
 /*
- * It bears to note that the integer values used
- * in the tz enum are _NOT_ related to time zone offset.
+ * XXX: Integer values used in the tz enum
+ *      are _NOT_ related to time zone offset.
  *
- * XXX: Might need rethinking.
+ * XXX: Might need to rethink internal representation of time zones.
  */
 typedef enum
 {
