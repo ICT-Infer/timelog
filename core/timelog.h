@@ -22,6 +22,8 @@
 /*
  * It bears to note that the integer values used
  * in the tz enum are _NOT_ related to time zone offset.
+ *
+ * XXX: Might need rethinking.
  */
 typedef enum
 {
