@@ -33,7 +33,7 @@ typedef enum
 
 typedef struct
 {
-  /* XXX: parent_catid = 0 means that the category has no parent. */
+  // XXX: parent_catid = 0 means that the category has no parent.
   unsigned int parent_catid;
 
   unsigned int id;
