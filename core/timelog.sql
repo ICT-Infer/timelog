@@ -1,5 +1,5 @@
 --
--- Copyright (c) 2015 Erik Nordstroem <erikn@ict-infer.no>
+-- Copyright (c) 2015, 2016 Erik Nordstrøm <erikn@ict-infer.no>
 --
 -- Permission to use, copy, modify, and distribute this software for any
 -- purpose with or without fee is hereby granted, provided that the above
