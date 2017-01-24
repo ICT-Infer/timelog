@@ -93,7 +93,7 @@ Please give the install script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget -N https://raw.githubusercontent.com/ICT-Infer/timelog/0.3.10/scripts/timelog-core-install.bash
+wget -N https://raw.githubusercontent.com/ICT-Infer/timelog/legacy-support/scripts/timelog-core-install.bash
 sudo bash ./timelog-core-install.bash
 ```
 

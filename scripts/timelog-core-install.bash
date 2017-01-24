@@ -93,7 +93,7 @@ function install_timelog {
 
   adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
 
-  sudo -u timelog -i bash -c "git clone https://github.com/ICT-Infer/timelog.git"
+  sudo -u timelog -i bash -c "git clone -b legacy-support https://github.com/ICT-Infer/timelog.git"
 
   if [ "$script_installed_git" == "true" ] ; then
     apt-get -y remove git
