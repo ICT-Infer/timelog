@@ -93,17 +93,17 @@ function install_timelog {
 
   adduser --system --home /var/lib/timelog --group --shell /bin/bash timelog
 
-  sudo -u timelog -i bash -c "git clone https://github.com/saas-by-erik/timelog-core.git"
+  sudo -u timelog -i bash -c "git clone https://github.com/ICT-Infer/timelog.git"
 
   if [ "$script_installed_git" == "true" ] ; then
     apt-get -y remove git
   fi
 
   if [ "$opt_avahi_service" == "true" ] ; then
-    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash --with-avahi \
+    ~timelog/timelog/scripts/timelog-core-install-deps.bash --with-avahi \
     || exit 9
   else
-    ~timelog/timelog-core/scripts/timelog-core-install-deps.bash || exit 10
+    ~timelog/timelog/scripts/timelog-core-install-deps.bash || exit 10
   fi
 
   sudo -u postgres -i psql <<EOF
@@ -112,9 +112,9 @@ CREATE DATABASE timelog OWNER timelog;
 EOF
 
   sudo -u timelog -i bash \
-    ~timelog/timelog-core/scripts/timelog-core-install-stage2.bash || exit 11
+    ~timelog/timelog/scripts/timelog-core-install-stage2.bash || exit 11
 
-  mv ~timelog/timelog-core ~timelog/venv/serve/timelog
+  mv ~timelog/timelog ~timelog/venv/serve/timelog
 
   echo "$wui_pass" \
   | sudo tzsel="$tzsel" wui_user="$wui_user" -u timelog -i bash \

@@ -1,4 +1,4 @@
-# timelog-core
+# timelog-core (legacy support)
 
 Django Timelog App. Time sheet time tracking for a person or group of people.
 
@@ -17,7 +17,6 @@ Django Timelog App. Time sheet time tracking for a person or group of people.
     + [Entering data](#entering-data)
   - [Timelog web UI](#timelog-web-ui)
   - [Dumping data for backup and later restore](#dumping-data-for-backup-and-later-restore)
-* [Updating and upgrading](#updating-and-upgrading)
 * [Copyright and license](#copyright-and-license)
 
 ## Pre-stable notice
@@ -94,7 +93,7 @@ Please give the install script a read-through after you've downloaded it
 and prior to running it.
 
 ```
-wget -N https://raw.githubusercontent.com/saas-by-erik/timelog-core/master/scripts/timelog-core-install.bash
+wget -N https://raw.githubusercontent.com/ICT-Infer/timelog/0.3.10/scripts/timelog-core-install.bash
 sudo bash ./timelog-core-install.bash
 ```
 
@@ -185,19 +184,9 @@ sudo -u timelog -i -- bash -c \
 
 Transfer the data dumps to somewhere safe!
 
-## Updating and upgrading
-
-Please give the update script a read-through after you've downloaded it
-and prior to running it.
-
-```
-wget -N https://raw.githubusercontent.com/saas-by-erik/timelog-core/master/scripts/timelog-core-up.bash
-sudo bash ./timelog-core-up.bash
-```
-
 ## Copyright and license
 
-timelog-core is copyright © 2015 Erik Nordstroem.
+timelog-core is copyright © 2015, 2017 Erik Nordstrøm.
 
 timelog-core is published under the ISC license.
 
