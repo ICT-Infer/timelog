@@ -100,7 +100,7 @@ let fontsize_px_topbar,
 
 function sizeCanvases ()
 {
-	const total_width  = window.innerWidth;
+	const total_width  = document.body.clientWidth;
 	const total_height = window.innerHeight;
 
 	// TODO: If possible, take dpi into account.
