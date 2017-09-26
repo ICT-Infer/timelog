@@ -125,10 +125,8 @@ for (day of days_of_week)
 		ctx.fillStyle = colors.white;
 		ctx.fillRect(xpos + 1, ypos + 1, quarter_hour_width - 2, quarter_hour_height - 2);
 
-		let minute = ("0" + ((i * 15) % 60));
-		minute = minute.substr(minute.length - 2);
-		let hour = ("0" + Math.floor(i / 4));
-		hour = hour.substr(hour.length - 2);
+		let minute = String((i * 15) % 60).padStart(2, '0');
+		let hour = String(Math.floor(i / 4)).padStart(2, '0');
 		let hm = hour + ':' + minute; // TODO + TZ offset
 
 		ctx.fillStyle = colors.gray;
