@@ -177,21 +177,23 @@ function sizeCanvases ()
 	canvas_weekdays.width = weekdays_width;
 
 	content_margin_top = Math.floor(1.2 * fontsize_px_qh);
-	content_margin_bottom = 2 * fontsize_px_qh;
-	qh_text_margin_top = 3;
-	qh_text_margin_left = 3;
+	content_margin_bottom = 0;
+	qh_text_margin_top = 5;
+	qh_text_margin_right = 0;
+	qh_text_margin_bottom = 5;
+	qh_text_margin_left = 5;
 	quarter_hour_margin_top = 1;
 	quarter_hour_margin_right = 2;
 	quarter_hour_margin_bottom = 0;
 	quarter_hour_margin_left = 0;
-	quarter_hour_height = quarter_hour_margin_top + 2 * qh_text_margin_top + fontsize_px_qh + quarter_hour_margin_bottom;
+	quarter_hour_height = 2 * qh_text_margin_top + fontsize_px_qh;
 	quarter_hour_width = cellwidth_top_row - (quarter_hour_margin_left + quarter_hour_margin_right);
 
 	canvas_wdactions.style.left = left_column_minwidth + 'px';
 	const wdactions_width = content_width;
 	canvas_wdactions.width = wdactions_width;
 
-	const height_content = height_top_row + content_margin_top + 24 * 4 * quarter_hour_height + content_margin_bottom + height_bottom_row;
+	const height_content = height_top_row + content_margin_top + 24 * 4 * (quarter_hour_margin_top + quarter_hour_height + quarter_hour_margin_bottom) + content_margin_bottom + height_bottom_row;
 	canvas.height = height_content;
 
 	const right_column_minwidth = 200;
