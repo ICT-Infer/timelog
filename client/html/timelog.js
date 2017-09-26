@@ -258,3 +258,18 @@ function fullDrawContent ()
 }
 
 fullDrawContent();
+
+function windowResized ()
+{
+	sizeCanvases();
+	fullDrawIsoweek();
+	fullDrawWeekdays();
+	fullDrawContent();
+}
+
+let timer_resize;
+window.onresize = () =>
+{
+	clearTimeout(timer_resize);
+	timer_resize = setTimeout(windowResized, 100);
+};
