@@ -88,7 +88,7 @@ console.log(dow_colcell_width);
 ctx.fillStyle = colors.blue;
 ctx.fillRect(0, 0, cw, topbar_height);
 
-const first_col_width = ctx.measureText(isoweek).width + 100; // TODO: Use greatest width in column
+const first_col_width = ctx.measureText(isoweek).width + 0.75 * dow_colcell_width; // TODO: Use greatest width in column
 
 let ypos_baseline_text = 
 	topbar_colcell_margin_top +
