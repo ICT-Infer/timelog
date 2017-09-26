@@ -57,12 +57,6 @@ const ctx_wdactions = canvas.getContext('2d');
 const canvas_bottomrightbar = document.getElementById('bottom-right-bar');
 const ctx_bottomrightbar = canvas_bottomrightbar.getContext('2d');
 
-// TODO: If possible, take dpi into account.
-const min_fontsize_topbar = 16;
-const min_height_topbar = 2 * min_fontsize_topbar;
-const max_height_topbar = 100;
-const min_fontsize_qh = 12;
-
 const days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const colors =
@@ -109,6 +103,13 @@ function sizeCanvases ()
 	const total_width  = window.innerWidth;
 	const total_height = window.innerHeight;
 
+	// TODO: If possible, take dpi into account.
+	const min_fontsize_topbar = 16;
+	const max_fontsize_topbar = 32;
+	const min_height_topbar = 2 * min_fontsize_topbar;
+	const max_height_topbar = 2 * max_fontsize_topbar;
+	const min_fontsize_qh = 12;
+
 	const relaref = (total_width > total_height) ? total_height : total_width;
 
 	const height_top_row = Math.min(Math.floor(Math.max(min_height_topbar, min_fontsize_topbar + 0.12 * relaref)), max_height_topbar);
@@ -146,41 +147,34 @@ function sizeCanvases ()
 	canvas_wdactions.height = height_bottom_row;
 	canvas_bottomrightbar.height = height_bottom_row;
 
-	// TODO: Calculate value to use
-	const isoweek_width = canvas_isoweek.width;
-	canvas_isoweek.width = isoweek_width;
+	ctx_isoweek.font = fontsize_px_topbar + 'px sans-serif';
+	const isoweek_minwidth = ctx_isoweek.measureText(isoweek).width + 3 * pad_left_top_row;
+	const middleleftbar_minwidth = 0; // TODO
+	const bottomleftbar_minwidth = 0;
+	const left_column_minwidth = Math.max(isoweek_minwidth, Math.max(middleleftbar_minwidth, bottomleftbar_minwidth));
 
-	// TODO: Calculate value to use
-	const toprightbar_width = canvas_toprightbar.width;
-	canvas_toprightbar.width = toprightbar_width;
+	canvas_isoweek.width = left_column_minwidth;
+	canvas_middleleftbar.width = left_column_minwidth;
+	canvas_bottomleftbar.width = left_column_minwidth;
 
-	// TODO: Calculate value to use
-	const middleleftbar_width = canvas_middleleftbar.width;
-	canvas_middleleftbar.width = middleleftbar_width;
+	canvas.style.left = left_column_minwidth + 'px';
+	const content_margin_min_right = left_column_minwidth;
+	const content_width_avail =
+		total_width - (left_column_minwidth + content_margin_min_right);
 
-	// TODO: Calculate value to use
-	const middlerightbar_width = canvas_middlerightbar.width;
-	canvas_middlerightbar.width = middlerightbar_width;
+	ctx_weekdays.font = fontsize_px_topbar + 'px sans-serif';
 
-	// TODO: Calculate value to use
-	const bottomleftbar_width = canvas_bottomleftbar.width;
-	canvas_bottomleftbar.width = bottomleftbar_width;
+	const dow_maxw = Math.max.apply(null, days_of_week.map((d) => { return ctx_weekdays.measureText(d).width }));
 
-	// TODO: Calculate value to use
-	const bottomrightbar_width = canvas_bottomrightbar.width;
-	canvas_bottomrightbar.width = bottomrightbar_width;
+	const cellmaxwidth_top_row = 185;
+	cellwidth_top_row = Math.min(Math.max(dow_maxw, Math.floor(content_width_avail / 7)), cellmaxwidth_top_row);
+	const content_width = 7 * cellwidth_top_row;
 
-	canvas_weekdays.style.left = isoweek_width + 'px';
-	const weekdays_width =
-		total_width - (isoweek_width + toprightbar_width);
-	canvas_weekdays.width = weekdays_width;
-
-	canvas.style.left = middleleftbar_width + 'px';
-	const content_width =
-		total_width - (middleleftbar_width + middleleftbar_width);
 	canvas.width = content_width;
 
-	cellwidth_top_row = Math.floor(content_width / 7);
+	canvas_weekdays.style.left = left_column_minwidth  + 'px';
+	const weekdays_width = content_width;
+	canvas_weekdays.width = weekdays_width;
 
 	content_margin_top = Math.floor(1.2 * fontsize_px_qh);
 	content_margin_bottom = 2 * fontsize_px_qh;
@@ -193,13 +187,19 @@ function sizeCanvases ()
 	quarter_hour_height = quarter_hour_margin_top + 2 * qh_text_margin_top + fontsize_px_qh + quarter_hour_margin_bottom;
 	quarter_hour_width = cellwidth_top_row - (quarter_hour_margin_left + quarter_hour_margin_right);
 
-	canvas_wdactions.style.left = bottomleftbar_width + 'px';
-	const wdactions_width =
-		total_width - (isoweek_width + toprightbar_width);
+	canvas_wdactions.style.left = left_column_minwidth + 'px';
+	const wdactions_width = content_width;
 	canvas_wdactions.width = wdactions_width;
 
 	const height_content = height_top_row + content_margin_top + 24 * 4 * quarter_hour_height + content_margin_bottom + height_bottom_row;
 	canvas.height = height_content;
+
+	const right_column_minwidth = 200;
+	const right_column_width = Math.max(right_column_minwidth, total_width - (left_column_minwidth + content_width));
+
+	canvas_toprightbar.width = right_column_width;
+	canvas_middlerightbar.width = right_column_width;
+	canvas_bottomrightbar.width = right_column_width;
 }
 
 sizeCanvases();
@@ -233,8 +233,6 @@ function fullDrawContent ()
 	let xpos = quarter_hour_margin_left;
 	for (day of days_of_week)
 	{
-		console.log(day);
-
 		let ypos = content_margin_top;
 		for (var i = 0 ; i < 24 * 4 ; i++)
 		{
