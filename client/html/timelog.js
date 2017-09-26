@@ -24,117 +24,239 @@ Date.prototype.getWeek = function ()
 const now = new Date();
 const isoweek = now.getFullYear() + 'W' + now.getWeek();
 
-let canvas = document.getElementById('timelog');
-let ctx = canvas.getContext('2d');
+const toprow = document.getElementById('top-row');
 
-const fontsize_px_topbar = 24;
-const fontsize_px_qh = 10;
+const canvas_isoweek = document.getElementById('isoweek');
+const ctx_isoweek = canvas_isoweek.getContext('2d');
+
+const canvas_weekdays = document.getElementById('weekdays');
+const ctx_weekdays = canvas_weekdays.getContext('2d');
+
+const canvas_toprightbar = document.getElementById('top-right-bar');
+const ctx_toprightbar = canvas_toprightbar.getContext('2d');
+
+const middlerow = document.getElementById('middle-row');
+
+const canvas_middleleftbar = document.getElementById('middle-left-bar');
+const ctx_middleleftbar = canvas_middleleftbar.getContext('2d');
+
+const canvas = document.getElementById('content');
+const ctx = canvas.getContext('2d');
+
+const canvas_middlerightbar = document.getElementById('middle-right-bar');
+const ctx_middlerightbar = canvas_middlerightbar.getContext('2d');
+
+const bottomrow = document.getElementById('bottom-row');
+
+const canvas_bottomleftbar = document.getElementById('bottom-left-bar');
+const ctx_bottomleftbar = canvas_bottomleftbar.getContext('2d');
+
+const canvas_wdactions = document.getElementById('weekday-actions');
+const ctx_wdactions = canvas.getContext('2d');
+
+const canvas_bottomrightbar = document.getElementById('bottom-right-bar');
+const ctx_bottomrightbar = canvas_bottomrightbar.getContext('2d');
+
+// TODO: If possible, take dpi into account.
+const min_fontsize_topbar = 16;
+const min_height_topbar = 2 * min_fontsize_topbar;
+const max_height_topbar = 100;
+const min_fontsize_qh = 12;
 
 const days_of_week = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
 
 const colors =
 {
-	'navy': '#001f3f',
-	'blue': '#0074d9',
-	'aqua': '#7fdbff',
-	'teal': '#39cccc',
-	'olive': '#3d9970',
-	'green': '#2ecc40',
-	'lime': '#01ff70',
-	'yellow': '#ffdc00',
-	'orange': '#ff851b',
-	'red': '#ff4136',
-	'maroon': '#85144b',
+	'navy':    '#001f3f',
+	'blue':    '#0074d9',
+	'aqua':    '#7fdbff',
+	'teal':    '#39cccc',
+	'olive':   '#3d9970',
+	'green':   '#2ecc40',
+	'lime':    '#01ff70',
+	'yellow':  '#ffdc00',
+	'orange':  '#ff851b',
+	'red':     '#ff4136',
+	'maroon':  '#85144b',
 	'fuchsia': '#f012be',
-	'purple': '#b10dc9',
-	'black': '#111111',
-	'gray': '#aaaaaa',
-	'silver': '#dddddd',
-	'white': '#ffffff'
+	'purple':  '#b10dc9',
+	'black':   '#111111',
+	'gray':    '#aaaaaa',
+	'silver':  '#dddddd',
+	'white':   '#ffffff'
 };
 
-let cw = canvas.width = window.innerWidth;
-let ch = canvas.height = window.innerHeight;
+let fontsize_px_topbar,
+    fontsize_px_qh,
+    pad_top_top_row,
+    pad_right_top_row,
+    pad_bottom_top_row,
+    pad_left_top_row,
+    cellwidth_top_row,
+    quarter_hour_margin_top,
+    quarter_hour_margin_right,
+    quarter_hour_margin_bottom,
+    quarter_hour_margin_left,
+    quarter_hour_height,
+    quarter_hour_width,
+    qh_text_margin_top,
+    qh_text_margin_left,
+    content_margin_top,
+    content_margin_bottom;
 
-// Main background
-
-ctx.fillStyle = colors.silver;
-ctx.fillRect(0, 0, cw, ch);
-
-// Content
-
-ctx.font = fontsize_px_topbar + 'px sans-serif';
-
-const dow_maxw = Math.max.apply(null, days_of_week.map((d) => { return ctx.measureText(d).width }));
-
-const topbar_colcell_margin_top =    .4 * dow_maxw;
-const topbar_colcell_margin_right =  .5 * dow_maxw;
-const topbar_colcell_margin_bottom = .6 * dow_maxw;
-const topbar_colcell_margin_left =   .5 * dow_maxw;
-const topbar_colcell_height =        fontsize_px_topbar;
-
-const topbar_height = 
-	topbar_colcell_margin_top +
-	topbar_colcell_height +
-	topbar_colcell_margin_bottom;
-
-const bottombar_height = topbar_height; // TODO: Adjust
-
-const vertical_height_avail = ch - (topbar_height + bottombar_height);
-
-const dow_colcell_width = Math.floor(vertical_height_avail / 7);
-console.log(dow_colcell_width);
-
-ctx.fillStyle = colors.blue;
-ctx.fillRect(0, 0, cw, topbar_height);
-
-const first_col_width = ctx.measureText(isoweek).width + 0.75 * dow_colcell_width; // TODO: Use greatest width in column
-
-let ypos_baseline_text = 
-	topbar_colcell_margin_top +
-	topbar_colcell_height;
-
-ctx.fillStyle = colors.white;
-let xpos = topbar_colcell_margin_left;
-ctx.fillText(isoweek, xpos, ypos_baseline_text);
-xpos += first_col_width + topbar_colcell_margin_right;
-
-const quarter_hour_height = 24; // TODO: Use text size + margs.
-const quarter_hour_margin_top = 1;
-const quarter_hour_margin_bottom = 0;
-const quarter_hour_width = dow_colcell_width + 2 * topbar_colcell_margin_right - 2;
-
-const qh_text_margin_top = 3;
-const qh_text_margin_left = 3;
-
-for (day of days_of_week)
+function sizeCanvases ()
 {
-	xpos += topbar_colcell_margin_left;
-	ctx.fillStyle = colors.white;
-	ctx.font = fontsize_px_topbar + 'px sans-serif';
-	ctx.fillText(day, xpos, ypos_baseline_text);
+	const total_width  = window.innerWidth;
+	const total_height = window.innerHeight;
 
-	let ypos = topbar_height;
+	const relaref = (total_width > total_height) ? total_height : total_width;
 
-	for (var i = 0 ; i < 24 * 4 ; i++)
-	{
-		ypos += quarter_hour_margin_top;
+	const height_top_row = Math.min(Math.floor(Math.max(min_height_topbar, min_fontsize_topbar + 0.12 * relaref)), max_height_topbar);
+	toprow.style.height = height_top_row + 'px';
 
-		ctx.fillStyle = colors.gray;
-		ctx.fillRect(xpos, ypos, quarter_hour_width, quarter_hour_height);
-		ctx.fillStyle = colors.white;
-		ctx.fillRect(xpos + 1, ypos + 1, quarter_hour_width - 2, quarter_hour_height - 2);
+	fontsize_px_topbar = Math.max(min_fontsize_qh, Math.floor(0.3 * height_top_row));
+	fontsize_px_qh = Math.max(min_fontsize_qh, Math.floor(10 * fontsize_px_topbar / 24));
+	
+	pad_top_top_row = Math.ceil(5 * (height_top_row - fontsize_px_topbar) / 12);
+	pad_bottom_top_row = Math.ceil(height_top_row - (fontsize_px_topbar + pad_top_top_row));
+	pad_left_top_row = pad_top_top_row;
+	pad_right_top_row = pad_top_top_row;
 
-		let minute = String((i * 15) % 60).padStart(2, '0');
-		let hour = String(Math.floor(i / 4)).padStart(2, '0');
-		let hm = hour + ':' + minute; // TODO + TZ offset
+	const height_bottom_row = Math.floor(0.5 * height_top_row);
+	bottomrow.style.height = height_bottom_row + 'px';
 
-		ctx.fillStyle = colors.gray;
-		ctx.font = fontsize_px_qh + 'px sans-serif';
-		ctx.fillText(hm, xpos + qh_text_margin_left, ypos + fontsize_px_qh + qh_text_margin_top);
+	const height_middle_row =
+		total_height - (height_top_row + height_bottom_row);
+	middlerow.style.height = height_middle_row + 'px';
 
-		ypos += quarter_hour_height + quarter_hour_margin_bottom;
-	}
+	canvas_isoweek.height = height_top_row;
+	canvas_weekdays.height = height_top_row;
+	canvas_toprightbar.height = height_top_row;
 
-	xpos += dow_colcell_width + topbar_colcell_margin_right;
+	canvas_middleleftbar.style.top = height_top_row + 'px';
+	canvas_middleleftbar.height = height_middle_row;
+
+	canvas.style.top = height_top_row + 'px';
+	canvas.height = height_middle_row;
+
+	canvas_middlerightbar.style.top = height_top_row + 'px';
+	canvas_middlerightbar.height = height_middle_row;
+
+	canvas_bottomleftbar.height = height_bottom_row;
+	canvas_wdactions.height = height_bottom_row;
+	canvas_bottomrightbar.height = height_bottom_row;
+
+	// TODO: Calculate value to use
+	const isoweek_width = canvas_isoweek.width;
+	canvas_isoweek.width = isoweek_width;
+
+	// TODO: Calculate value to use
+	const toprightbar_width = canvas_toprightbar.width;
+	canvas_toprightbar.width = toprightbar_width;
+
+	// TODO: Calculate value to use
+	const middleleftbar_width = canvas_middleleftbar.width;
+	canvas_middleleftbar.width = middleleftbar_width;
+
+	// TODO: Calculate value to use
+	const middlerightbar_width = canvas_middlerightbar.width;
+	canvas_middlerightbar.width = middlerightbar_width;
+
+	// TODO: Calculate value to use
+	const bottomleftbar_width = canvas_bottomleftbar.width;
+	canvas_bottomleftbar.width = bottomleftbar_width;
+
+	// TODO: Calculate value to use
+	const bottomrightbar_width = canvas_bottomrightbar.width;
+	canvas_bottomrightbar.width = bottomrightbar_width;
+
+	canvas_weekdays.style.left = isoweek_width + 'px';
+	const weekdays_width =
+		total_width - (isoweek_width + toprightbar_width);
+	canvas_weekdays.width = weekdays_width;
+
+	canvas.style.left = middleleftbar_width + 'px';
+	const content_width =
+		total_width - (middleleftbar_width + middleleftbar_width);
+	canvas.width = content_width;
+
+	cellwidth_top_row = Math.floor(content_width / 7);
+
+	content_margin_top = Math.floor(1.2 * fontsize_px_qh);
+	content_margin_bottom = 2 * fontsize_px_qh;
+	qh_text_margin_top = 3;
+	qh_text_margin_left = 3;
+	quarter_hour_margin_top = 1;
+	quarter_hour_margin_right = 2;
+	quarter_hour_margin_bottom = 0;
+	quarter_hour_margin_left = 0;
+	quarter_hour_height = quarter_hour_margin_top + 2 * qh_text_margin_top + fontsize_px_qh + quarter_hour_margin_bottom;
+	quarter_hour_width = cellwidth_top_row - (quarter_hour_margin_left + quarter_hour_margin_right);
+
+	canvas_wdactions.style.left = bottomleftbar_width + 'px';
+	const wdactions_width =
+		total_width - (isoweek_width + toprightbar_width);
+	canvas_wdactions.width = wdactions_width;
+
+	const height_content = height_top_row + content_margin_top + 24 * 4 * quarter_hour_height + content_margin_bottom + height_bottom_row;
+	canvas.height = height_content;
 }
+
+sizeCanvases();
+
+function fullDrawIsoweek ()
+{
+	ctx_isoweek.fillStyle = colors.white;
+	ctx_isoweek.font = fontsize_px_topbar + 'px sans-serif';
+	ctx_isoweek.fillText(isoweek, pad_left_top_row, pad_top_top_row + fontsize_px_topbar);
+}
+
+fullDrawIsoweek();
+
+function fullDrawWeekdays ()
+{
+	ctx_weekdays.fillStyle = colors.white;
+	ctx_weekdays.font = fontsize_px_topbar + 'px sans-serif';
+	let xpos = 0;
+	for (day of days_of_week)
+	{
+		ctx_weekdays.fillText(day, xpos, pad_top_top_row + fontsize_px_topbar);
+		xpos += cellwidth_top_row;
+	}
+}
+
+fullDrawWeekdays();
+
+function fullDrawContent ()
+{
+	ctx.font = fontsize_px_qh + 'px sans-serif';
+	let xpos = quarter_hour_margin_left;
+	for (day of days_of_week)
+	{
+		console.log(day);
+
+		let ypos = content_margin_top;
+		for (var i = 0 ; i < 24 * 4 ; i++)
+		{
+			ypos += quarter_hour_margin_top;
+
+			ctx.fillStyle = colors.gray;
+			ctx.fillRect(xpos, ypos, quarter_hour_width, quarter_hour_height);
+			ctx.fillStyle = colors.white;
+			ctx.fillRect(xpos + 1, ypos + 1, quarter_hour_width - 2, quarter_hour_height - 2);
+
+			let minute = String((i * 15) % 60).padStart(2, '0');
+			let hour = String(Math.floor(i / 4)).padStart(2, '0');
+			let hm = hour + ':' + minute; // TODO + TZ offset
+
+			ctx.fillStyle = colors.gray;
+			ctx.fillText(hm, xpos + qh_text_margin_left, ypos + fontsize_px_qh + qh_text_margin_top);
+
+			ypos += quarter_hour_height + quarter_hour_margin_bottom;
+		}
+
+		xpos += quarter_hour_width + quarter_hour_margin_right + quarter_hour_margin_left;
+	}
+}
+
+fullDrawContent();

@@ -20,7 +20,39 @@
 <title>Timelog</title>
 <style>
 * { margin: 0; padding: 0; }
-html, body { overflow: hidden; }
+html { background: #dddddd; }
+
+#top-row { background: #0074d9; z-index: -1; position: fixed; top: 0; left: 0; width: 100%; }
+#isoweek { position: fixed; top: 0; left: 0; }
+#weekdays { position: fixed; top: 0; z-index: -1; }
+#top-right-bar { position: fixed; top: 0; right: 0; }
+
+#middle-left-bar { position: fixed; left: 0; z-index: -2; }
+#content { position: absolute; z-index: -3; }
+#middle-right-bar { position: fixed; right: 0; z-index: -2; }
+
+#bottom-row { background: #001f3f; z-index: -1; position: fixed; bottom: 0; left: 0; width: 100%; }
+#bottom-left-bar { position: fixed; bottom: 0; left: 0; z-index: -1; }
+#weekday-actions { position: fixed; bottom: 0; z-index: -2; }
+#bottom-right-bar { position: fixed; bottom: 0; right: 0; z-index: -1; }
 </style>
-<canvas id=timelog></canvas>
+
+<div id=top-row>
+<canvas id=isoweek></canvas>
+<canvas id=weekdays></canvas>
+<canvas id=top-right-bar></canvas>
+</div>
+
+<div id=middle-row>
+<canvas id=middle-left-bar></canvas>
+<canvas id=content></canvas>
+<canvas id=middle-right-bar></canvas>
+</div>
+
+<div id=bottom-row>
+<canvas id=bottom-left-bar></canvas>
+<canvas id=weekday-actions></canvas>
+<canvas id=bottom-right-bar></canvas>
+</div>
+
 <script id=tl src=timelog.js></script>
