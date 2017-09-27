@@ -176,8 +176,6 @@ function sizeCanvases ()
 	const weekdays_width = content_width;
 	canvas_weekdays.width = weekdays_width;
 
-	content_margin_top = Math.floor(1.2 * fontsize_px_qh);
-	content_margin_bottom = 0;
 	qh_text_margin_top = 5;
 	qh_text_margin_right = 0;
 	qh_text_margin_bottom = 5;
@@ -188,6 +186,8 @@ function sizeCanvases ()
 	quarter_hour_margin_left = 0;
 	quarter_hour_height = 2 * qh_text_margin_top + fontsize_px_qh;
 	quarter_hour_width = cellwidth_top_row - (quarter_hour_margin_left + quarter_hour_margin_right);
+	content_margin_top = qh_text_margin_top + Math.floor(fontsize_px_qh / 2);
+	content_margin_bottom = 0;
 
 	canvas_wdactions.style.left = left_column_minwidth + 'px';
 	const wdactions_width = content_width;
