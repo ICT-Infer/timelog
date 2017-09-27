@@ -208,6 +208,7 @@ function sizeCanvases ()
 
 sizeCanvases();
 
+// We scroll to 8AM.
 window.scroll(0, 8 * 4 * (quarter_hour_margin_top + quarter_hour_height + quarter_hour_margin_bottom));
 
 function fullDrawIsoweek ()
