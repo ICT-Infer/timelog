@@ -100,10 +100,12 @@ let fontsize_px_topbar,
 
 function sizeCanvases ()
 {
+	// TODO: Take device pixel ratio into account.
+	console.log(window.devicePixelRatio);
+
 	const total_width  = document.body.clientWidth;
 	const total_height = window.innerHeight;
 
-	// TODO: If possible, take dpi into account.
 	const min_fontsize_topbar = 16;
 	const max_fontsize_topbar = 32;
 	const min_height_topbar = 2 * min_fontsize_topbar;
